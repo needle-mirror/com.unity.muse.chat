@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" editor-extension-mode="False">
+    <ui:VisualElement name="conversationRoot">
+    </ui:VisualElement>
+</ui:UXML>

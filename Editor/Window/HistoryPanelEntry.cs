@@ -12,8 +12,6 @@ namespace Unity.Muse.Chat
         private const string k_HeaderClass = "mui-history-panel-header-entry";
         private const string k_SelectedClass = "mui-history-panel-entry-selected";
 
-        const int k_MaxTitleLength = 28;
-
         const string k_Edit = "Edit";
         const string k_Delete = "Delete";
         MuseConversationInfo m_Data;
@@ -30,6 +28,7 @@ namespace Unity.Muse.Chat
         bool m_EditModeActive;
         bool m_IsHeader;
         bool m_IsSelected;
+        bool m_IsContextClick;
 
         public MuseConversationInfo Data => m_Data;
 
@@ -80,15 +79,16 @@ namespace Unity.Muse.Chat
             m_ConversationEditText.RegisterValueChangedCallback(OnEditComplete);
             m_ConversationButton = view.SetupButton("historyPanelElementConversationButton", OnButtonClicked);
 
-            RegisterCallback<ClickEvent>(OnSelectEntry);
+            RegisterCallback<PointerUpEvent>(OnSelectEntry);
 
             RefreshUI();
         }
 
-        private void OnSelectEntry(ClickEvent evt)
+        private void OnSelectEntry(PointerUpEvent evt)
         {
-            if (m_IsSelected || m_IsHeader)
+            if (m_IsSelected || m_IsHeader || m_IsContextClick)
             {
+                m_IsContextClick = false;
                 return;
             }
 
@@ -97,6 +97,8 @@ namespace Unity.Muse.Chat
 
         void OnButtonClicked(PointerUpEvent evt)
         {
+            m_IsContextClick = true;
+
             // Create the menu and add items to it
             var menu = new GenericMenu();
 
@@ -109,6 +111,8 @@ namespace Unity.Muse.Chat
             menu.ShowAsContext();
 
             // Use the event
+            evt.StopPropagation();
+            evt.StopImmediatePropagation();
             Event.current.Use();
         }
 
@@ -168,7 +172,7 @@ namespace Unity.Muse.Chat
 
             // TODO: Enable if design wants a log to indicate contextual conversations
             // m_ConversationIcon.style.display = data.IsContextAware ? DisplayStyle.Flex : DisplayStyle.None;
-            m_ConversationText.text = data.Title.Replace("\n", " ").GetTextWithMaxLength(k_MaxTitleLength);
+            m_ConversationText.text = data.Title.Replace("\n", " ");
             m_ConversationText.tooltip = data.Title;
 
             RefreshUI();

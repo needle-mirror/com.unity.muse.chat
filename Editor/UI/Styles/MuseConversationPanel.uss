@@ -1,0 +1,11 @@
+.museconversationpanel__element {
+    flex-grow: 1;
+}
+
+.museconversationpanel__element-root {
+    flex-grow: 1;
+}
+
+#conversationRoot .unity-base-slider__dragger {
+    background-color: var(--appui-backgrounds-200);
+}

@@ -10,7 +10,7 @@ namespace Unity.Muse.Chat
         {
             Messages = new List<MuseMessage>();
         }
-        
+
         public string Title;
         public MuseConversationId Id;
         public readonly List<MuseMessage> Messages;

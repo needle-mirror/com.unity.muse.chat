@@ -5,13 +5,28 @@
 }
 
 #sourceLink:hover {
-    background-color: var(--muse-chat-color-pink);
+    background-color: var(--appui-backgrounds-100);
+}
+
+#appui-button__titlecontainer {
+    flex-direction: row;
+}
+
+.mui-source-entry-number {
+    margin-right: 4px;
+    color: var(--muse-chat-color-blue);
+    width: 12px;
+    height: 12px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    -unity-text-align: middle-center;
+    font-size: 10px;
+    -unity-font-style: bold;
 }
 
 #sourceLink {
     align-self: flex-start;
-    border-color: var(--muse-chat-color-pink);
-    border-radius: 12px;
+    border-radius: 6px;
     margin-right: 8px;
     padding: 2px;
     flex-shrink: 1;
@@ -19,7 +34,8 @@
     min-height: 25px;
     max-height: 25px;
     -unity-text-align: middle-left;
-    background-color: var(--appui-backgrounds-100);
+    background-color: rgba(0, 0, 0, 0);
+    border-color: var(--appui-backgrounds-100);
 }
 
 #sourceLinkHint {

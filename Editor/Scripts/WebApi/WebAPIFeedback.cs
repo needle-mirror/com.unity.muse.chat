@@ -51,7 +51,7 @@ namespace Unity.Muse.Chat
 
                 // Start the request task, this should cause the Intercept code to
                 // populate m_ActiveRequest with a UnityWebRequest
-                Task requestTask = api.FeedbackMuseFeedbackPostAsync(request, cancellationTokenSource.Token);
+                Task requestTask = api.FeedbackV1MuseFeedbackPostAsync(request, cancellationTokenSource.Token);
 
                 EditorApplication.update += Tick;
 

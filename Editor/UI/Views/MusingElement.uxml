@@ -1,0 +1,7 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement class="mui-musing-root">
+        <VisualElement name="musingSpinner" class="mui-musing-spinner">
+        </VisualElement>
+        <appui:Text name="musingSpinnerMessage" text="Musing " class="mui-musing-text"></appui:Text>
+    </VisualElement>
+</UXML>

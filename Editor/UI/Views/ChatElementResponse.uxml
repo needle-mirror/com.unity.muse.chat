@@ -1,7 +1,10 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
     <VisualElement class="mui-chat-root mui-chat-response">
         <VisualElement class="mui-chat-message-content">
-            <appui:Avatar name="museAvatar" class="mui-chat-avatar" variant="Square"/>
+            <VisualElement class="mui-chat-element-avatar-area">
+                <appui:Avatar name="museAvatar" class="mui-chat-avatar" variant="Square"/>
+                <appui:Text text="Muse" class="mui-textbox mui-chat-username" />
+            </VisualElement>
             <VisualElement name="textFieldRoot" class="mui-chat-element-text-area">
             </VisualElement>
         </VisualElement>

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text;
 using Markdig.Renderers;
 using Markdig.Syntax;
@@ -97,6 +97,9 @@ namespace Unity.Muse.Editor.Markup
             ObjectRenderers.Add(new EmphasisInlineRenderer());
             ObjectRenderers.Add(new LineBreakInlineRenderer());
             ObjectRenderers.Add(new LinkInlineRenderer());
+
+            // Required to output block :::plugin block
+            ObjectRenderers.Add(new PluginsContainerRenderer());
 
             // Required to output block of code within "```csharp ... ```" for example
             ObjectRenderers.Add(new FencedCodeBlockRenderer());

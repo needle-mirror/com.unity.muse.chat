@@ -2,42 +2,35 @@
     <Style src="project:/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChat.uss"/>
     <appui:Panel name="root-panel">
         <ui:VisualElement name="root-main">
-            <ui:VisualElement class="mui-header -muse-chat-panel">
+            <ui:VisualElement name="headerRoot" class="mui-header -muse-chat-panel">
                 <appui:Text name="conversationNameLabel" class="mui-header-label" text="Conversation Name"/>
                 <appui:Button name="newChatButton" class="mui-header-button" title="New Chat" leading-icon="plus--regular"/>
                 <appui:Button name="historyButton" class="mui-header-button" title="History" leading-icon="mui-icon-history"/>
                 <ui:VisualElement name="museAccountContainer" class="mui-header-dropdown"/>
             </ui:VisualElement>
 
+            <ui:VisualElement name="account-notifications"/>
+
             <ui:VisualElement name="chatContentRoot" class="mui-chat-content">
-
                 <ui:VisualElement class="mui-conversation-panel">
-                    <ui:VisualElement name="notificationBanner" class="mui-chat-content">
-                        <ui:VisualElement class="mui-notification-banner-content">
-                            <ui:VisualElement name="notificationBannerContainer">
-                                <appui:Text name="notificationBannerTitle" class="mui-header-label" />
-                                <appui:Text name="notificationBannerMessage" class="mui-header-label" />
-                            </ui:VisualElement>
-                            <appui:Button name="notificationBannerButton" trailing-icon="mui-icon-close" flex-direction="row-reverse"/>
-                        </ui:VisualElement>
-                    </ui:VisualElement>
-
                     <ui:VisualElement name="suggestionRoot" >
                         <appui:Text text="Try these for inspiration" class="mui-chat-suggestion-text"/>
                         <ui:VisualElement name="suggestionContent"/>
                     </ui:VisualElement>
-                    <ui:VisualElement name="conversationRoot">
-                    </ui:VisualElement>
-                    <ui:VisualElement name="musingPlaceholderRoot">
 
+                    <ui:VisualElement name="chatPanelRoot">
                     </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="notificationContainer" picking-mode="Ignore" >
                 </ui:VisualElement>
 
                 <ui:VisualElement name="historyPanelRoot">
                 </ui:VisualElement>
 
-                <ui:VisualElement name="notificationContainer" picking-mode="Ignore" >
+                <ui:VisualElement name="musingElementContainer" picking-mode="Ignore">
                 </ui:VisualElement>
+
             </ui:VisualElement>
 
             <ui:VisualElement name="footerRoot" class="mui-footer -muse-chat-panel">
@@ -59,8 +52,8 @@
                 <ui:VisualElement name="chatTextFieldRoot" class="mui-chat-input-root">
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="warningStatusRoot" class="mui-footer-status -muse-chat-panel"/>
         </ui:VisualElement>
 
+        <ui:VisualElement name="notificationBannerRoot"/>
     </appui:Panel>
 </ui:UXML>

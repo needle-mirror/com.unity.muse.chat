@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.Client;
@@ -26,7 +26,9 @@ namespace Unity.Muse.Chat
 
         private static float s_LastRefreshTokenTime;
 
-        private bool m_NeedsTopic;
+        private bool NeedsTopic { get; set; }
+
+        public bool IsInProgress => ChatStatus == WebAPI.RequestStatus.InProgress;
 
         private WebAPI.RequestStatus ChatStatus
         {
@@ -75,16 +77,19 @@ namespace Unity.Muse.Chat
         /// <param name="queueUpdateCallback">Callback to enqueue a message update.</param>
         /// <param name="updateCallback">Callback to process the enqueued message updates.</param>
         /// <param name="completedCallback">Called back when the request has been completed</param>
+        /// <param name="needsTopic">Whether a topic should be set, needed for new conversations.</param>
         public void InitFromDriver(
             MuseConversation conversation,
             Action<MuseMessageUpdateHandler, MuseChatUpdateData> queueUpdateCallback,
             Action<MuseMessageUpdateHandler> updateCallback,
-            Action<MuseMessageUpdateHandler> completedCallback)
+            Action<MuseMessageUpdateHandler> completedCallback,
+            bool needsTopic)
         {
             Conversation = conversation;
             m_QueueUpdateCallback = queueUpdateCallback;
             m_UpdateCallback = updateCallback;
             m_CompletedCallback = completedCallback;
+            NeedsTopic = needsTopic;
         }
 
         #endregion
@@ -137,7 +142,7 @@ namespace Unity.Muse.Chat
                 case WebAPI.RequestStatus.Error:
                 {
                     // If this thread does not yet have a topic, set it now:
-                    if (m_NeedsTopic)
+                    if (NeedsTopic)
                     {
                         StartGetConversationTopic(Conversation.Id);
                     }
@@ -167,6 +172,10 @@ namespace Unity.Muse.Chat
         private void ProcessMessageUpdate()
         {
             var messageIndex = Conversation.Messages.Count - 1;
+            if (messageIndex < 0)
+            {
+                return;
+            }
 
             var currentResponse = Conversation.Messages[messageIndex];
             currentResponse.Content =
@@ -377,7 +386,7 @@ namespace Unity.Muse.Chat
                     var newId = new MuseConversationId(m_ChatRequestOperation.ConversationId);
                     if (newId.IsValid)
                     {
-                        m_NeedsTopic = true;
+                        NeedsTopic = true;
                         ChangeConversationId(newId);
 
                         // If we got a new conversation id, the new conversation now exists on the server and should be shown in the history panel:

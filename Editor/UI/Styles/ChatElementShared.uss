@@ -5,12 +5,15 @@
 }
 
 .mui-chat-avatar {
-    position: absolute;
-    top: 16px;
-    left: 16px;
     width: 20px;
     height: 20px;
+    margin-right: 4px;
     border-radius: 4px;
+}
+
+.mui-chat-username {
+    -unity-font-style: bold;
+    height: 20px;
 }
 
 .appui-avatar__container {
@@ -18,7 +21,11 @@
 }
 
 .mui-chat-element-text-area {
-    margin-top: 28px;
+    margin-top: 8px;
+}
+
+.mui-chat-element-avatar-area {
+    flex-direction: row;
 }
 
 .mui-chat-message-content {

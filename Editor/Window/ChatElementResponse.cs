@@ -197,12 +197,14 @@ namespace Unity.Muse.Chat
 
         protected override void InitializeView(TemplateContainer view)
         {
-            LoadSharedAsset("icons/muse.png", ref k_MuseAvatarImage);
+            LoadSharedAsset("icons/muse_small.png", ref k_MuseAvatarImage);
             view.Q<Avatar>("museAvatar").src = Background.FromTexture2D(k_MuseAvatarImage);
 
             m_TextFieldRoot = view.Q<VisualElement>("textFieldRoot");
 
             m_SourcesFoldout = view.Q<Accordion>("sourcesFoldout");
+            m_SourcesFoldout.RealignFoldoutIcon();
+
             m_SourcesContent = view.Q<VisualElement>("sourcesContent");
 
             m_OptionsSection = view.Q<VisualElement>("optionsSection");
@@ -358,10 +360,18 @@ namespace Unity.Muse.Chat
 
         private void OnCopyClicked(PointerUpEvent evt)
         {
+            if (UserSessionState.instance.DebugModeEnabled)
+            {
+                GUIUtility.systemCopyBuffer = Message.Content;
+                MuseChatView.ShowNotification("!DEBUG! Copied Raw Message to clipboard", PopNotificationIconType.Info);
+                return;
+            }
+
             string disclaimerHeader = string.Format(MuseChatConstants.DisclaimerText, DateTime.Now.ToShortDateString());
 
             // Format message with footnotes (indices to sources)
             IList<WebAPI.SourceBlock> sourceBlocks = new List<WebAPI.SourceBlock>();
+
             MessageUtils.ProcessText(Message, ref sourceBlocks, out var outMessage,
                 MessageUtils.FootnoteFormat.SimpleIndexForClipboard);
 

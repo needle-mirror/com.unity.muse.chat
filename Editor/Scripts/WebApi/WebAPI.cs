@@ -48,7 +48,7 @@ namespace Unity.Muse.Chat
 
         static WebAPI()
         {
-            k_UnityVersionField = new string[1] { UnityDataUtils.GetProjectVersion(UnityDataUtils.VersionDetail.Major) };
+            k_UnityVersionField = new [] { UnityDataUtils.GetProjectVersion(UnityDataUtils.VersionDetail.Revision) };
         }
 
         [Serializable]

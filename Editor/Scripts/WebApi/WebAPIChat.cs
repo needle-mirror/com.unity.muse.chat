@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Muse.Chat.Api;
 using Unity.Muse.Chat.Client;
 using Unity.Muse.Chat.Model;
-using Unity.Muse.Common.Account;
-using UnityEditor;
-using UnityEngine;
 using UnityEngine.Networking;
 
 #pragma warning disable CS0162 // Unreachable code detected
@@ -33,11 +29,18 @@ namespace Unity.Muse.Chat
                 dependencyInformation: UnityDataUtils.GetPackageMap(),
                 projectSummary: UnityDataUtils.GetProjectSettingSummary(),
                 unityVersions: k_UnityVersionField.ToList(),
-                mediationSystemPrompt: string.IsNullOrWhiteSpace(MuseChatConstants.MediationPrompt)
-                    ? null
-                    : MuseChatConstants.MediationPrompt,
-                skipPlanning: MuseChatConstants.SkipPlanning,
-                tags: new List<string>(new[] { UnityDataUtils.GetProjectId() })
+                tags: new List<string>(new[] { UnityDataUtils.GetProjectId() }),
+                extraBody: new Dictionary<string, object>
+                {
+                    { "enable_plugins", true },
+                    { "muse_guard", true },
+                    {
+                        "mediation_system_prompt", string.IsNullOrWhiteSpace(MuseChatConstants.MediationPrompt)
+                            ? null
+                            : MuseChatConstants.MediationPrompt
+                    },
+                    { "skip_planning", MuseChatConstants.SkipPlanning }
+                }
             );
 
             var updateHandler = new MuseMessageUpdateHandler(this);
@@ -57,7 +60,7 @@ namespace Unity.Muse.Chat
 
                 // Start the request task, this makes the Intercept code
                 // populate the MuseMessageUpdateHandler with the UnityWebRequest
-                Task request = api.ChatMuseChatPostAsync(options, cancellationTokenSource.Token);
+                Task request = api.ChatV1MuseChatPostAsync(options, cancellationTokenSource.Token);
 
                 // Add the task too
                 activeChatRequestOperation.Task = request;

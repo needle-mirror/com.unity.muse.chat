@@ -8,6 +8,7 @@ namespace Unity.Muse.Chat
         where TV: AdaptiveListViewEntry
     {
         private const int k_DelayedScrollActions = 2;
+        private const int k_ScrollEndThreshold = 5;
 
         private ScrollState m_ScrollState = ScrollState.None;
         private bool m_CheckForScrollLock;
@@ -21,8 +22,13 @@ namespace Unity.Muse.Chat
             Locked
         }
 
-        public void ScrollToEnd()
+        public void ScrollToEndIfNotLocked()
         {
+            if (m_ScrollState == ScrollState.Locked)
+            {
+                return;
+            }
+
             ChangeScrollState(ScrollState.ScrollToEnd, true);
         }
 
@@ -108,6 +114,12 @@ namespace Unity.Muse.Chat
 
             if (!m_CheckForScrollLock)
             {
+                return;
+            }
+
+            if (newValue >= m_VerticalScroller.highValue - k_ScrollEndThreshold)
+            {
+                ChangeScrollState(ScrollState.ScrollToEnd);
                 return;
             }
 

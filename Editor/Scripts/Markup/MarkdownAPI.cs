@@ -16,6 +16,7 @@ namespace Unity.Muse.Editor.Markup
             pipelineBuilder.InlineParsers.TryRemove<EscapeInlineParser>();
             pipelineBuilder.InlineParsers.TryRemove<LinkInlineParser>();
             pipelineBuilder.InlineParsers.AddIfNotAlready<ChatLinkInlineParser>();
+            pipelineBuilder.UseCustomContainers();
 
             k_Pipeline = pipelineBuilder.Build();
         }

@@ -1,4 +1,5 @@
 :root {
+    --muse-chat-color-blue: var(--appui-color-blue-1000);
     --muse-chat-color-pink: #d33c79;
     --muse-chat-color-user-message: #441a2b;
 }

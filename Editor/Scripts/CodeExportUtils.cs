@@ -7,8 +7,8 @@ namespace Unity.Muse.Chat
 {
     internal static class CodeExportUtils
     {
-        private static readonly Regex k_UsingsRegex = new(@"\s*using.*(\w)+\s*;", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-        private static readonly Regex k_ClassRegex = new Regex(@"^\s*class\s+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex k_UsingsRegex = new(@"\s*using.*?([\w]+)\s*;", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex k_ClassRegex = new Regex(@"^.*?\s*class\s+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly IList<string> k_UsingTemp = new List<string>();
         private static readonly IList<string> k_ContentTemp = new List<string>();
@@ -37,18 +37,18 @@ namespace Unity.Muse.Chat
                 if (usingMatch.Success)
                 {
                     // Filter out usings, they have to be outside of the class
-                    string usingValue = usingMatch.Groups[0].Value;
+                    string usingValue = usingMatch.Groups[1].Value;
                     if (!k_UsingTemp.Contains(usingValue))
                     {
                         k_UsingTemp.Add(usingValue);
                     }
 
-                    if (k_ClassRegex.IsMatch(line))
-                    {
-                        hasClass = true;
-                    }
-
                     continue;
+                }
+
+                if (k_ClassRegex.IsMatch(line))
+                {
+                    hasClass = true;
                 }
 
                 if (line.IndexOf(": MonoBehaviour", StringComparison.Ordinal) > 0 || line.IndexOf("GetComponent<", StringComparison.Ordinal) > 0)

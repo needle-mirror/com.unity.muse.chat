@@ -20,10 +20,6 @@ namespace Unity.Muse.Chat
         internal const string BasePath = "packages/" + PackageName + PackageRoot + "/";
         internal const string UIEditorPath = "Editor/UI/";
 
-        internal const string ReferenceSprite = "reference";
-
-        internal const string ResourceBasePath = "Assets/Resources/";
-
         internal const string AssetFolder = "Assets/";
         internal const string ViewFolder = "Views/";
         internal const string StyleFolder = "Styles/";
@@ -35,7 +31,7 @@ namespace Unity.Muse.Chat
         internal const string AppUIThemeDark = "editor-dark";
         internal const string AppUIScale = "small";
 
-		internal const string ProjectIdTagPrefix = "projId:";
+        internal const string ProjectIdTagPrefix = "projId:";
 
         internal const string ContextTag = "#PROJECTCONTEXT#";
         internal static readonly string ContextTagEscaped = ContextTag.Replace("#", @"\#");

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +6,26 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor.Search;
 using System.Reflection;
+using Unity.Muse.Common.Editor.Integration;
 using UnityEditor;
 using Object = UnityEngine.Object;
 
 namespace Unity.Muse.Chat.Context.SmartContext
 {
-    static partial class ContextRetrievalTools
+    internal static partial class ContextRetrievalTools
     {
         private const int k_FinalResultLimit = 2;
+
+        private static readonly string[] k_RootFields = new string[1];
 
         // Find actual setting name, ignore names that don't have details:
         private static readonly string[] k_IgnoredNames =
             new[] { "UnityEditor", "UnityEngine", "settings", "setting" }
-            .Select(nameSpace => nameSpace.ToLowerInvariant()).ToArray();
+                .Select(nameSpace => nameSpace.ToLowerInvariant()).ToArray();
+
+        // Cache types for performance:
+        private static List<Type> s_AllTypes;
+
 
         class FuzzySearchResult
         {
@@ -26,7 +33,6 @@ namespace Unity.Muse.Chat.Context.SmartContext
             {
                 public string Name;
                 public object Value;
-                public bool IsFullExpanded;
                 public long Score;
             }
 
@@ -56,7 +62,6 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             string m_PropertyName;
             object m_PropertyValue;
-            bool m_IsFullExpanded;
 
             void GetPropDetails()
             {
@@ -69,7 +74,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                         {
                             m_PropertyName = propDetails.Name;
                             m_PropertyValue = propDetails.Value;
-                            m_IsFullExpanded = propDetails.IsFullExpanded;
+
                             if (propDetails.Score > Score)
                             {
                                 Score = propDetails.Score;
@@ -101,12 +106,15 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 }
             }
 
-            public string ToFullString() => m_IsFullExpanded
-                ? PropertyValueString
-                : $"{TypeName}.{PropertyName}: {PropertyValueString}\n";
+            public string ToFullString() =>
+                PropertySource == Source.SerializedProperty
+                    ? PropertyValueString
+                    : $"{TypeName}.{PropertyName}: {PropertyValueString}\n";
 
             public string ToPartialString() =>
-                m_IsFullExpanded ? PropertyValueString : $"{PropertyName}: {PropertyValueString}";
+                PropertySource == Source.SerializedProperty
+                    ? PropertyValueString
+                    : $"{PropertyName}: {PropertyValueString}";
         }
 
         static FuzzySearchResult FuzzyMatch(
@@ -143,7 +151,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
             }
         }
 
-        internal static bool FuzzySearchUnityObjectFieldName(
+        private static bool FuzzySearchUnityObjectFieldName(
             Object targetObject,
             string rootField,
             out string propertyName,
@@ -188,21 +196,12 @@ namespace Unity.Muse.Chat.Context.SmartContext
             var prop = targetSerializedObject.FindProperty(propertyName);
 
             propertyName = prop.name;
-            if (!prop.isArray)
-            {
-                try
-                {
-                    propertyValue = prop.boxedValue;
-                }
-                catch
-                {
-                    propertyValue = null;
-                }
-            }
-            else
-            {
-                propertyValue = null;
-            }
+
+            k_RootFields[0] = propertyName;
+            propertyValue = UnityDataUtils.OutputUnityObject(
+                targetObject,
+                false, false, useDisplayName: true,
+                rootFields: k_RootFields);
 
             return true;
         }
@@ -224,7 +223,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
             return name;
         }
 
-        internal static PropertyInfo[] GetProperties(Type type)
+        private static PropertyInfo[] GetProperties(Type type)
         {
             if (s_typeProps.TryGetValue(type, out var props))
                 return props;
@@ -234,16 +233,20 @@ namespace Unity.Muse.Chat.Context.SmartContext
             return props;
         }
 
-        [ContextProvider("StaticPropertyExtractor function exclusively includes the following settings: " +
-            "AudioManager, PhysicsManager, NavMeshAreas, MemorySettings, Physics2DSettings, EditorSettings, GraphicsSettings, " +
-            "PackageManagerSettings, ShaderGraphSettings, UnityConnectSettings, VFXManager, XRSettings, PresetManager, TagManager, " +
-            "TimeManager, VersionControlSettings, InputManager, PlayerSettings, QualitySettings.")]
-        public static string StaticPropertyExtractor(
-            [Parameter(
-                "project setting parameter")]
-            string staticPropertyName)
+        [ContextProvider("ProjectSettingExtractor function exclusively extracts the following Unity project settings: " +
+                         "AudioManager, PhysicsManager, NavMeshAreas, MemorySettings, Physics2DSettings, EditorSettings, GraphicsSettings, " +
+                         "ShaderGraphSettings, UnityConnectSettings, VFXManager, XRSettings, PresetManager, TagManager, " +
+                         "TimeManager, VersionControlSettings, InputManager, PlayerSettings, QualitySettings.")]
+        internal static string ProjectSettingExtractor(
+            [Parameter("The specific Unity project setting to extract.")]
+            string projectSettingName)
         {
-            var staticPropertyNameInput = staticPropertyName;
+            if (string.IsNullOrEmpty(projectSettingName))
+            {
+                return string.Empty;
+            }
+
+            var staticPropertyNameInput = projectSettingName;
 
             // We're fuzzy matching, avoid lots of ToLower() calls later:
             staticPropertyNameInput = staticPropertyNameInput.ToLowerInvariant();
@@ -267,66 +270,114 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 typeof(AssetBundle)
             };
 
+            s_AllTypes ??= assemblies.SelectMany(assembly => assembly.GetTypes()).ToList();
+
             // First, try to find matches in static properties of classes:
-            var allResults = assemblies
-                .SelectMany(assembly => assembly.GetTypes()
-                    .SelectMany(type =>
+            var allResults = s_AllTypes
+                .SelectMany(type =>
+                {
+                    // Make sure we should and can call the property:
+                    if (type.IsNotPublic || type.IsGenericType || type.ContainsGenericParameters)
                     {
-                        // Make sure we should and can call the property:
-                        if (type.IsNotPublic || type.IsGenericType || type.ContainsGenericParameters)
-                        {
-                            return Enumerable.Empty<FuzzySearchResult>();
-                        }
+                        return Enumerable.Empty<FuzzySearchResult>();
+                    }
 
-                        var typeName = GetFullName(type);
+                    var typeName = GetFullName(type);
 
-                        // Some types with static constructors cause error logs when trying to get their properties, we should not need these anyway, skip them:
-                        if (typeName == "Unity.VisualScripting.UnitBase")
-                        {
-                            return Enumerable.Empty<FuzzySearchResult>();
-                        }
+                    // Some types with static constructors cause error logs when trying to get their properties, we should not need these anyway, skip them:
+                    if (typeName == "Unity.VisualScripting.UnitBase")
+                    {
+                        return Enumerable.Empty<FuzzySearchResult>();
+                    }
 
-                        return GetProperties(type)
-                            .Select(property =>
-                                FuzzyMatch(
-                                    typeName,
-                                    property.Name,
-                                    staticPropertyNameInput,
-                                    delegate // Using reflection to get the property values is slow, only do it if we need to:
+                    return GetProperties(type)
+                        .Select(property =>
+                            FuzzyMatch(
+                                typeName,
+                                property.Name,
+                                staticPropertyNameInput,
+                                delegate // Using reflection to get the property values is slow, only do it if we need to:
+                                {
+                                    var returnType = property.PropertyType;
+                                    if (propertyReturnTypesToIgnore.Contains(returnType))
                                     {
-                                        var returnType = property.PropertyType;
-                                        if (propertyReturnTypesToIgnore.Contains(returnType))
-                                        {
-                                            return null;
-                                        }
+                                        return null;
+                                    }
 
-                                        // Don't call methods that return Lists, we don't have any settings that need this, yet.
-                                        if (returnType.IsGenericType &&
-                                            returnType.GetGenericTypeDefinition() == typeof(List<>))
-                                        {
-                                            return null;
-                                        }
+                                    // Don't call methods that return Lists, we don't have any settings that need this, yet.
+                                    if (returnType.IsGenericType &&
+                                        returnType.GetGenericTypeDefinition() == typeof(List<>))
+                                    {
+                                        return null;
+                                    }
 
-                                        try
+                                    try
+                                    {
+                                        return new FuzzySearchResult.FuzzySearchResultPropertyDetails
                                         {
-                                            return new FuzzySearchResult.FuzzySearchResultPropertyDetails
-                                            {
-                                                Name = property.Name, Value = property.GetValue(null)
-                                            };
-                                        }
-                                        catch (Exception)
-                                        {
-                                            return null;
-                                        }
-                                    },
-                                    FuzzySearchResult.Source.StaticProperty))
-                            .Where(result => result != null); // Filter out non-matching or low-score results
-                    })
-                ).ToList();
+                                            Name = property.Name, Value = property.GetValue(null)
+                                        };
+                                    }
+                                    catch (Exception)
+                                    {
+                                        return null;
+                                    }
+                                },
+                                FuzzySearchResult.Source.StaticProperty))
+                        .Where(result => result != null); // Filter out non-matching or low-score results
+                }).ToList();
 
             // If there were any results, do not show fully expanded project settings:
             var showExpandedSettings = allResults.Count == 0;
 
+            var settingsResults =
+                ProjectSettingExtractor(staticPropertyNameInput, projectSettingName, showExpandedSettings);
+
+            allResults.AddRange(settingsResults);
+
+            // Deduplicate by type name, prefer sources from static properties and
+            // Sort all results by score and return best:
+
+            allResults = allResults.OrderByDescending(r => r.Score).ToList();
+
+            var stringBuilder = new StringBuilder();
+            var result = allResults
+                .Where(result => result.PropertyName != null)
+                .GroupBy(result => new { result.TypeName, result.PropertyName }) // Group by all relevant properties
+                .Select(group =>
+                    group.OrderBy(result => result.PropertySource)
+                        .First()) // Select the one with the highest Source value from each group
+                .OrderByDescending(result => result.Score)
+                .GroupBy(result => result.TypeName)
+                .Take(k_FinalResultLimit) // Limit number of results to show
+                .Aggregate(stringBuilder, (sb, group) =>
+                {
+                    string resultAsString;
+                    if (group.Count() > 1) // Check if there is more than one property in the group
+                    {
+                        var sortedProperties = group
+                            .OrderByDescending(result => result.Score) // Sort properties within each group by score
+                            .Select(result => result.ToPartialString());
+
+                        resultAsString =
+                            $"{group.Key}:\n{string.Join("\n", sortedProperties)}\n\n"; // Combine type name and its properties into a single string
+                    }
+                    else
+                    {
+                        resultAsString = group.First().ToFullString();
+                    }
+
+                    return sb.Append(resultAsString);
+                });
+
+            return result.ToString().TrimEnd('\n');
+        }
+
+        private static List<FuzzySearchResult> ProjectSettingExtractor(
+            string staticPropertyNameInput,
+            string staticPropertyName,
+            bool showExpandedSettings)
+        {
             // Some settings come from the serialized fields of .asset files found in the ProjectSettings/ folder.
             // Below we assume the setting is this type of setting, and attempt to extract it from the serialized
             // properties of those assets in the asset database
@@ -334,7 +385,6 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             // Get settings name from given string, using first non-alphanumeric character as separator:
             var stringParts = Regex.Split(staticPropertyNameInput, @"[^a-zA-Z0-9_]+");
-            var settingsResults = new List<FuzzySearchResult>();
 
             // Prepare a property backup name to check if the property was not found,
             // this checks against settings with the full given name after the last separator,
@@ -343,8 +393,16 @@ namespace Unity.Muse.Chat.Context.SmartContext
             // Split staticPropertyName on non-alphanumeric characters but not spaces:
             var staticPropertyNameParts = Regex.Split(staticPropertyName, @"[^a-zA-Z0-9_ ]+");
 
-            // The last part could be the property name, remove spaces:
-            var fullPropNameToCheck = staticPropertyNameParts[^1].Replace(" ", "");
+            // The last part could be the property name, if we have a setting name with multiple components:
+            string fullPropNameToCheck = null;
+            if (staticPropertyNameParts.Count(part => !k_IgnoredNames.Contains(part)) > 1)
+            {
+                fullPropNameToCheck = staticPropertyNameParts[^1].Replace(" ", ""); // remove spaces
+            }
+
+
+            // Create list for all results:
+            var settingsResults = new List<FuzzySearchResult>();
 
             for (var i = stringParts.Length - 1; i >= 0; i--)
             {
@@ -387,7 +445,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                                             out var propValue,
                                             out var score);
 
-                                    if (!propExists)
+                                    if (!propExists && fullPropNameToCheck != null)
                                     {
                                         propExists =
                                             FuzzySearchUnityObjectFieldName(
@@ -415,8 +473,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                                         {
                                             Name = settingsFileName,
                                             Value = UnityDataUtils.OutputUnityObject(settingFile,
-                                                false, false, useDisplayName: true),
-                                            IsFullExpanded = true
+                                                false, false, useDisplayName: true)
                                         };
                                     }
                                 }
@@ -431,44 +488,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                         .Where(result => result != null));
             }
 
-            allResults.AddRange(settingsResults);
-
-            // Deduplicate by type name, prefer sources from static properties and
-            // Sort all results by score and return best:
-
-            allResults = allResults.OrderByDescending(r => r.Score).ToList();
-
-            var stringBuilder = new StringBuilder();
-            var result = allResults
-                .Where(result => result.PropertyName != null)
-                .GroupBy(result => new { result.TypeName, result.PropertyName }) // Group by all relevant properties
-                .Select(group =>
-                    group.OrderBy(result => result.PropertySource)
-                        .First()) // Select the one with the highest Source value from each group
-                .OrderByDescending(result => result.Score)
-                .GroupBy(result => result.TypeName)
-                .Take(k_FinalResultLimit) // Limit number of results to show
-                .Aggregate(stringBuilder, (sb, group) =>
-                {
-                    string resultAsString;
-                    if (group.Count() > 1) // Check if there is more than one property in the group
-                    {
-                        var sortedProperties = group
-                            .OrderByDescending(result => result.Score) // Sort properties within each group by score
-                            .Select(result => result.ToPartialString());
-
-                        resultAsString =
-                            $"{group.Key}:\n{string.Join("\n", sortedProperties)}\n\n"; // Combine type name and its properties into a single string
-                    }
-                    else
-                    {
-                        resultAsString = group.First().ToFullString();
-                    }
-
-                    return sb.Append(resultAsString);
-                });
-
-            return result.ToString().TrimEnd('\n');
+            return settingsResults;
         }
     }
 }

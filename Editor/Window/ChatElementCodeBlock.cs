@@ -35,7 +35,7 @@ namespace Unity.Muse.Chat
 
         private void RefreshUI()
         {
-            m_Text.text = $"<noparse>{m_CodeText}</noparse>";
+            m_Text.text = CodeSyntaxHighlight.Highlight(m_CodeText);
         }
 
         public void SetSelectable(bool selectable)
@@ -51,7 +51,6 @@ namespace Unity.Muse.Chat
             MuseChatView.ShowNotification("Copied to clipboard", PopNotificationIconType.Info);
         }
 
-
         private void OnSaveCodeClicked(PointerUpEvent evt)
         {
             string file = EditorUtility.SaveFilePanel("Save Code", Application.dataPath, "code", "cs");
@@ -60,9 +59,23 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            string formattedCode = CodeExportUtils.Format(m_CodeText, Path.GetFileNameWithoutExtension(file));
-            File.WriteAllText(file, formattedCode);
+            EditorUtility.DisplayProgressBar("Saving Code", "Saving code to file", 0.5f);
+
+            try
+            {
+                string formattedCode = CodeExportUtils.Format(m_CodeText, Path.GetFileNameWithoutExtension(file));
+                File.WriteAllText(file, formattedCode);
+            }
+            catch (Exception)
+            {
+                MuseChatView.ShowNotification("Failed to save code to file", PopNotificationIconType.Error);
+                EditorUtility.ClearProgressBar();
+                return;
+            }
+
             MuseChatView.ShowNotification("File Saved", PopNotificationIconType.Info);
+            AssetDatabase.Refresh();
+            EditorUtility.ClearProgressBar();
         }
     }
 }

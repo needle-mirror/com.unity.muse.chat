@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -37,8 +37,8 @@ namespace Unity.Muse.Chat
             Configuration configuration = CreateConfig();
             DefaultApi api = new(configuration);
 
-            m_CurrentContextualConvosRequest = api.GetConversationsMuseConversationGetAsync(limit: MuseChatConstants.MaxConversationHistory, tags: $"{UnityDataUtils.GetProjectId()}");
-            m_CurrentContextlessConvosRequest = api.GetConversationsMuseConversationGetAsync(skipProjectTag: true, limit: MuseChatConstants.MaxConversationHistory);
+            m_CurrentContextualConvosRequest = api.GetConversationsV1MuseConversationGetAsync(limit: MuseChatConstants.MaxConversationHistory, tags: $"{UnityDataUtils.GetProjectId()}");
+            m_CurrentContextlessConvosRequest = api.GetConversationsV1MuseConversationGetAsync(skipProjectTag: true, limit: MuseChatConstants.MaxConversationHistory);
             m_CurrentConversationsRequest = Task.WhenAll(m_CurrentContextualConvosRequest, m_CurrentContextlessConvosRequest);
 
             loop.Register(RequestTick);
@@ -89,7 +89,7 @@ namespace Unity.Muse.Chat
         }
 
         string m_CurrentConversationRequestId;
-        Task<ResponseGetConversationMuseConversationConversationIdGet> m_CurrentConversationRequest;
+        Task<ResponseGetConversationV1MuseConversationConversationIdGet> m_CurrentConversationRequest;
         CancellationTokenSource m_CurrentConversationCancellationTokenSource = new();
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace Unity.Muse.Chat
             m_CurrentConversationCancellationTokenSource = new();
             m_CurrentConversationRequestId = conversationId;
             m_CurrentConversationRequest =
-                api.GetConversationMuseConversationConversationIdGetAsync(
+                api.GetConversationV1MuseConversationConversationIdGetAsync(
                     conversationId,
                     m_CurrentConversationCancellationTokenSource.Token
                 );
@@ -150,13 +150,13 @@ namespace Unity.Muse.Chat
                     return;
 
                 loop.Unregister(RequestTick);
-                Task<ResponseGetConversationMuseConversationConversationIdGet> tsc = m_CurrentConversationRequest;
+                Task<ResponseGetConversationV1MuseConversationConversationIdGet> tsc = m_CurrentConversationRequest;
                 m_CurrentConversationRequest = null;
                 m_CurrentConversationRequestId = null;
 
                 if (tsc.IsCompletedSuccessfully)
                 {
-                    ResponseGetConversationMuseConversationConversationIdGet res = tsc.Result;
+                    ResponseGetConversationV1MuseConversationConversationIdGet res = tsc.Result;
 
                     switch (res.ActualInstance)
                     {
@@ -191,7 +191,7 @@ namespace Unity.Muse.Chat
             Configuration configuration = CreateConfig();
             DefaultApi api = new(configuration);
             Task<ErrorResponse> tsc =
-                api.DeleteConversationMuseConversationConversationIdDeleteAsync(conversationId, CancellationToken.None);
+                api.DeleteConversationV1MuseConversationConversationIdDeleteAsync(conversationId, CancellationToken.None);
 
             loop.Register(RequestTick);
 
@@ -219,6 +219,33 @@ namespace Unity.Muse.Chat
             }
         }
 
+        CancellationTokenSource m_CurrentPostConversationCancellationTokenSource = new();
+
+        /// <summary>
+        /// Starts a task to post a conversation. This is used to provide data that is relevant to the conversation
+        /// scope and return a conversation in response.
+        /// </summary>
+        public async Task<Conversation> PostConversation(List<FunctionDefinition> functions)
+        {
+            if (!GetOrganizationID(out string organizationId))
+            {
+                return null;
+            }
+
+            // If there is another request will a different conversation id just cancel it. The RequestTick will
+            // automatically unregister itself.
+            m_CurrentPostConversationCancellationTokenSource?.Cancel();
+            m_CurrentPostConversationCancellationTokenSource = new();
+
+            // Send the request
+            Configuration configuration = CreateConfig();
+            DefaultApi api = new(configuration);
+            return await api.CreateConversationV1MuseConversationPostAsync(
+                    new CreateConversationRequest(organizationId, functions),
+                    m_CurrentConversationCancellationTokenSource.Token
+                );
+        }
+
         /// <summary>
         /// Starts a task to rename a conversation
         /// </summary>
@@ -234,7 +261,7 @@ namespace Unity.Muse.Chat
             }
 
             DefaultApi api = new(configuration);
-            var tsc = api.GetTopicMuseTopicConversationIdGetAsync(conversationId, organizationId);
+            var tsc = api.GetTopicV1MuseTopicConversationIdGetAsync(conversationId, organizationId);
 
             loop.Register(RequestTick);
 
@@ -263,7 +290,7 @@ namespace Unity.Muse.Chat
             var configuration = CreateConfig();
             var payload = new ConversationPatchRequest(newName);
             DefaultApi api = new(configuration);
-            var tsc = api.PatchConversationMuseConversationConversationIdPatchAsync(conversationId, payload);
+            var tsc = api.PatchConversationV1MuseConversationConversationIdPatchAsync(conversationId, payload);
 
             loop.Register(RequestTick);
 
@@ -304,7 +331,7 @@ namespace Unity.Muse.Chat
             Configuration configuration = CreateConfig();
             DefaultApi api = new(configuration);
 
-            var tsc = api.DeleteConversationFragmentMuseConversationConversationIdFragmentFragmentIdDeleteAsync(conversationId.Value, fragmentId, CancellationToken.None);
+            var tsc = api.DeleteConversationFragmentV1MuseConversationConversationIdFragmentFragmentIdDeleteAsync(conversationId.Value, fragmentId, CancellationToken.None);
 
             return tsc;
         }

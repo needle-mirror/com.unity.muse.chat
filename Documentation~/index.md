@@ -1,42 +1,22 @@
-# Muse Chat documentation
+---
+uid: about-chat
+---
 
-## About Muse Chat
-Unity Muse adds AI-powered capabilities and assistance directly into the Unity editor for easier and faster prototyping.
+# About Muse Chat
 
-Muse Chat can boost your productivity by enabling you to quickly retrieve information and generate solutions that are tailored to your specific projects.
+Muse Chat is a conversational artificial intelligence (AI) tool integrated into the Unity Editor. It uses advanced natural language processing (NLP) technologies to help you navigate and use Unity's features.
 
-Now available in the Unity Editor, Chat users can troubleshoot more easily and conveniently, while editing their project, and can apply solutions to their build. Especially for developers in the prototyping phase, Muse Chat helps you quickly develop concepts and overcome hurdles with much greater ease.
+Muse Chat enhances Unity's development experience by providing smart, contextual help, streamlining workflows, and supporting continuous learning. Its integration with the Editor maximizes productivity and creativity.
 
-# Editor
-1. Create a new Unity project or open an existing one from the Hub.
-2. Install the package from a registry by the package name.
-3. Enter `com.unity.muse.chat` package as the name.
-4. Launch Chat by navigating to the menu: **Muse** > **Chat**.
+> [!NOTE]
+> Muse Chat is available both [online](web-chat.md) and within the [Unity Editor](editor-chat.md).
 
-###  Using Chat
-1. Use the chat input bar to start chatting with Muse. 
-2. Add and select relevant context by clicking on a game object in your hierarchy or a message in the console. We currently support game object and console window selection; this will evolve over time.
-* Note: You can deselect Console lines using Command or Control key modifiers on your keyboard.
-* In the top menu you can create a new chat, access your chat history, or see the Muse menu.
+Explore the Muse Chat features and get started with using Chat.
 
-### Troubleshooting
-If you are unable to chat but have signed up for the trial or subscription, you can change the org in the **Project Settings** > **Muse** section. For further support, please turn to https://unity.com/support-services.
-
-## Technical details
-### Technical requirements
-The version of Chat is compatible with the following versions of the Unity Editor:
-
-**Unity 2022.3 LTS or later**
-
-# Web 
-1. Find Muse Chat in any browser at [muse.unity.com](https://muse.unity.com).
-2. Log in using your Unity ID.
-
-### Using Muse
-* Use the chat input bar to start chatting with Muse.
-* Find your chat history on the left side panel.
-* See dynamic sources to your queries on the right side.
-* Explore, install more Muse capabilities or see your point consumption from the top right Muse menu.
-
-### Troubleshooting
-If you are unable to chat but have signed up for the trial or subscription, try selecting the Organization that has a valid Muse subscription. You can do this by clicking the profile avatar in the upper right corner. For further support, please turn to https://unity.com/support-services.
+| Topic | Description |
+| ----- | ----------- |
+| [Muse Chat features](features-chat.md) | Discover the benefits of Muse Chat features, including its integration with the Unity Editor. |
+| [Muse Chat web version](web-chat.md) | Use and explore the web version of Muse Chat. |
+| [Muse Chat in-Editor version](editor-chat.md) | Use and explore the in-Editor version of Muse Chat. |
+| [Install Muse Chat with the Package Manager](install-chat.md) | Use the Package Manager to install Muse Chat in Unity Editor. |
+| [Best practices for using Muse Chat](best-practice-chat.md) | Get most out of Muse Chat using the best practice tips. |

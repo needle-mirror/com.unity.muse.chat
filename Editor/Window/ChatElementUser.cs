@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
 using UnityEditor;
@@ -14,6 +12,13 @@ namespace Unity.Muse.Chat
 {
     internal class ChatElementUser : ChatElementBase
     {
+        private const string k_ConnectAssembly = "UnityEditor.Connect.UnityConnect";
+        private const string k_UserInfoType = "UnityEditor.Connect.UserInfo";
+        private const string k_UserInfoMethod = "GetUserInfo";
+        private const string k_UserInstanceProperty = "instance";
+        private const string k_UserInfoDisplayNameProperty = "displayName";
+        private const string k_UserInfoIdProperty = "userId";
+
         private const string k_EditModeActiveClass = "mui-um-edit-mode-active";
         private const string k_EditModeRWTextFieldClass = "mui-user-edit-read-write-field";
 
@@ -28,7 +33,9 @@ namespace Unity.Muse.Chat
         private VisualElement m_TextFieldRoot;
         private MuseTextField m_EditField;
         private AppUI.UI.Avatar m_UserIcon;
-        private Text m_UserInitials;
+        private Text m_UserName;
+        private Accordion m_ContextFoldout;
+        private VisualElement m_ContextContent;
 
         private bool m_EditEnabled = true;
         private bool m_EditModeActive;
@@ -69,44 +76,27 @@ namespace Unity.Muse.Chat
             RefreshUI();
         }
 
-        internal static string GetUserInitialsFromName(string name)
-        {
-            if (string.IsNullOrEmpty(name))
-                return string.Empty;
-
-            var nameElements = Regex.Replace(name, @"/\s+/g", " ", RegexOptions.IgnoreCase).Trim().Split(' ');
-
-            nameElements = nameElements.Where(element => !string.IsNullOrEmpty(element) &&
-                Regex.IsMatch(element[0].ToString(), @"[A-Za-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]")).ToArray() ?? new string[0];
-
-            if (nameElements.Length > 1)
-                return $"{nameElements[0][0]}{nameElements[nameElements.Length - 1][0]}".ToUpper();
-            else if (nameElements.Length == 1)
-                return $"{nameElements[0][0]}".ToUpper();
-            return string.Empty;
-        }
-
-        string GetUserInitials()
+        string GetUserName()
         {
             try
             {
-                var connectAssembly = typeof(CloudProjectSettings).Assembly;
-                var unityConnectType = connectAssembly.GetType("UnityEditor.Connect.UnityConnect");
-                var userInfoM = unityConnectType.GetMethod("GetUserInfo");
-                var instance = unityConnectType.GetProperty("instance", BindingFlags.Public | BindingFlags.Static).GetValue(null, null);
+                var connectAssembly = TypeDef<CloudProjectSettings>.Assembly;
+                var unityConnectType = connectAssembly.GetType(k_ConnectAssembly);
+                var userInfoMethod = unityConnectType.GetMethod(k_UserInfoMethod);
+                var instanceProperty = unityConnectType.GetProperty(k_UserInstanceProperty, BindingFlags.Public | BindingFlags.Static);
+                var instance = instanceProperty.GetValue(null, null);
 
-                var userInfo = userInfoM.Invoke(instance, null);
+                var userInfo = userInfoMethod.Invoke(instance, null);
 
-                var userInfoType = connectAssembly.GetType("UnityEditor.Connect.UserInfo");
-                var displayNameProp = userInfoType.GetProperty("displayName");
+                var userInfoType = connectAssembly.GetType(k_UserInfoType);
+                var displayNameProp = userInfoType.GetProperty(k_UserInfoDisplayNameProperty);
                 var displayName = (string)displayNameProp.GetValue(userInfo);
 
-                var userIdProp = userInfoType.GetProperty("userId");
+                var userIdProp = userInfoType.GetProperty(k_UserInfoIdProperty);
                 var userId = (string)userIdProp.GetValue(userInfo);
 
                 SetUserAvatar(userId);
-
-                return GetUserInitialsFromName(displayName);
+                return displayName;
             }
             catch (Exception ex)
             {
@@ -125,9 +115,6 @@ namespace Unity.Muse.Chat
                     m_UserIcon.style.display = DisplayStyle.Flex;
 
                     m_UserIcon.src = Background.FromTexture2D(icon);
-
-                    // Hide initials, we got the image:
-                    m_UserInitials.style.display = DisplayStyle.None;
                 }
             });
         }
@@ -135,6 +122,11 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             m_ChatRoot = view.Q<VisualElement>("chatRoot");
+
+            m_ContextFoldout = view.Q<Accordion>("contextFoldout");
+            m_ContextFoldout.RealignFoldoutIcon();
+
+            m_ContextContent = view.Q<VisualElement>("contextContent");
 
             m_EditControls = view.Q<VisualElement>("editControls");
             m_EditButton = view.SetupButton("editButton", OnEditClicked);
@@ -146,8 +138,8 @@ namespace Unity.Muse.Chat
             m_UserIcon = view.Q<AppUI.UI.Avatar>("userIcon");
             m_UserIcon.style.display = DisplayStyle.None;
 
-            m_UserInitials = view.Q<Text>("userInitials");
-            m_UserInitials.text = GetUserInitials();
+            m_UserName = view.Q<Text>("userName");
+            m_UserName.text = GetUserName();
         }
 
         static string TrimDisplayString(string s)
@@ -232,6 +224,29 @@ namespace Unity.Muse.Chat
             if (m_EditField != null)
             {
                 m_EditField.SetDisplay(m_EditModeActive);
+            }
+
+            RefreshContext();
+        }
+
+        private void RefreshContext()
+        {
+            if (ContextEntries == null || ContextEntries.Count == 0)
+            {
+                m_ContextFoldout.style.display = DisplayStyle.None;
+                return;
+            }
+
+            m_ContextFoldout.style.display = DisplayStyle.Flex;
+
+            m_ContextContent.Clear();
+            for (var index = 0; index < ContextEntries.Count; index++)
+            {
+                var contextEntry = ContextEntries[index];
+                var entry = new ChatElementContextEntry();
+                entry.Initialize();
+                entry.SetData(index, contextEntry);
+                m_ContextContent.Add(entry);
             }
         }
     }

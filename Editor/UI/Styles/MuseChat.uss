@@ -2,8 +2,12 @@
 
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChatView.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseTextField.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MusingElement.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChatNotificationBanner.uss");
 
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/PopupNotification.uss");
+
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseConversationPanel.uss");
 
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/HistoryPanel.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/HistoryPanelEntry.uss");
@@ -14,3 +18,6 @@
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementUser.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementSourceEntry.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementCodeBlock.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementPluginBlock.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementPluginButton.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementContextEntry.uss");

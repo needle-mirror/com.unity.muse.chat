@@ -1,0 +1,96 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Unity.Muse.Chat.Model;
+using UnityEngine;
+
+namespace Unity.Muse.Chat.FunctionCalling
+{
+    internal abstract class FunctionToolbox
+    {
+        protected readonly Dictionary<string, CachedFunction> k_Tools = new();
+
+        public FunctionToolbox(FunctionCache functionCache, params string[] tags)
+        {
+            // Build list of available tool methods:
+            k_Tools.Clear();
+
+            foreach (CachedFunction cachedFunction in functionCache.GetFunctionsByTags(tags))
+                k_Tools.Add(cachedFunction.FunctionDefinition.Name, cachedFunction);
+        }
+
+        public bool TryGetSelectorAndConvertArgs(string name, string[] args, out CachedFunction function,
+            out object[] convertedArgs)
+        {
+            convertedArgs = null;
+
+            if (!k_Tools.TryGetValue(name, out function))
+                return false;
+
+            // Check what parameters are required:
+            var requiredArgCount = function.FunctionDefinition.Parameters.Count(parameter => !parameter.Optional);
+
+            if (args.Length < requiredArgCount)
+            {
+                InternalLog.LogError($"Incorrect function call: {name} args: {string.Join(",", args)}");
+                throw new ArgumentException("The incorrect number of args were provided");
+            }
+
+            convertedArgs = new object[function.FunctionDefinition.Parameters.Count];
+
+            string[] argNames = function
+                .FunctionDefinition
+                .Parameters
+                .Select(param => param.Name)
+                .ToArray();
+
+            Func<string, object>[] converters = function
+                .FunctionDefinition
+                .Parameters
+                .Select(param => FunctionCallingUtilities.GetConverter(param.Type))
+                .ToArray();
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                string arg = args[i];
+
+                if (!arg.Contains(":"))
+                {
+                    InternalLog.LogWarning(
+                        $"SmartContextError: The LLM did not return an arg as a named arg. Assuming it is a positional arg");
+
+                    try
+                    {
+                        convertedArgs[i] = converters[i](arg);
+                        continue;
+                    }
+                    catch (Exception)
+                    {
+                        InternalLog.LogWarning(
+                            $"SmartContextError: The LLM did not return an arg that was a valid positional arg");
+                    }
+                }
+
+                try
+                {
+                    // Split arg at first ":":
+                    var splitIndex = arg.IndexOf(":", StringComparison.Ordinal);
+                    var argName = arg[..splitIndex];
+                    var argValue = arg[(splitIndex + 1)..];
+
+                    var namedindex = Array.IndexOf(argNames, argName);
+
+                    convertedArgs[namedindex] = converters[namedindex](argValue);
+                }
+                catch (Exception)
+                {
+                    InternalLog.LogWarning(
+                        $"SmartContextError: The LLM did not return an arg that was a valid named arg");
+                }
+            }
+
+            return true;
+        }
+    }
+}

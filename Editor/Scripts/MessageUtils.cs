@@ -153,7 +153,7 @@ namespace Unity.Muse.Chat
                     }
                     else
                     {
-                        s_stringBuilder.Append(GetReferenceSpriteString(i / 2 + 1));
+                        s_stringBuilder.Append(GetReferenceString(i / 2 + 1));
                     }
                 }
             }
@@ -305,7 +305,7 @@ namespace Unity.Muse.Chat
 
                     // Sprites with indices for text field output
                     if (mode == FootnoteFormat.SpritesForText)
-                        return GetReferenceSpriteString(footnoteInfo.FinalSourceIndex);
+                        return GetReferenceString(footnoteInfo.FinalSourceIndex);
 
                     // Simple indices for clipboard output
                     return $"[{footnoteInfo.FinalSourceIndex}]";
@@ -352,9 +352,9 @@ namespace Unity.Muse.Chat
             }
         }
 
-        public static string GetReferenceSpriteString(int index)
+        public static string GetReferenceString(int index)
         {
-            return $" <sprite=\"{MuseChatConstants.ReferenceSprite}\" index={index}>";
+            return $"<size=11><b><color=#46ADFFff> [ {index} ]</color></b></size>";
         }
 
         public static string GetAssetLink<T>(string guid, string title)
@@ -395,6 +395,11 @@ namespace Unity.Muse.Chat
         public static string GetWebLink(string url, string title)
         {
             return $"<a href=\"{url}\">{title}</a>";
+        }
+
+        public static string RichColor(this string text, string hexColor)
+        {
+            return $"<color={hexColor}>{text}</color>";
         }
 
         public static string GetTextWithMaxLength(this string text, int maxLength)

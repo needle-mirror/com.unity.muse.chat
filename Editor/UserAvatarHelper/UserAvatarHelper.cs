@@ -70,7 +70,7 @@ namespace Unity.Muse.Chat
             public async Task GetUserAccountIcon()
             {
                 await PlatformServices.InitializeAsync();
-                
+
                 try
                 {
                     var url = $"{k_userProfileURL}/{m_UserId}";
@@ -83,7 +83,7 @@ namespace Unity.Muse.Chat
                     {
                         // Got the avatar URL, download it and create a texture from it.
                         // Then call back all observers with the texture:
-                        
+
                         using (var client = new WebClient())
                         {
                             var rawData = client.DownloadData(account.avatar);

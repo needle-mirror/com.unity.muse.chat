@@ -30,6 +30,8 @@ namespace Unity.Muse.Chat
         /// </summary>
         public bool OutputTooltip { get; set; } = false;
 
+        public bool OutputDirectory { get; set; } = false;
+
         public int MaxObjectDepth { get => m_MaxObjectDepth; set => m_MaxObjectDepth = value; }
 
         public string[] RootParameters { get; set; }
@@ -48,7 +50,11 @@ namespace Unity.Muse.Chat
         /// <returns>The name for the serialized object, which includes the type and tooltip</returns>
         public string GetObjectKey(SerializedObject value)
         {
-            return OutputType ? $"{value.targetObject.name} - {value.targetObject.GetType().Name}" : value.targetObject.name;
+            var name = OutputType
+                ? $"{value.targetObject.name} \n- Type: {value.targetObject.GetType().Name}"
+                : value.targetObject.name;
+            var directory = AssetDatabase.GetAssetPath(value.targetObject);
+            return string.IsNullOrEmpty(directory) || !OutputDirectory ? name : $"{name} \n- Path: {directory}";
         }
 
         void IJsonAdapter<SerializedObject>.Serialize(in JsonSerializationContext<SerializedObject> context, SerializedObject value)
@@ -291,7 +297,16 @@ namespace Unity.Muse.Chat
                         writer.WriteValue(current.intValue);
                         break;
                     case SerializedPropertyType.Enum:
-                        writer.WriteValue(current.enumDisplayNames[current.enumValueIndex]);
+                    {
+                        if (current.enumValueIndex >= 0 && current.enumValueIndex < current.enumDisplayNames.Length)
+                        {
+                            writer.WriteValue(current.enumDisplayNames[current.enumValueIndex]);
+                        }
+                        else
+                        {
+                            writer.WriteValue(current.enumValueFlag);
+                        }
+                    }
                         break;
                     case SerializedPropertyType.Vector2:
                         writer.WriteValue(current.vector2Value.ToString());

@@ -1,6 +1,6 @@
 .chatelementuser__element {
     align-self: center;
-    align-items: flex-end;
+    align-items: flex-start;
     margin: 8px 8px 8px 8px;
     max-width: 716px;
     flex-shrink: 1;
@@ -16,8 +16,7 @@
 
 .mui-chat-user-message {
     -unity-text-align: upper-right;
-    margin-left: 64px;
-    background-color: var(--muse-chat-color-user-message);
+    margin-right: 64px;
     border-width: 0;
 }
 
@@ -64,10 +63,23 @@
     border-radius: 4px;
 }
 
-#userInitials {
-    -unity-font-style: bold;
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    height: 20px;
+#userName {
+    margin-right: 20px;
+}
+
+#contextContent {
+    padding-top: 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.mui-chat-context-foldout {
+    margin-right: 16px;
+    margin-bottom: 16px;
+    color: var(--appui-alias-text-primary);
+}
+
+.mui-chat-context-accordion-entry {
+    border-bottom-width: 0;
+    min-width: 300px;
 }

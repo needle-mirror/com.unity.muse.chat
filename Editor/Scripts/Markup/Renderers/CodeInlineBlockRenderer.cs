@@ -7,7 +7,7 @@ namespace Unity.Muse.Editor.Markup.Renderers
     {
         protected override void Write(ChatMarkdownRenderer renderer, CodeInline obj)
         {
-            var codeWithoutEscapes = obj.Content.Replace(@"\", @"\\");;
+            var codeWithoutEscapes = obj.Content.Replace(@"\", @"\\");
 
             //TODO figure out if we want separate element to unify styling or keep mixing rich text tags and uss
             //Note: "<noparse>" ensures that quoted code containing tags is not interpreted as actual rich text tags

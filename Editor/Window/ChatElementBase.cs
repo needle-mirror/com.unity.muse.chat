@@ -17,6 +17,7 @@ namespace Unity.Muse.Chat
         private const string k_ActionCursorClassName = "mui-action-cursor";
 
         private IList<WebAPI.SourceBlock> m_SourceBlocks;
+        private IList<StubWebAPIContextEntry> m_ContextEntries;
 
         private readonly IList<VisualElement> m_NewTextElements = new List<VisualElement>();
 
@@ -55,6 +56,7 @@ namespace Unity.Muse.Chat
         protected IList<string> MessageChunks { get; }
 
         protected IList<WebAPI.SourceBlock> SourceBlocks => m_SourceBlocks;
+        protected IList<StubWebAPIContextEntry> ContextEntries => m_ContextEntries;
 
         protected void RefreshText(VisualElement root, IList<VisualElement> textFields)
         {
@@ -192,6 +194,7 @@ namespace Unity.Muse.Chat
         void BuildMessageChunks()
         {
             m_SourceBlocks?.Clear();
+            m_ContextEntries?.Clear();
             MessageChunks.Clear();
             if (string.IsNullOrEmpty(Message.Content))
             {

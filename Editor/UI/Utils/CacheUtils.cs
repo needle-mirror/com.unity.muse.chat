@@ -8,7 +8,7 @@ namespace Unity.Muse.Chat
         {
             if (string.IsNullOrEmpty(basePath))
             {
-                basePath = MuseChatConstants.ResourceBasePath;
+                basePath = MuseChatConstants.UIEditorPath;
             }
 
             string result = basePath + resourceFolderName;

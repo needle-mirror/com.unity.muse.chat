@@ -19,7 +19,7 @@ namespace Unity.Muse.Chat
         /// Returns a <see cref="ICompositeAuthenticator"/>.
         /// </summary>
         public static ICompositeAuthenticator Authenticator { get; private set; }
-        
+
         public static IServiceHostResolver serviceHostResolver;
 
         public static ServiceHttpClient serviceHttpClient;

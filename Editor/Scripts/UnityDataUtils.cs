@@ -214,7 +214,7 @@ namespace Unity.Muse.Chat
                 var fileName = logData.File;
                 if (!string.IsNullOrEmpty(fileName) && fileName.EndsWith(".cs") && File.Exists(fileName))
                 {
-                    return $"{logData.Message}\n{fileName} contains this code:\n{File.ReadAllText(fileName)}";
+                    return $"{logData.Message}\n{fileName} contains the following code:\n{File.ReadAllText(fileName)}";
                 }
             }
 
@@ -260,7 +260,7 @@ namespace Unity.Muse.Chat
         /// <param name="useDisplayName">Write field using their beautified display name.</param>
         /// <param name="ignorePrefabInstance">If true, prefab instances are ignored.</param>
         /// <returns>A string summary of the given object and its components</returns>
-        public static string OutputUnityObject(Object targetObject, bool includeTypes, bool includeTooltips, int maxDepth = -1, string[] rootFields = default, bool useDisplayName = false, bool ignorePrefabInstance = true)
+        public static string OutputUnityObject(Object targetObject, bool includeTypes, bool includeTooltips, int maxDepth = -1, string[] rootFields = default, bool useDisplayName = false, bool ignorePrefabInstance = true, bool outputDirectory = false)
         {
             if (targetObject == null)
                 return string.Empty;
@@ -281,10 +281,16 @@ namespace Unity.Muse.Chat
             jsonAdapter.RootObject = targetSerializedObject;
             jsonAdapter.UseDisplayName = useDisplayName;
             jsonAdapter.IgnorePrefabInstance = ignorePrefabInstance;
+            jsonAdapter.OutputDirectory = outputDirectory;
             jsonAdapter.OverrideProvider = GetSerializationOverrideProvider();
 
             adapters.Add(jsonAdapter);
-            return $"{jsonAdapter.GetObjectKey(targetSerializedObject)}\n{JsonSerialization.ToJson(targetSerializedObject, parameters)}";
+            var objectName = jsonAdapter.GetObjectKey(targetSerializedObject);
+            if (string.IsNullOrEmpty(objectName))
+            {
+                objectName = targetObject.GetType().ToString();
+            }
+            return $"{objectName}\n{JsonSerialization.ToJson(targetSerializedObject, parameters)}";
         }
 
         /// <summary>

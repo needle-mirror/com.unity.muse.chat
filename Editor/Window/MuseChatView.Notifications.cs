@@ -13,8 +13,6 @@ namespace Unity.Muse.Chat
 
         readonly List<PopupNotification> k_Notifications = new();
 
-        Action m_BannerButtonClickedCallback;
-
         static readonly Dictionary<PopNotificationIconType, string> k_IconTypeToName = new()
         {
             { PopNotificationIconType.Info, "mui-icon-tick"},
@@ -69,29 +67,6 @@ namespace Unity.Muse.Chat
         void OnNotificationDismissed(PopupNotification notification)
         {
             k_Notifications.Remove(notification);
-        }
-
-        void ShowBanner(string title, string message, Action callback)
-        {
-            m_NotificationBannerTitle.text = title;
-            m_NotificationBannerMessage.text = message;
-
-            m_BannerButtonClickedCallback = callback;
-
-            m_NotificationBanner.style.display = DisplayStyle.Flex;
-        }
-
-        void BannerButtonClicked(PointerUpEvent evt)
-        {
-            m_BannerButtonClickedCallback?.Invoke();
-            m_BannerButtonClickedCallback = null;
-
-            HideBanner();
-        }
-
-        void HideBanner()
-        {
-            m_NotificationBanner.style.display = DisplayStyle.None;
         }
     }
 }

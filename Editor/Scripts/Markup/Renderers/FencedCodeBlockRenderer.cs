@@ -15,7 +15,7 @@ namespace Unity.Muse.Editor.Markup.Renderers
 
             for (int i = 0; i < obj.Lines.Count; i++)
             {
-                var lineWithoutEscapes = obj.Lines.Lines[i].ToString().Replace(@"\", @"\\");;
+                var lineWithoutEscapes = obj.Lines.Lines[i].ToString().Replace(@"\", @"\\");
 
                 fullCodeBlock.Append(lineWithoutEscapes);
                 if(i < obj.Lines.Count - 1)

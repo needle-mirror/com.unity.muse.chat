@@ -16,7 +16,7 @@ namespace Unity.Muse.Chat
 {
     partial class WebAPI
     {
-        public async Task<SmartContextResponse> PostSmartContextAsync(string prompt, List<FunctionDefinition> catalog)
+        public async Task<SmartContextResponse> PostSmartContextAsync(string prompt, List<FunctionDefinition> catalog, string conversationId, CancellationToken cancellationToken)
         {
             if (!GetOrganizationID(out string organizationId))
                 return null;
@@ -24,12 +24,13 @@ namespace Unity.Muse.Chat
             var request = new SmartContextRequest(
                 prompt: prompt,
                 organizationId: organizationId,
+                conversationId: conversationId,
                 jsonCatalog: catalog);
 
             try
             {
                 DefaultApi api = new(CreateConfig());
-                return await api.SmartContextSmartContextPostAsync(request, CancellationToken.None);
+                return await api.SmartContextV1SmartContextPostAsync(request, cancellationToken);
             }
             catch (ApiException e)
             {

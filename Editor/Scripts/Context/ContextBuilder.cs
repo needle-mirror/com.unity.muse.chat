@@ -31,11 +31,11 @@ namespace Unity.Muse.Chat
                 var prefix = userSelected ? $"I'm about to describe what I am currently selecting. I might refer to what I am currently selecting as 'this', 'it' or 'that'. I am currently selecting something of type: {context.ContextType}]. The data about what I am currently selecting is:" : $"The current project includes ({context.ContextType}):";
                 if (!string.IsNullOrWhiteSpace(payload) && contextString.Length + payload.Length < contextLimit)
                 {
-                    contextString.Append($"\n\n{prefix}:\n" + payload);
+                    contextString.Append($"\n\n{prefix}\n" + payload);
                 }
                 else if (!string.IsNullOrWhiteSpace(downsizedPayload) && contextString.Length + downsizedPayload.Length < contextLimit)
                 {
-                    contextString.Append($"\n\n{prefix}:\n" + downsizedPayload);
+                    contextString.Append($"\n\n{prefix}\n" + downsizedPayload);
                 }
                 else
                 {

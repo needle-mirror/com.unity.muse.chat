@@ -115,6 +115,10 @@
     background-color: var(--appui-backgrounds-100);
 }
 
+#museAvatar {
+    background-color: #29151d;
+}
+
 #museAvatar .appui-avatar__container{
     border-radius: 4px;
 }
@@ -137,4 +141,19 @@
     padding: 1px;
     border-radius: 4px;
     background-color: var(--appui-backgrounds-100);
+}
+
+#appui-accordionitem__indicator {
+    margin-right: 4px;
+    margin-left: 0;
+    transition: rotate var(--appui-animation-easing-ease-out) var(--appui-animation-duration-125);
+}
+
+.appui-accordionitem__indicator {
+    rotate: -90deg;
+}
+
+.is-open > .appui-accordionitem__heading > .appui-accordionitem__header > .appui-accordionitem__indicator {
+    rotate: 0deg;
+    transition: rotate var(--appui-animation-easing-ease-out) var(--appui-animation-duration-125);
 }

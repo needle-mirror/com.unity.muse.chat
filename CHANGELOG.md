@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-pre.11] - 3000-06-28
+
+### Added
+- Added all asset types to selected context category
+- Editor now sends a catalog of functions from the editor for use with advanced features.
+- Color syntax highlighting in code blocks
+- Smart Context feature active by default
+- Plugins feature active by default
+- UX improvements and fixes
+
 ## [1.0.0-pre.10] - 2024-06-12
 
 ### Fixed
@@ -29,7 +39,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Fix layout issues
 - Fix default conversation title
-- Fix UTF Support 
+- Fix UTF Support
 
 ## [1.0.0-pre.6] - 2024-04-26
 

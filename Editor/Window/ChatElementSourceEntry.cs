@@ -7,11 +7,9 @@ namespace Unity.Muse.Chat
 {
     internal class ChatElementSourceEntry : ManagedTemplate
     {
-        // TODO: Switch to Text .MeasureString() and truncate better
-        const int k_MaxTextLength = 42;
-
         Button m_SourceLink;
         Text m_SourceLinkHint;
+        Text m_SourceLinkNumber;
         LocalizedTextElement m_SourceLinkTextElement;
 
         /// <summary>
@@ -41,6 +39,11 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             m_SourceLink = view.SetupButton("sourceLink", OnSourceClicked);
+
+            m_SourceLinkNumber = new Text();
+            m_SourceLinkNumber.AddToClassList("mui-source-entry-number");
+            m_SourceLink.Q<VisualElement>("appui-button__titlecontainer").Insert(0, m_SourceLinkNumber);
+
             m_SourceLinkTextElement = m_SourceLink.Q<LocalizedTextElement>("appui-button__title");
             m_SourceLinkTextElement.style.flexWrap = Wrap.NoWrap;
             m_SourceLinkTextElement.RegisterCallback<GeometryChangedEvent>(_ => RefreshDisplay());
@@ -55,9 +58,9 @@ namespace Unity.Muse.Chat
 
         private void RefreshDisplay()
         {
-            string titleText = $"{Index + 1}. {SourceBlock.reason}".GetTextWithMaxLength(k_MaxTextLength);
+            m_SourceLinkNumber.text = $"{Index + 1}";
 
-            m_SourceLink.title = titleText;
+            m_SourceLink.title = SourceBlock.reason;
             m_SourceLink.tooltip = SourceBlock.source;
 
             m_SourceLinkHint.text = SourceBlock.source;

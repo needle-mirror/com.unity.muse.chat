@@ -52,7 +52,7 @@ namespace Unity.Muse.Chat
 
             if (string.IsNullOrEmpty(basePath))
             {
-                basePath = MuseChatConstants.ResourceBasePath;
+                basePath = MuseChatConstants.UIEditorPath;
             }
 
             m_ViewCache = ViewCache.Get(basePath, subPath);
@@ -135,7 +135,7 @@ namespace Unity.Muse.Chat
         /// <summary>
         /// Hides the templated element
         /// </summary>
-        public virtual void Hide()
+        public virtual void Hide(bool sendVisibilityChanged = true)
         {
             if (!IsShown)
             {
@@ -145,13 +145,16 @@ namespace Unity.Muse.Chat
             style.display = DisplayStyle.None;
             IsShown = false;
 
-            VisibilityChanged?.Invoke(false);
+            if (sendVisibilityChanged)
+            {
+                VisibilityChanged?.Invoke(false);
+            }
         }
 
         /// <summary>
         /// Shows the templated element
         /// </summary>
-        public virtual void Show()
+        public virtual void Show(bool sendVisibilityChanged = true)
         {
             if (IsShown)
             {
@@ -161,7 +164,10 @@ namespace Unity.Muse.Chat
             style.display = DisplayStyle.Flex;
             IsShown = true;
 
-            VisibilityChanged?.Invoke(true);
+            if (sendVisibilityChanged)
+            {
+                VisibilityChanged?.Invoke(true);
+            }
         }
 
         protected Type ElementType => m_ElementType;

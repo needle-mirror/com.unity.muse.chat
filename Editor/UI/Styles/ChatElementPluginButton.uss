@@ -1,0 +1,10 @@
+.mui-chat-response-plugin-block-button-root{
+    flex-direction: row;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.mui-chat-response-plugin-block-button-label{
+    color: var(--appui-alias-text-disabled);
+    flex-grow: 1;
+}

@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.Context.SmartContext;
+using Unity.Muse.Chat.FunctionCalling;
 using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.Plugins;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
-using Object = System.Object;
+using Debug = UnityEngine.Debug;
 
 namespace Unity.Muse.Chat
 {
@@ -17,16 +20,14 @@ namespace Unity.Muse.Chat
         internal static readonly string k_AssistantRole = "assistant";
 
         const int k_MaxInternalConversationTitleLength = 30;
-        const int k_TopK = 2;
-        const float k_MinScore = 0.15f;
 
         readonly List<MuseConversationInfo> k_History = new();
         readonly Queue<MuseChatUpdateData> k_Updates = new();
 
         MuseConversation m_ActiveConversation;
-        ContextRetrieval m_ContextRetrieval;
 
         private readonly List<MuseMessageUpdateHandler> k_MessageUpdaters = new();
+        private CancellationTokenSource m_SmartContextCancellationTokenSource;
 
         public event Action<MuseChatUpdateData> OnDataChanged;
 
@@ -34,20 +35,38 @@ namespace Unity.Muse.Chat
         public event Action<string, bool> OnConnectionChanged;
 #pragma warning restore CS0067
 
+#if MUSE_INTERNAL
+        internal event Action<TimeSpan, SmartContextResponse> OnSmartContextCallDone;
+        internal event Action<TimeSpan, FunctionCall> OnSmartContextExtracted;
+        internal event Action<MuseConversation> OnFinalResponseReceived;
+        internal bool IsProcessingConversations => k_MessageUpdaters.Count > 0;
+#endif
+
         /// <summary>
         /// Indicates that the history has changed
         /// </summary>
         public event Action OnConversationHistoryChanged;
 
         /// <summary>
+        /// Indicates the conversation title has changed
+        /// </summary>
+        public event Action<string> OnConversationTitleChanged;
+
+        /// <summary>
         /// The WebAPI implementation used to communicate with the Muse Backend.
         /// </summary>
         public WebAPI WebAPI { get; set; } = new();
 
-        /// <summary>
-        /// The Toolbox used to provide access to smart context features
-        /// </summary>
-        public Toolbox SmartContextToolbox { get; } = new(new AttributeBasedContextProvider());
+        public FunctionCache FunctionCache { get; } = new(new AttributeBasedFunctionSource());
+        public SmartContextToolbox SmartContextToolbox { get; private set; }
+        public PluginToolbox PluginToolbox { get; private set; }
+
+
+        void OnEnable()
+        {
+            PluginToolbox = new PluginToolbox(FunctionCache);
+            SmartContextToolbox = new SmartContextToolbox(FunctionCache);
+        }
 
         Tuple<MuseConversationId, string> m_LastContextForConversation = new(default, default);
 
@@ -62,7 +81,17 @@ namespace Unity.Muse.Chat
         internal bool IsConsoleInfoSelected = true;
         internal bool IsConsoleWarningSelected = true;
         internal bool IsConsoleErrorSelected = true;
-        internal bool IsGameObjectSelected = true;
+        internal bool IsObjectSelected = true;
+
+        internal enum PrompState
+        {
+            None,
+            GatheringContext,
+            Musing
+        }
+
+        internal PrompState CurrentPrompState {get; private set;}
+
 
         internal List<MuseConversationInfo> History
         {
@@ -87,6 +116,19 @@ namespace Unity.Muse.Chat
                 OnConversationHistoryReceived,
                 _ => OnConversationHistoryChanged?.Invoke()
             );
+        }
+
+        /// <summary>
+        /// Initiates a reload of the currently active conversation
+        /// </summary>
+        public void StartConversationReload()
+        {
+            if (m_ActiveConversation == null)
+            {
+                return;
+            }
+
+            StartConversationLoad(m_ActiveConversation.Id);
         }
 
         /// <summary>
@@ -137,10 +179,7 @@ namespace Unity.Muse.Chat
             {
                 m_ActiveConversation.Title = newName;
 
-                ExecuteUpdateImmediate(new MuseChatUpdateData
-                {
-                    Type = MuseChatUpdateType.ConversationChange
-                });
+                OnConversationTitleChanged?.Invoke(newName);
             }
 
             WebAPI.RenameConversation(conversationId.Value,
@@ -239,11 +278,6 @@ namespace Unity.Muse.Chat
             return message;
         }
 
-        public async void WarmupContext()
-        {
-            await GetContextString(default, MuseChatConstants.PromptContextLimit, "");
-        }
-
         public async void ProcessEditPrompt(string editedPrompt, MuseMessageId messageId)
         {
             if (string.IsNullOrEmpty(editedPrompt))
@@ -316,6 +350,8 @@ namespace Unity.Muse.Chat
                 return;
             }
 
+            CurrentPrompState = PrompState.GatheringContext;
+
             bool isNewConversation = false;
 
             // Create a thread if needed
@@ -343,15 +379,52 @@ namespace Unity.Muse.Chat
                     Type = MuseChatUpdateType.ConversationChange,
                     IsMusing = true
                 });
+
+                try
+                {
+                    var conversation = await WebAPI.PostConversation(FunctionCache.AllFunctionDefinitions);
+                    m_ActiveConversation.Id = new MuseConversationId(conversation.Id);
+                }
+                catch (Exception e)
+                {
+                    InternalLog.LogException(e);
+                    CurrentPrompState = PrompState.None;
+
+                    ExecuteUpdateImmediate(new MuseChatUpdateData
+                    {
+                        Type = MuseChatUpdateType.NewMessage,
+                        Message = new MuseMessage
+                        {
+                            IsComplete = true,
+                            Content = e.Message,
+                            Role = k_AssistantRole,
+                            ErrorCode = 403,
+                            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                        },
+                        IsMusing = false
+                    });
+
+                    return;
+                }
             }
 
-            AddInternalMessage(prompt, role: k_UserRole, sendUpdate: !isNewConversation);
+            AddInternalMessage(prompt, role: k_UserRole, sendUpdate: true);
             AddIncompleteMessage(string.Empty, k_AssistantRole, sendUpdate: !isNewConversation);
-
-            var context = await GetContextString(m_ActiveConversation.Id, MuseChatConstants.PromptContextLimit - prompt.Length, prompt);
 
             try
             {
+                m_SmartContextCancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+
+                var context = await GetContextString(m_ActiveConversation.Id, MuseChatConstants.PromptContextLimit - prompt.Length, prompt, m_SmartContextCancellationTokenSource.Token);
+
+                if (m_SmartContextCancellationTokenSource.IsCancellationRequested)
+                {
+                    CurrentPrompState = PrompState.None;
+                    return;
+                }
+
+                CurrentPrompState = PrompState.Musing;
+
                 var updateHandler = WebAPI.Chat(prompt, m_ActiveConversation.Id.Value, context);
 
                 updateHandler.InitFromDriver(
@@ -377,26 +450,34 @@ namespace Unity.Muse.Chat
                     delegate(MuseMessageUpdateHandler updater)
                     {
                         k_MessageUpdaters.Remove(updater);
-                    });
+
+#if MUSE_INTERNAL
+                        OnFinalResponseReceived?.Invoke(updater.Conversation);
+#endif
+                    },
+                    isNewConversation);
 
                 k_MessageUpdaters.Add(updateHandler);
             }
             catch (Exception e)
             {
-                ExecuteUpdateImmediate(new MuseChatUpdateData
+                if (m_ActiveConversation != null)
                 {
-                    Type = MuseChatUpdateType.NewMessage,
-                    Message = new MuseMessage
+                    ExecuteUpdateImmediate(new MuseChatUpdateData
                     {
-                        IsComplete = true,
-                        Content = e.Message,
-                        Role = k_AssistantRole,
-                        ErrorCode = 403,
-                        Id = MuseMessageId.GetNextIncompleteId(m_ActiveConversation.Id),
-                        Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-                    },
-                    IsMusing = false
-                });
+                        Type = MuseChatUpdateType.NewMessage,
+                        Message = new MuseMessage
+                        {
+                            IsComplete = true,
+                            Content = e.Message,
+                            Role = k_AssistantRole,
+                            ErrorCode = 403,
+                            Id = MuseMessageId.GetNextIncompleteId(m_ActiveConversation.Id),
+                            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                        },
+                        IsMusing = false
+                    });
+                }
             }
         }
 
@@ -444,6 +525,7 @@ namespace Unity.Muse.Chat
 
             // Stop active handler for the conversation:
             GetUpdaterForConversation(m_ActiveConversation.Id)?.Abort();
+            m_SmartContextCancellationTokenSource?.Cancel();
         }
 
         public void SendFeedback(MessageFeedback feedback)
@@ -462,8 +544,6 @@ namespace Unity.Muse.Chat
             StartConversationRefresh();
         }
 
-        async Task<ContextRetrieval> GetContextRetrieval() => m_ContextRetrieval ??= await ContextRetrieval.Create();
-
         /// <summary>
         /// Get the context string from the selected objects and selected console logs.
         /// </summary>
@@ -473,9 +553,9 @@ namespace Unity.Muse.Chat
         internal void GetSelectedContextString(ref ContextBuilder contextBuilder)
         {
             // Grab any selected objects
-            if (IsGameObjectSelected && Selection.gameObjects.Length > 0)
+            if (IsObjectSelected && Selection.objects.Length > 0)
             {
-                foreach (var currentObject in Selection.gameObjects)
+                foreach (var currentObject in Selection.objects)
                 {
                     var objectContext = new UnityObjectContextSelection();
                     objectContext.SetTarget(currentObject);
@@ -500,54 +580,100 @@ namespace Unity.Muse.Chat
             }
         }
 
-        internal async Task<string> GetContextString(MuseConversationId conversationId, int maxLength, string prompt)
+        internal async Task<string> GetContextString(MuseConversationId conversationId, int maxLength, string prompt,
+            CancellationToken cancellationToken, bool enableSmartContext = true)
         {
             // Initialize all context, if any context has changed, add it all
             var contextBuilder = new ContextBuilder();
             GetSelectedContextString(ref contextBuilder);
 
             // Add retrieved project settings
-#if SMART_CONTEXT_V2
-            Debug.Log("Started V2 Smart Context Extraction");
-            var smartContextResponse = await WebAPI.PostSmartContextAsync(prompt, SmartContextToolbox.GetToolDescriptions());
-
-            foreach (FunctionCall call in smartContextResponse.FunctionCalls)
+            if (enableSmartContext)
             {
-                if (!SmartContextToolbox.TryRunToolByName(call.Function, call.Parameters.ToArray(),
-                        out IContextSelection result))
+                try
                 {
-                    continue;
-                }
-
-                Debug.Log($"Called Function {call.Function} with parameters {string.Join(", ", call.Parameters)} and extracted the following :\n\n{result.Payload}");
-                contextBuilder.InjectContext(result, false);
-            }
-
-            if(smartContextResponse.FunctionCalls.Count == 0)
-                Debug.Log("No Smart Context Functions were called");
-#else
-            var contextRetrieval = await GetContextRetrieval();
-            var classifiers = await contextRetrieval.GetClassifiers(prompt, k_TopK, k_MinScore);
-            var smartContext = contextRetrieval.GetContext(classifiers.Select(c => c.classifier).ToArray());
-            if (smartContext != null)
-            {
-                for (var i = Math.Min(k_TopK, smartContext.Length) - 1; i >= 0; i--)
-                {
-                    contextBuilder.InjectContext(smartContext[i], false);
-                }
-            }
+#if MUSE_INTERNAL
+                    var stopwatch = new Stopwatch();
+                    stopwatch.Start();
+                    InternalLog.Log("Started V2 Smart Context Extraction");
 #endif
+
+                    var smartContextResponse = await WebAPI.PostSmartContextAsync(prompt,
+                        SmartContextToolbox.Tools.Select(c => c.FunctionDefinition).ToList(),
+                        conversationId.Value,
+                        cancellationToken);
+
+#if MUSE_INTERNAL
+                    stopwatch.Stop();
+                    InternalLog.Log(
+                        $"Time taken for smart context call: {stopwatch.Elapsed}");
+                    OnSmartContextCallDone?.Invoke(stopwatch.Elapsed, smartContextResponse);
+                    stopwatch.Restart();
+#endif
+
+                    UnityDataUtils.CachePackageData(false);
+
+                    for (var i = 0; !UnityDataUtils.PackageDataReady() && i < 10; i++)
+                    {
+                        await Task.Delay(10);
+                    }
+
+                    var smartContextMaxLength = maxLength;
+
+                    foreach (FunctionCall call in FunctionCall.Deduplicate(smartContextResponse.FunctionCalls))
+                    {
+#if MUSE_INTERNAL
+                        InternalLog.Log(
+                            $"Received Function {call.Function} with parameters {string.Join(", ", call.Parameters)}");
+#endif
+
+                        if (!SmartContextToolbox.TryRunToolByName(call.Function, call.Parameters.ToArray(),
+                                smartContextMaxLength, out IContextSelection result))
+                        {
+                            continue;
+                        }
+
+                        // We don't know if the downsized or full payload will be used, use lower one for now:
+                        smartContextMaxLength = Math.Max(0, smartContextMaxLength - result.DownsizedPayload.Length);
+
+#if MUSE_INTERNAL
+                        var info =
+                            $"Called Function {call.Function} with parameters {string.Join(", ", call.Parameters)} and extracted the following:\n\n{result.Payload}";
+                        InternalLog.Log(info);
+                        stopwatch.Stop();
+                        InternalLog.Log(
+                            $"Time taken for smart context extraction: {stopwatch.Elapsed}");
+                        OnSmartContextExtracted?.Invoke(stopwatch.Elapsed, call);
+                        stopwatch.Restart();
+#endif
+                        contextBuilder.InjectContext(result, false);
+                    }
+
+                    if (smartContextResponse.FunctionCalls.Count == 0)
+                    {
+                        InternalLog.Log("No Smart Context Functions were called");
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        return string.Empty;
+                    }
+
+                    InternalLog.Log($"Failed to get smart context: {e.Message}");
+                }
+            }
 
             var finalContext = contextBuilder.BuildContext(maxLength);
 
-#if !SMART_CONTEXT_V2
-            if (conversationId == m_LastContextForConversation.Item1 && m_LastContextForConversation.Item2 == finalContext)
+            if (conversationId == m_LastContextForConversation.Item1 &&
+                m_LastContextForConversation.Item2 == finalContext)
                 return string.Empty;
 
             m_LastContextForConversation = new Tuple<MuseConversationId, string>(conversationId, finalContext);
-#else
-            Debug.Log($"Final Context ({finalContext.Length} character):\n\n {finalContext}");
-#endif
+
+            InternalLog.Log($"Final Context ({finalContext.Length} character):\n\n {finalContext}");
 
             return finalContext;
         }
@@ -580,15 +706,23 @@ namespace Unity.Muse.Chat
 
         bool IsActiveConversationMusing()
         {
-            var updater = GetUpdaterForConversation(m_ActiveConversation.Id);
-
-            // If the message is streaming in and has no response yet, set musing to true.
-            // If there is an updater with an internal ID, we are musing, but can't be sure for which conversation,
-            // if the given conversation's last message is from the user or the last message has no content, we are musing.
-            if (updater != null || HasInternalIdUpdaters())
+            if (HasInternalIdUpdaters())
             {
-                var lastMessage = m_ActiveConversation.Messages.LastOrDefault();
-                return m_ActiveConversation.Messages.Count <= 1 || lastMessage.Role == k_UserRole || string.IsNullOrEmpty(lastMessage.Content);
+                // If there is an updater with an internal ID, we are musing, but can't be sure for which conversation,
+                return true;
+            }
+
+            var updater = GetUpdaterForConversation(m_ActiveConversation.Id);
+            if (updater == null)
+            {
+                // If there is no updater, we are not musing.
+                return false;
+            }
+
+            if (updater.IsInProgress)
+            {
+                // If the message is streaming in set musing to true.
+                return true;
             }
 
             return false;
@@ -636,12 +770,6 @@ namespace Unity.Muse.Chat
             {
                 OnDataChanged?.Invoke(k_Updates.Dequeue());
             }
-        }
-
-        void OnDisable()
-        {
-            m_ContextRetrieval?.Dispose();
-            m_ContextRetrieval = default;
         }
     }
 }
