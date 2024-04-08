@@ -1,0 +1,103 @@
+.musetextfield__element {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.mui-mtf-root {
+    flex-grow: 1;
+    min-height: 42px;
+    max-width: 700px;
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: var(--appui-backgrounds-50);
+    background-color: var(--appui-backgrounds-100);
+    cursor: text;
+    justify-content: center;
+}
+
+.mui-mtf-root:hover {
+    border-color: var(--appui-primary-500);
+}
+
+.mui-mtf-root.mui-mft-input-focused {
+    border-color: var(--muse-chat-color-pink);
+}
+
+.mui-mtf-placeholder-root {
+    flex-direction: row;
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+}
+
+.mui-mtf-muse-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.mui-mtf-scroll-view {
+    flex-grow: 0;
+    margin: 8px;
+    max-height: 160px;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#input {
+    flex-shrink: 1;
+    flex-grow: 1;
+    white-space: normal;
+    margin-right: 42px;
+}
+
+#characterCount {
+    position: absolute;
+    bottom: -16px;
+    right: 0;
+    display: none;
+}
+
+#submitButton {
+    position: absolute;
+    bottom: 6px;
+    right: 8px;
+    cursor: link;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    background-color: var(--appui-backgrounds-200);
+    justify-content: center;
+}
+
+#submitButton.mui-mft-scroll-active {
+    right: 24px;
+}
+
+#submitButton.mui-mft-input-hovered {
+    background-color: var(--appui-backgrounds-100);
+}
+
+#submitButton.mui-musing-active {
+    background-color: var(--muse-chat-color-pink);
+}
+
+#submitButton.mui-mft-input-focused {
+    background-color: var(--muse-chat-color-pink);
+}
+
+.mui-mft-input-focused {
+    --unity-image-tint-color: white;
+}
+
+.mui-mtf-submit-button-icon {
+    width: 24px;
+    height: 24px;
+    align-self: center;
+}
+
+

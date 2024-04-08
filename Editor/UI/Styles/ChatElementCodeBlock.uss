@@ -1,0 +1,43 @@
+.mui-code-block-root {
+    border-width: 1px;
+    border-radius: 8px;
+    border-color: var(--appui-backgrounds-50);
+    margin-bottom: 20px;
+    background-color: var(--appui-backgrounds-100);
+    cursor: text;
+    justify-content: center;
+}
+
+.mui-code-block-buttons {
+    flex-direction: row;
+    justify-content: flex-end;
+    border-bottom-color: var(--appui-backgrounds-50);
+    border-bottom-width: 1px;
+    padding-right: 8px;
+}
+
+.mui-code-block--monospaced-text {
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 10px;
+    padding-bottom: 12px;
+    -unity-font-definition: resource("Fonts/RobotoMono/RobotoMono-Regular SDF.asset");
+}
+
+.mui-chat-response-code-block-button  {
+    margin-top: 4px;
+    margin-left: 8px;
+    margin-bottom: 4px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.mui-chat-response-code-block-button:hover {
+    background-color: var(--appui-foregrounds-25);
+}
+
+.mui-chat-response-code-block-button:disabled {
+    display: none;
+}

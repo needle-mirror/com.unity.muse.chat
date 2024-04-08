@@ -1,0 +1,7 @@
+{
+    "name": "Unity.Muse.Chat.WebApi",
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ]
+}

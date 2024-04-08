@@ -1,0 +1,86 @@
+:root {
+    --muse-chat-color-pink: #d33c79;
+    --muse-chat-color-user-message: #441a2b;
+}
+
+.-muse-chat-panel {
+    background-color: var(--appui-backgrounds-200);
+}
+
+.appui-icon {
+    ---unity-image-tint-color: blue;
+}
+
+.appui-icon--mui-icon-empty {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/empty.png');
+}
+
+.appui-icon--mui-icon-empty-margin {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/empty.png');
+    width: 28px;
+    height: 14px;
+}
+
+.appui-icon--mui-icon-muse {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/muse.png');
+}
+
+.appui-icon--mui-icon-history {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ClockCounterClockwise.png');
+}
+
+.appui-icon--mui-icon-copy {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CopySimple.png');
+}
+
+.appui-icon--mui-icon-upvote {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ThumbsUp.png');
+}
+
+.appui-icon--mui-icon-downvote {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ThumbsDown.png');
+}
+
+.appui-icon--mui-icon-cancel {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/XSquare.png')
+}
+
+.appui-icon--mui-icon-stop {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/StopCircle.png');
+}
+
+.appui-icon--mui-icon-submit {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/PaperPlaneRight.png');
+}
+
+.appui-icon--mui-icon-submit-white {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/PaperPlaneRight.png');
+}
+
+.appui-icon--mui-icon-tick {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/tick.png');
+}
+
+.appui-icon--mui-icon-error {
+    background-image: resource('d_console.erroricon');
+}
+
+.appui-icon--mui-icon-close {
+    background-image: resource('d_clear@2x');
+}
+
+.appui-icon--mui-icon-warn {
+    background-image: resource('d_console.warnicon');
+}
+
+.appui-icon--mui-icon-info {
+    background-image: resource('d_console.infoicon');
+}
+
+.appui-icon--mui-icon-game-object {
+    --unity-image: resource('d_GameObject Icon');
+}
+
+.appui-icon--mui-icon-console {
+    --unity-image: resource('d_UnityEditor.ConsoleWindow');
+}

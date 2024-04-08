@@ -1,0 +1,125 @@
+.chatelementresponse__element {
+    align-self: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 8px 8px 8px 8px;
+    max-width: 716px;
+    flex-shrink: 0;
+    flex-grow: 0;
+    width: 100%;
+}
+
+.chatelementresponse__element-root {
+    align-self: center;
+    flex-grow: 1;
+    background-color: var(--appui-backgrounds-200);
+    border-radius: 8px;
+    margin: 2px;
+}
+
+.mui-chat-response {
+    -unity-text-align: upper-left;
+}
+
+.mui-chat-response-button  {
+    margin-top: 8px;
+    margin-left: 8px;
+    margin-bottom: 8px;
+    width: 24px;
+    height: 24px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.mui-chat-response-button:hover {
+    background-color: var(--appui-foregrounds-25);
+}
+
+.mui-chat-response-button:disabled {
+    display: none;
+}
+
+#sourcesContent {
+    padding-top: 8px;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.mui-chat-sources-foldout {
+    margin-left: 18px;
+    margin-right: 16px;
+    margin-bottom: 16px;
+    color: var(--appui-alias-text-primary);
+}
+
+#optionsSection {
+    flex-direction: column;
+}
+
+.mui-control-section-buttons {
+    flex-direction: row;
+}
+
+.mui-feedback-parameters {
+    margin-top: 2px;
+    margin-left: 8px;
+    margin-right: 8px;
+    padding-bottom: 50px;
+}
+
+.mui-feedback-label {
+    margin-top: 8px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+}
+
+#feedbackFlagCheckbox {
+    margin-left: 2px;
+}
+
+#feedbackSendButton {
+    position: absolute;
+    bottom: 8px;
+    right: 2px;
+}
+
+#errorFrame {
+    border-width: 2px;
+    border-color: rgba(192,60,65,255);
+    border-radius: 8px;
+    justify-content: flex-end;
+    flex-direction: column;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.mui-feedback-button-active {
+    background-color: var(--appui-backgrounds-100);
+}
+
+#museAvatar .appui-avatar__container{
+    border-radius: 4px;
+}
+
+.mui-chat-sources-accordion-entry {
+    border-bottom-width: 0;
+}
+
+.appui-accordionitem__headertext {
+    -unity-font-style: bold;
+}
+
+#feedbackValueText {
+    white-space: normal;
+    min-height: 48px;
+}
+
+.mui-feedback-text-scrollroot {
+    max-height: 160px;
+    padding: 1px;
+    border-radius: 4px;
+    background-color: var(--appui-backgrounds-100);
+}

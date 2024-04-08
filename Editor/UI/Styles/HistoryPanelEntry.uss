@@ -1,0 +1,52 @@
+﻿.historypanelentry__element {
+    min-height: 24px;
+    padding-left: 8px;
+}
+
+#historyPanelHeaderRoot {
+    padding-top: 16px;
+    padding-bottom: 8px;
+}
+
+#historyPanelHeaderText {
+    color: var(--appui-alias-text-disabled);
+    -unity-font-style: bold;
+}
+
+#historyPanelElementConversationRoot {
+    min-height: 24px;
+    flex-direction: row;
+}
+
+#historyPanelElementConversationIcon {
+    display: none;
+    align-self: center;
+    color: var(--appui-alias-icon-disabled);
+    margin-right: 4px;
+}
+
+#historyPanelElementConversationText {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+#historyPanelElementConversationButton {
+    border-width: 0;
+    display: none;
+    background-color: initial;
+    background-image: resource("_Menu@2x");
+}
+
+#historyPanelElementConversationEditText {
+    align-self: center;
+    flex-grow: 0;
+    flex-shrink: 1;
+}
+
+.mui-history-panel-header-entry:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.mui-history-panel-entry-selected {
+    background-color: var(--appui-accent-50);
+}

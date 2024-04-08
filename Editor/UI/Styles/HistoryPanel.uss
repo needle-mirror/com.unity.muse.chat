@@ -1,0 +1,22 @@
+.historypanel__element {
+    flex-grow: 1;
+    border-right-width: 1px;
+    border-right-color: var(--appui-backgrounds-50);
+    min-width: 230px;
+}
+
+.historypanel__element-root {
+    flex-grow: 1;
+}
+
+#sectionRoot {
+    flex-grow: 1;
+}
+
+.mui-history-panel {
+    flex-grow: 1;
+}
+
+.unity-list-view__empty-label {
+    color: var(--appui-alias-text-callout);
+}

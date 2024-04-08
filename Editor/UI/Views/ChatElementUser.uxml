@@ -1,0 +1,16 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement name="chatRoot" class="mui-chat-root -muse-chat-panel mui-chat-user-message">
+        <VisualElement class="mui-chat-content">
+            <appui:Text text="User Initials" name="userInitials" class="mui-textbox" />
+            <appui:Avatar class="mui-chat-avatar" variant="Square" name="userIcon"/>
+            <VisualElement class="mui-chat-element-text-area">
+                <VisualElement name="textFieldRoot">
+                </VisualElement>
+            </VisualElement>
+            <VisualElement name="editControls" class="mui-user-edit-controls">
+                <appui:Button name="editButton" class="-muse-chat-button" leading-icon="pen--regular" />
+                <appui:Button name="editCancelButton" class="-muse-chat-button" leading-icon="mui-icon-cancel" />
+            </VisualElement>
+        </VisualElement>
+    </VisualElement>
+</UXML>

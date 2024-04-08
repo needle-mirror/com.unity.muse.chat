@@ -1,0 +1,54 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" xsi="http://www.w3.org/2001/XMLSchema-instance" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+   <Style src="project:/Packages/com.unity.muse.common/Runtime/UI/PackageResources/uss/Account.uss"/>
+    <appui:Panel name="root-panel">
+        <ui:VisualElement name="root-main">
+            <ui:VisualElement class="mui-header -muse-chat-panel">
+                <appui:Text name="conversationNameLabel" class="mui-header-label" text="Conversation Name"/>
+                <appui:Button name="newChatButton" class="mui-header-button" title="New Chat" leading-icon="plus--regular"/>
+                <appui:Button name="historyButton" class="mui-header-button" title="History" leading-icon="mui-icon-history"/>
+                <ui:VisualElement name="museAccountContainer" class="mui-header-dropdown"/>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="chatContentRoot" class="mui-chat-content">
+                <ui:VisualElement class="mui-conversation-panel">
+                    <ui:VisualElement name="suggestionRoot" >
+                        <appui:Text text="Try these for inspiration" class="mui-chat-suggestion-text"/>
+                        <ui:VisualElement name="suggestionContent"/>
+                    </ui:VisualElement>
+                    <ui:ScrollView name="conversationRoot">
+                        <ui:VisualElement name="conversationContent">
+                        </ui:VisualElement>
+                    </ui:ScrollView>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="historyPanelRoot">
+                </ui:VisualElement>
+
+                <ui:VisualElement name="notificationContainer" picking-mode="Ignore" >
+                </ui:VisualElement>
+            </ui:VisualElement>
+
+            <ui:VisualElement name="footerRoot" class="mui-footer -muse-chat-panel">
+                <ui:VisualElement name="userSelectedContextRoot" class="mui-chat-user-selected-context-root">
+                    <appui:Text name="selectionLabel" text="Selection" class="mui-context-selection-text"/>
+                    <ui:VisualElement name="userSelectedContextLabelsRoot" class="mui-chat-user-selected-context-labels-root">
+                        <appui:Button name="selectedConsoleInfoButton" leading-icon="mui-icon-info" size="s" class="mui-selected-context-button"/>
+                        <appui:Button name="selectedConsoleWarnButton" leading-icon="mui-icon-warn" size="s" class="mui-selected-context-button"/>
+                        <appui:Button name="selectedConsoleErrorButton" leading-icon="mui-icon-error" size="s" class="mui-selected-context-button"/>
+                        <appui:Button name="selectedGameObjectButton" leading-icon="mui-icon-game-object" size="s" class="mui-selected-context-button"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="userSelectedContextWarningRoot" class="mui-chat-user-selected-context-warning-root">
+                    <appui:Icon name="selectionWarningIcon" icon-name="mui-icon-warn" size="s" class="mui-selected-context-icon"/>
+                    <appui:Text name="selectionWarningText" text="For best results, consider selecting fewer context items for a more accurate response." class="mui-selected-context-text"/>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="chatTextFieldRoot" class="mui-chat-input-root">
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="warningStatusRoot" class="mui-footer-status -muse-chat-panel"/>
+        </ui:VisualElement>
+
+    </appui:Panel>
+</ui:UXML>

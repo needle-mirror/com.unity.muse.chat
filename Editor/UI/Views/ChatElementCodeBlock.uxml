@@ -1,0 +1,12 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement class="mui-code-block-root">
+
+        <VisualElement name="blockControls" class="mui-code-block-buttons">
+            <appui:Button name="copyButton" tooltip="Copy Code" leading-icon="mui-icon-copy" class="mui-chat-response-code-block-button -muse-chat-button" />
+        </VisualElement>
+
+        <appui:Text name="codeText" class="mui-code-block--monospaced-text">
+        </appui:Text>>
+
+    </VisualElement>
+</UXML>

@@ -1,0 +1,28 @@
+.chatelementsourceentry__element {
+    flex-shrink: 1;
+    flex-grow: 0;
+    margin-bottom: 8px;
+}
+
+#sourceLink:hover {
+    background-color: var(--muse-chat-color-pink);
+}
+
+#sourceLink {
+    align-self: flex-start;
+    border-color: var(--muse-chat-color-pink);
+    border-radius: 12px;
+    margin-right: 8px;
+    padding: 2px;
+    flex-shrink: 1;
+    flex-grow: 0;
+    min-height: 25px;
+    max-height: 25px;
+    -unity-text-align: middle-left;
+    background-color: var(--appui-backgrounds-100);
+}
+
+#sourceLinkHint {
+    font-size: 12px;
+    display: none;
+}

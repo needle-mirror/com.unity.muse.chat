@@ -1,0 +1,22 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement name="textFieldRoot" class="mui-mtf-root">
+        <VisualElement name="placeholderContent" class="mui-mtf-placeholder-root">
+            <appui:Icon icon-name="mui-icon-muse" size="L" class="mui-mtf-muse-icon"/>
+            <appui:Text text="Ask Muse" name="placeholderText"/>
+        </VisualElement>
+
+        <appui:Text name="characterCount" text="0/1000"/>
+
+        <ScrollView name="inputScrollView" class="mui-mtf-scroll-view">
+            <VisualElement class="mui-mtf-input-root">
+                <TextField name="input"/>
+            </VisualElement>
+        </ScrollView>
+
+        <VisualElement name="submitButton">
+            <appui:Icon name="submitIconDefault" icon-name="mui-icon-submit" size="L" class="mui-mtf-submit-button-icon"/>
+            <appui:Icon name="submitIconMusing" icon-name="mui-icon-stop" size="L" class="mui-mtf-submit-button-icon"/>
+        </VisualElement>
+
+    </VisualElement>
+</UXML>

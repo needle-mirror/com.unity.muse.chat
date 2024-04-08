@@ -1,0 +1,35 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement class="mui-chat-root mui-chat-response">
+        <VisualElement class="mui-chat-content">
+            <appui:Avatar name="museAvatar" class="mui-chat-avatar" variant="Square"/>
+            <VisualElement name="textFieldRoot" class="mui-chat-element-text-area">
+            </VisualElement>
+        </VisualElement>
+        <VisualElement>
+            <appui:Accordion name="sourcesFoldout" class="mui-chat-sources-foldout">
+                <appui:AccordionItem title="Sources" value="true" class="mui-chat-sources-accordion-entry">
+                    <VisualElement name="sourcesContent">
+                    </VisualElement>
+                </appui:AccordionItem>
+            </appui:Accordion>
+        </VisualElement>
+        <VisualElement name="optionsSection" class="mui-chat-footer">
+            <VisualElement class="mui-control-section-buttons">
+                <appui:Button name="copyButton" tooltip="Copy Message" leading-icon="mui-icon-copy" class="mui-chat-response-button -muse-chat-button" />
+                <appui:Button name="upVoteButton" leading-icon="mui-icon-upvote" class="mui-chat-response-button -muse-chat-button" />
+                <appui:Button name="downVoteButton" leading-icon="mui-icon-downvote" class="mui-chat-response-button -muse-chat-button" />
+            </VisualElement>
+            <VisualElement name="feedbackParamSection" class="mui-feedback-parameters">
+                <appui:Checkbox label="Flag as inappropriate" name="feedbackFlagCheckbox"/>
+                <appui:Text text="Add a feedback category" class="mui-feedback-label"/>
+                <appui:Dropdown name="feedbackType"/>
+                <appui:Text text="Your feedback" class="mui-feedback-label"/>
+                <ScrollView class="mui-feedback-text-scrollroot">
+                    <TextField name="feedbackValueText"/>
+                </ScrollView>
+                <appui:Button name="feedbackSendButton" title="Send"/>
+            </VisualElement>
+        </VisualElement>
+    </VisualElement>
+    <VisualElement name="errorFrame" picking-mode="Ignore" />
+</UXML>

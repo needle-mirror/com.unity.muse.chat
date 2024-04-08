@@ -1,0 +1,6 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement class="mui-source-entry-root">
+        <appui:Button name="sourceLink"></appui:Button>
+        <appui:Text name="sourceLinkHint"></appui:Text>
+    </VisualElement>
+</UXML>

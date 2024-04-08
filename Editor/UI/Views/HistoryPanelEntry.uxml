@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" editor-extension-mode="False">
+    <ui:VisualElement>
+        <ui:VisualElement name="historyPanelHeaderRoot">
+            <appui:Text name="historyPanelHeaderText" text="Date"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="historyPanelElementConversationRoot">
+            <appui:Icon name="historyPanelElementConversationIcon" icon-name="folder" />
+            <appui:Text text="New conversation" name="historyPanelElementConversationText" />
+            <appui:TextField name="historyPanelElementConversationEditText" />
+            <appui:Button focusable="true" icon="none" name="historyPanelElementConversationButton" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
