@@ -13,7 +13,8 @@
     border-color: var(--appui-backgrounds-50);
     background-color: var(--appui-backgrounds-100);
     cursor: text;
-    justify-content: center;
+    min-width: 700px;
+    flex-direction: row;
 }
 
 .mui-mtf-root:hover {
@@ -40,7 +41,7 @@
 }
 
 .mui-mtf-scroll-view {
-    flex-grow: 0;
+    flex-grow: 1;
     margin: 8px;
     max-height: 160px;
     align-self: center;
@@ -100,4 +101,8 @@
     align-self: center;
 }
 
+#inputScrollView {
+    align-items: flex-start;
+    flex-direction: row;
+}
 

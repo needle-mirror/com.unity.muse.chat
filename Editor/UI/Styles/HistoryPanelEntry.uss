@@ -35,6 +35,10 @@
     display: none;
     background-color: initial;
     background-image: resource("_Menu@2x");
+    width: 20px;
+    height: 20px;
+
+    align-self: center;
 }
 
 #historyPanelElementConversationEditText {

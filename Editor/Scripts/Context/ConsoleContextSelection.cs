@@ -35,7 +35,7 @@ namespace Unity.Muse.Chat
                 if (m_Target == null)
                     return null;
 
-                return $"Unity Console Log Message:\n{UnityDataUtils.OutputLogData(m_Target, true)}";
+                return $"{UnityDataUtils.OutputLogData(m_Target, true)}";
             }
         }
 

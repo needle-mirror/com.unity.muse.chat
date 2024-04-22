@@ -29,7 +29,7 @@ The version of Chat is compatible with the following versions of the Unity Edito
 **Unity 2022.3 LTS or later**
 
 # Web 
-1. Find Muse Chat in any browser at [muse.unity.com](muse.unity.com).
+1. Find Muse Chat in any browser at [muse.unity.com](https://muse.unity.com).
 2. Log in using your Unity ID.
 
 ### Using Muse

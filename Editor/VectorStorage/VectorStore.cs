@@ -247,8 +247,9 @@ namespace Unity.Muse.Chat.VectorStorage
             return results;
         }
 
+#pragma warning disable CS1998
         async
-#if UNITY_2023_1_OR_NEWER
+ #if UNITY_2023_1_OR_NEWER
         Awaitable<string>
 #else
         Task<string>
@@ -322,6 +323,8 @@ namespace Unity.Muse.Chat.VectorStorage
 
             return new LockHandle(this);
         }
+
+#pragma warning restore CS1998
 
         void DisposeObject()
         {

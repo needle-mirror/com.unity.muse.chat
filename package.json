@@ -1,7 +1,7 @@
 {
   "name": "com.unity.muse.chat",
   "displayName": "Muse Chat",
-  "version": "1.0.0-pre.3",
+  "version": "1.0.0-pre.5",
   "unity": "2022.3",
   "description": "Muse Chat significantly boosts Unity game developer’s productivity by enabling them to quickly retrieve information and generate solutions that are tailored to their specific projects. Now available in the Unity Editor, chat users can more easily and conveniently troubleshoot while in their project, and apply solutions to their build. Especially for developers in the prototyping phase, Muse Chat helps you quickly explore new ideas and develop concepts and overcome hurdles with much greater ease.",
   "dependencies": {
@@ -9,21 +9,21 @@
     "com.unity.modules.unitywebrequest": "1.0.0",
     "com.unity.serialization": "3.1.1",
     "com.unity.muse.common": "1.0.0-pre.21",
-    "com.unity.sentis": "1.3.0-pre.3"
+    "com.unity.sentis": "1.4.0-pre.3"
   },
   "relatedPackages": {
-    "com.unity.muse.chat.tests": "1.0.0-pre.3"
+    "com.unity.muse.chat.tests": "1.0.0-pre.5"
   },
   "_upm": {
-    "changelog": "### Added\n- First public pre-release build."
+    "changelog": "### Changed\n- Update Sentis to 1.4.0\n\n### Fixed\n- Fix for \"Musing\" message not always displaying when it should."
   },
   "upmCi": {
-    "footprint": "43aab2b2dc7ae86df370c73e9a4df70bd0ce1788"
+    "footprint": "1f89742e20f54b1b39c29f700d3d3d35e8368f79"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.muse.chat@1.0/manual/index.html",
   "repository": {
     "url": "https://github.cds.internal.unity3d.com/unity/muse-editor.git",
     "type": "git",
-    "revision": "321a95a2ef9395b195455cd02a9824fed6210b09"
+    "revision": "d685a2e8e99642eb9463fe6d3313e7c19ae48084"
   }
 }

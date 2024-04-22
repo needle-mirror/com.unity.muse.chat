@@ -10,7 +10,18 @@
             </ui:VisualElement>
 
             <ui:VisualElement name="chatContentRoot" class="mui-chat-content">
+
                 <ui:VisualElement class="mui-conversation-panel">
+                    <ui:VisualElement name="notificationBanner" class="mui-chat-content">
+                        <ui:VisualElement class="mui-notification-banner-content">
+                            <ui:VisualElement name="notificationBannerContainer">
+                                <appui:Text name="notificationBannerTitle" class="mui-header-label" />
+                                <appui:Text name="notificationBannerMessage" class="mui-header-label" />
+                            </ui:VisualElement>
+                            <appui:Button name="notificationBannerButton" trailing-icon="mui-icon-close" flex-direction="row-reverse"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+
                     <ui:VisualElement name="suggestionRoot" >
                         <appui:Text text="Try these for inspiration" class="mui-chat-suggestion-text"/>
                         <ui:VisualElement name="suggestionContent"/>
@@ -41,7 +52,7 @@
 
                 <ui:VisualElement name="userSelectedContextWarningRoot" class="mui-chat-user-selected-context-warning-root">
                     <appui:Icon name="selectionWarningIcon" icon-name="mui-icon-warn" size="s" class="mui-selected-context-icon"/>
-                    <appui:Text name="selectionWarningText" text="For best results, consider selecting fewer context items for a more accurate response." class="mui-selected-context-text"/>
+                    <appui:Text name="selectionWarningText" text="Select fewer or smaller items for a more accurate response." class="mui-selected-context-text"/>
                 </ui:VisualElement>
 
                 <ui:VisualElement name="chatTextFieldRoot" class="mui-chat-input-root">

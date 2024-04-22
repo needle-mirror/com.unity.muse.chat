@@ -52,5 +52,8 @@ namespace Unity.Muse.Chat
         internal const bool DebugMode = false;
         internal const string MediationPrompt = "";
         internal const bool SkipPlanning = false;
+
+        internal const int SuggestedSelectedContextLimit = 5;
+        internal const int PromptContextLimit = 17000;
     }
 }

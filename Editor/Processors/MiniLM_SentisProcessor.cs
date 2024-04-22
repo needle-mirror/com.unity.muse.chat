@@ -17,8 +17,7 @@ namespace Unity.Muse.Chat.Processors
         static readonly int[] k_AxisOne = {1};
 
         readonly IWorker m_EmbedderWorker;
-        readonly ITensorAllocator m_Allocator;
-        readonly Ops m_Ops;
+        readonly IBackend m_Backend;
         readonly ITokenizationPipeline m_TokenizationPipeline;
 
         readonly bool m_DisposeWorker;
@@ -56,8 +55,7 @@ namespace Unity.Muse.Chat.Processors
             m_DisposeWorker = disposeWorker;
             MaxSequenceLength = maxSequenceLength;
 
-            m_Allocator = new TensorCachingAllocator();
-            m_Ops = new GPUComputeOps();
+            m_Backend = WorkerFactory.CreateBackend(BackendType.GPUCompute);
         }
 
         ~MiniLM_SentisProcessor() => DisposeObject();
@@ -81,8 +79,7 @@ namespace Unity.Muse.Chat.Processors
             if (m_Disposed)
                 return;
 
-            m_Allocator?.Dispose();
-            m_Ops?.Dispose();
+            m_Backend?.Dispose();
 
             if(m_DisposeWorker)
                 m_EmbedderWorker.Dispose();

@@ -16,7 +16,6 @@ namespace Unity.Muse.Chat
         internal static readonly string k_UserRole = "user";
         internal static readonly string k_AssistantRole = "assistant";
 
-        const int k_PromptContextLimit = 17000;
         const int k_MaxInternalConversationTitleLength = 30;
         const int k_TopK = 2;
         const float k_MinScore = 0.15f;
@@ -484,7 +483,7 @@ namespace Unity.Muse.Chat
         {
             if (!MuseChatEnvironment.instance.PluginModeEnabled)
             {
-                await GetContextString(true, k_PromptContextLimit, "");
+                await GetContextString(true, MuseChatConstants.PromptContextLimit, "");
             }
         }
 
@@ -595,10 +594,7 @@ namespace Unity.Muse.Chat
             // Send the prompt through the WebAPI
             m_ResponseConversation = m_ActiveConversation;
 
-            var context = !MuseChatEnvironment.instance.PluginModeEnabled ? await GetContextString(isNewConversation, k_PromptContextLimit - prompt.Length, prompt) : "";
-
-            // TODO: print the context in console for testing purposes. Should be removed before release.
-            // Debug.Log(context);
+            var context = !MuseChatEnvironment.instance.PluginModeEnabled ? await GetContextString(isNewConversation, MuseChatConstants.PromptContextLimit - prompt.Length, prompt) : "";
 
             try
             {
@@ -666,30 +662,9 @@ namespace Unity.Muse.Chat
             }
         }
 
-        internal async Task<string> GetContextString(bool newConversation, int maxLength, string prompt)
+        internal string GetSelectedContextString(int maxLength, bool isFullContext = false)
         {
-            if (newConversation)
-                m_LastContext = "";
-
-            // Initialize all context, if any context has changed, add it all
             var contextString = new StringBuilder();
-
-            // Add retrieved project settings
-            var classifiers = await ContextRetrieval.GetClassifiers(prompt, k_TopK, k_MinScore);
-            var smartContext = await ContextRetrieval.GetContext(classifiers.Select(c => c.classifier).ToArray());
-            if (smartContext != null)
-            {
-                contextString.Append("\nHere are the project settings that might be related to user's question:\n");
-                for (var i = Math.Min(k_TopK, smartContext.Length) - 1; i >= 0; i--)
-                {
-                    var payload = smartContext[i].Payload;
-                    if (payload != null && contextString.Length + payload.Length < maxLength)
-                    {
-                        contextString.Append(payload);
-                    }
-                }
-            }
-
             // Grab any selected objects
             if (IsGameObjectSelected && Selection.gameObjects.Length > 0)
             {
@@ -699,7 +674,7 @@ namespace Unity.Muse.Chat
                     var objectContext = new UnityObjectContextSelection();
                     objectContext.SetTarget(currentObject);
                     var payload = ((IContextSelection)objectContext).Payload;
-                    if (payload != null && contextString.Length + payload.Length < maxLength)
+                    if (payload != null && (isFullContext || contextString.Length + payload.Length < maxLength))
                     {
                         contextString.Append(payload);
                     }
@@ -718,9 +693,37 @@ namespace Unity.Muse.Chat
                     var consoleContext = new ConsoleContextSelection();
                     consoleContext.SetTarget(currentLog);
                     var payload = ((IContextSelection)consoleContext).Payload;
-                    if (payload != null && contextString.Length + payload.Length < maxLength)
+                    if (payload != null && (isFullContext || contextString.Length + payload.Length < maxLength))
                     {
                         contextString.Append($"\n\nHere is the user selected console {currentLog.Mode.ToString()}:\n{payload}");
+                    }
+                }
+            }
+            return contextString.ToString();
+        }
+
+        internal async Task<string> GetContextString(bool newConversation, int maxLength, string prompt)
+        {
+            if (newConversation)
+                m_LastContext = "";
+
+            // Initialize all context, if any context has changed, add it all
+            var contextString = new StringBuilder();
+
+            contextString.Append(GetSelectedContextString(maxLength));
+
+            // Add retrieved project settings
+            var classifiers = await ContextRetrieval.GetClassifiers(prompt, k_TopK, k_MinScore);
+            var smartContext = await ContextRetrieval.GetContext(classifiers.Select(c => c.classifier).ToArray());
+            if (smartContext != null)
+            {
+                contextString.Append("\nHere are the project settings that might be related to user's question:\n");
+                for (var i = Math.Min(k_TopK, smartContext.Length) - 1; i >= 0; i--)
+                {
+                    var payload = smartContext[i].Payload;
+                    if (payload != null && contextString.Length + payload.Length < maxLength)
+                    {
+                        contextString.Append(payload);
                     }
                 }
             }

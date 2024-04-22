@@ -37,6 +37,7 @@
 #editButton {
     background-color: rgba(0,0,0,0);
     border-width: 0;
+    align-items: flex-start;
 }
 
 #editCancelButton {
@@ -47,6 +48,11 @@
 
 #editButton:hover {
     background-color: var(--muse-chat-color-pink);
+}
+
+#editButton .appui-button__leadingicon {
+    width: 16px;
+    height: 16px;
 }
 
 .mui-user-edit-read-write-field {

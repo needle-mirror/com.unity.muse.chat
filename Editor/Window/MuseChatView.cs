@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -47,6 +48,10 @@ namespace Unity.Muse.Chat
         VisualElement m_ChatInputRoot;
         MuseTextField m_ChatInput;
 
+        VisualElement m_NotificationBanner;
+        Text m_NotificationBannerTitle;
+        Text m_NotificationBannerMessage;
+
         Text m_SelectionLabel;
 
         VisualElement m_SelectedContextRoot;
@@ -59,9 +64,8 @@ namespace Unity.Muse.Chat
         string m_SelectedConsoleMessageContent;
         int m_SelectedGameObjectNum;
         string m_SelectedGameObjectName;
-        const int k_SuggestedContextLimit = 5;
 
-        private bool m_MusingInProgress;
+        bool m_MusingInProgress;
 
         internal VisualElement WarningStatusRoot => m_WarningStatusRoot;
 
@@ -80,6 +84,7 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             m_RootMain = view.Q<VisualElement>("root-main");
+            m_RootMain.RegisterCallback<MouseEnterEvent>(UpdateSelectedContextWarning);
             m_NotificationContainer = view.Q<VisualElement>("notificationContainer");
 
             m_NewChatButton = view.SetupButton("newChatButton", OnNewChatClicked);
@@ -111,8 +116,8 @@ namespace Unity.Muse.Chat
             m_MusingElement.SetData(new MuseMessage { Id = new MuseMessageId(default, string.Empty, MuseMessageIdType.Internal), IsComplete = true, Content = "Musing...", Role = null });
             m_ConversationRoot.Add(m_MusingElement);
 
-            m_SuggestionRoot  = view.Q<VisualElement>("suggestionRoot");
-            m_SuggestionContent  = view.Q<VisualElement>("suggestionContent");
+            m_SuggestionRoot = view.Q<VisualElement>("suggestionRoot");
+            m_SuggestionContent = view.Q<VisualElement>("suggestionContent");
 
             PopulateSuggestionTopics(m_SuggestionContent);
 
@@ -125,6 +130,11 @@ namespace Unity.Muse.Chat
             m_ChatInput.Initialize();
             m_ChatInput.OnSubmit += OnMuseRequestSubmit;
             m_ChatInputRoot.Add(m_ChatInput);
+
+            m_NotificationBanner = view.Q<VisualElement>("notificationBanner");
+            m_NotificationBannerTitle = view.Q<Text>("notificationBannerTitle");
+            m_NotificationBannerMessage = view.Q<Text>("notificationBannerMessage");
+            view.SetupButton("notificationBannerButton", BannerButtonClicked);
 
             m_SelectedContextRoot = view.Q<VisualElement>("userSelectedContextRoot");
             m_ExceedingSelectedConsoleMessageLimitRoot = view.Q<VisualElement>("userSelectedContextWarningRoot");
@@ -146,6 +156,8 @@ namespace Unity.Muse.Chat
             m_SelectionLabel.SetEnabled(false);
 
             ClearChat();
+
+            HideBanner();
 
             view.RegisterCallback<GeometryChangedEvent>(OnViewGeometryChanged);
 
@@ -173,30 +185,60 @@ namespace Unity.Muse.Chat
             MuseEditorDriver.instance.WarmupContext();
 
             AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
+
+
+#if UNITY_2022_3_20 || UNITY_2022_3_21 || UNITY_2022_3_22 || UNITY_2022_3_23 || UNITY_2022_3_24 || UNITY_2022_3_25
+            bool showWarning = true;
+            string versionsToUse = "2022.3.19f1 or lower, or 2022.3.26f1";
+#elif UNITY_2023_2_16 || UNITY_2023_2_17 || UNITY_2023_2_18 || UNITY_2023_2_19
+            bool showWarning = true;
+            string versionsToUse = "2023.2.15f1 or lower, or 2023.2.20f1";
+#else
+            bool showWarning = false;
+            string versionsToUse = "";
+#endif
+
+            if (showWarning)
+            {
+                const string warningShownKey = "MUSE_CHAT_WARNING_SHOWN";
+                if (!SessionState.GetBool(warningShownKey, false))
+                {
+                    ShowBanner("This Unity version has performance issues with Muse Chat",
+                        $"For the best experience, use version {versionsToUse} or later. A fix is coming around April 25th.",
+                        () =>
+                        {
+                            SessionState.SetBool(warningShownKey, true);
+                        });
+                }
+            }
         }
 
         void OnSelectedConsoleErrorButtonClicked()
         {
             MuseEditorDriver.instance.IsConsoleErrorSelected = !MuseEditorDriver.instance.IsConsoleErrorSelected;
             UpdateContextButton(m_SelectedConsoleErrorButton, MuseEditorDriver.instance.IsConsoleErrorSelected);
+            UpdateSelectedContextWarning();
         }
 
         void OnSelectedConsoleWarnButtonClicked()
         {
             MuseEditorDriver.instance.IsConsoleWarningSelected = !MuseEditorDriver.instance.IsConsoleWarningSelected;
             UpdateContextButton(m_SelectedConsoleWarnButton, MuseEditorDriver.instance.IsConsoleWarningSelected);
+            UpdateSelectedContextWarning();
         }
 
         void OnSelectedGameObjectButtonClicked()
         {
             MuseEditorDriver.instance.IsGameObjectSelected = !MuseEditorDriver.instance.IsGameObjectSelected;
             UpdateContextButton(m_SelectedGameObjectButton, MuseEditorDriver.instance.IsGameObjectSelected);
+            UpdateSelectedContextWarning();
         }
 
         void OnSelectedConsoleInfoButtonClicked()
         {
             MuseEditorDriver.instance.IsConsoleInfoSelected = !MuseEditorDriver.instance.IsConsoleInfoSelected;
             UpdateContextButton(m_SelectedConsoleInfoButton, MuseEditorDriver.instance.IsConsoleInfoSelected);
+            UpdateSelectedContextWarning();
         }
 
         void UpdateContextButton(Button button, bool isSelected)
@@ -363,7 +405,19 @@ namespace Unity.Muse.Chat
         void UpdateContextSelectionPanel()
         {
             m_SelectedContextRoot.style.display = (m_SelectedConsoleMessageNum + m_SelectedGameObjectNum == 0)? DisplayStyle.None : DisplayStyle.Flex;
-            m_ExceedingSelectedConsoleMessageLimitRoot.style.display = (m_SelectedConsoleMessageNum + m_SelectedGameObjectNum > k_SuggestedContextLimit)? DisplayStyle.Flex : DisplayStyle.None;
+        }
+
+        void UpdateSelectedContextWarning(MouseEnterEvent evt = null)
+        {
+            if (MuseEditorDriver.instance.GetSelectedContextString(MuseChatConstants.PromptContextLimit, true).Length
+                > MuseChatConstants.PromptContextLimit)
+            {
+                m_ExceedingSelectedConsoleMessageLimitRoot.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                m_ExceedingSelectedConsoleMessageLimitRoot.style.display = DisplayStyle.None;
+            }
         }
 
         private void OnSuggestionSelected(string suggestion)
@@ -421,8 +475,14 @@ namespace Unity.Muse.Chat
             bool hasActiveResponseShown = false;
             if (k_ActiveChatElements.Count > 0)
             {
-                var lastElement = k_ActiveChatElements.Last().Value;
-                if(lastElement.Message.Role == MuseEditorDriver.k_AssistantRole && !string.IsNullOrEmpty(lastElement.Message.Content))
+                // Sort by timestamp and get latest:
+                var sortedElements = k_ActiveChatElements.Values.ToArray();
+                Array.Sort(sortedElements, (a, b) => a.Message.Timestamp.CompareTo(b.Message.Timestamp));
+
+                var lastElement = sortedElements.Last();
+
+                if (lastElement.Message.Role == MuseEditorDriver.k_AssistantRole &&
+                    !string.IsNullOrEmpty(lastElement.Message.Content))
                 {
                     hasActiveResponseShown = true;
                 }

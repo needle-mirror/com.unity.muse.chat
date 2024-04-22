@@ -16,10 +16,13 @@ namespace Unity.Muse.Chat
 
         public Action<PopupNotification> OnDismissed;
 
+        public long TimeOut { get; private set; }
+
         public class PopupNotificationContext
         {
             public string message;
             public string icon;
+            public long timeOut;
         }
 
         public PopupNotification()
@@ -30,6 +33,7 @@ namespace Unity.Muse.Chat
         {
             m_TextField.text = messageContext.message;
             m_Icon.iconName = messageContext.icon;
+            TimeOut = messageContext.timeOut;
         }
 
         protected override void InitializeView(TemplateContainer view)

@@ -57,32 +57,50 @@ namespace Unity.Muse.Chat.Processors
                 m_Owner.m_EmbedderWorker.Execute(inputTensors);
 
                 // grab output
-                using var output = m_Owner.m_EmbedderWorker.PeekOutput("last_hidden_state") as TensorFloat;
+                using var output = m_Owner.m_EmbedderWorker.PeekOutput("output") as TensorFloat;
 
                 // mean pooling
                 TensorFloat pooled;
                 {
-                    using var reshaped = m_Owner.m_Ops.Reshape(attentionMask, new TensorShape(1, m_Owner.MaxSequenceLength, 1));
+                    attentionMask.Reshape(new TensorShape(1, m_Owner.MaxSequenceLength, 1));
 
-                    using var expanded = m_Owner.m_Ops.Expand(reshaped, output!.shape);
-                    using var attentionMaskExpanded = m_Owner.m_Ops.Cast(expanded, DataType.Float) as TensorFloat;
-                    using var outputMul = m_Owner.m_Ops.Mul(output, attentionMaskExpanded);
-                    using var reduced = m_Owner.m_Ops.ReduceSum(outputMul, k_AxisOne, false);
-                    using var sumMask = m_Owner.m_Ops.ReduceSum(attentionMaskExpanded, k_AxisOne, false);
-                    using var clipped = m_Owner.m_Ops.Clip(sumMask, 1e-9f, 1e9f);
-                    pooled = m_Owner.m_Ops.Div(reduced, clipped);
+                    using var expanded = TensorInt.AllocNoData(output!.shape);
+                    m_Owner.m_Backend.Expand(attentionMask, expanded);
+
+                    using var attentionMaskExpanded = TensorFloat.AllocNoData(expanded.shape);
+                    m_Owner.m_Backend.Cast(expanded, attentionMaskExpanded);
+
+                    using var outputMul = TensorFloat.AllocNoData(output.shape);
+                    m_Owner.m_Backend.Mul(output, attentionMaskExpanded, outputMul);
+
+                    using var reduced = TensorFloat.AllocNoData(outputMul.shape.Reduce(k_AxisOne, false));
+                    m_Owner.m_Backend.ReduceSum(outputMul, reduced, k_AxisOne, false);
+
+                    using var sumMask = TensorFloat.AllocNoData(attentionMaskExpanded.shape.Reduce(k_AxisOne, false));
+                    m_Owner.m_Backend.ReduceSum(attentionMaskExpanded, sumMask, k_AxisOne, false);
+
+                    using var clipped = TensorFloat.AllocNoData(sumMask.shape);
+                    m_Owner.m_Backend.Clip(sumMask, clipped, 1e-9f, 1e9f);
+
+                    pooled = TensorFloat.AllocNoData(reduced.shape);
+                    m_Owner.m_Backend.Div(reduced, clipped, pooled);
                 }
 
                 // normalization
                 TensorFloat embeddings;
                 {
-                    using var reduced = m_Owner.m_Ops.ReduceL2(pooled, k_AxisOne, false);
-                    using var norm = m_Owner.m_Ops.Clip(reduced, 1e-12f, 1e12f);
-                    embeddings = m_Owner.m_Ops.Div(pooled, norm);
+                    using var reduced = TensorFloat.AllocNoData(pooled.shape.Reduce(k_AxisOne, false));
+                    m_Owner.m_Backend.ReduceL2(pooled, reduced, k_AxisOne, false);
+
+                    using var norm = TensorFloat.AllocNoData(reduced.shape);
+                    m_Owner.m_Backend.Clip(reduced, norm, 1e-12f, 1e12f);
+
+                    embeddings = TensorFloat.AllocNoData(pooled.shape);
+                    m_Owner.m_Backend.Div(pooled, norm, embeddings);
                 }
 
                 // force the AsyncGPUReadback request to complete and grab embeddings
-                embeddings.MakeReadable();
+                embeddings.CompleteOperationsAndDownload();
                 var result = embeddings.ToReadOnlyArray();
 
                 // dispose of tensors
@@ -104,7 +122,7 @@ namespace Unity.Muse.Chat.Processors
             /// </returns>
             public IEnumerable<float[]> Embed(IEnumerable<string> keys)
             {
-                var encodings = keys.Select(key => m_Owner.m_TokenizationPipeline.Encode(key))
+                 var encodings = keys.Select(key => m_Owner.m_TokenizationPipeline.Encode(key))
                     .ToArray();
 
                 var (ids, attention, typeIds) = (
@@ -130,38 +148,55 @@ namespace Unity.Muse.Chat.Processors
                 m_Owner.m_EmbedderWorker.Execute(inputTensors);
 
                 // grab output
-                using var output = m_Owner.m_EmbedderWorker.PeekOutput("last_hidden_state") as TensorFloat;
+                using var output = m_Owner.m_EmbedderWorker.TakeOutputOwnership("output") as TensorFloat;
 
                 var vectorLength = output!.shape[2];
 
                 // mean pooling
                 TensorFloat pooled;
                 {
-                    using var reshaped = m_Owner.m_Ops.Reshape(
-                        attentionMask,
-                        new TensorShape(encodings.Length, m_Owner.MaxSequenceLength, 1));
+                    attentionMask.Reshape(new TensorShape(encodings.Length, m_Owner.MaxSequenceLength, 1));
 
-                    using var expanded = m_Owner.m_Ops.Expand(reshaped, output.shape);
-                    using var attentionMaskExpanded = m_Owner.m_Ops.Cast(expanded, DataType.Float) as TensorFloat;
-                    using var outputMul = m_Owner.m_Ops.Mul(output, attentionMaskExpanded);
-                    using var reduced = m_Owner.m_Ops.ReduceSum(outputMul, k_AxisOne, false);
-                    using var sumMask = m_Owner.m_Ops.ReduceSum(attentionMaskExpanded, k_AxisOne, false);
-                    using var clipped = m_Owner.m_Ops.Clip(sumMask, 1e-9f, 1e9f);
-                    pooled = m_Owner.m_Ops.Div(reduced, clipped);
+                    using var expanded = TensorInt.AllocNoData(output!.shape);
+                    m_Owner.m_Backend.Expand(attentionMask, expanded);
+
+                    using var attentionMaskExpanded = TensorFloat.AllocNoData(expanded.shape);
+                    m_Owner.m_Backend.Cast(expanded, attentionMaskExpanded);
+
+                    using var outputMul = TensorFloat.AllocNoData(output.shape);
+                    m_Owner.m_Backend.Mul(output, attentionMaskExpanded, outputMul);
+
+                    using var reduced = TensorFloat.AllocNoData(outputMul.shape.Reduce(k_AxisOne, false));
+                    m_Owner.m_Backend.ReduceSum(outputMul, reduced, k_AxisOne, false);
+
+                    using var sumMask = TensorFloat.AllocNoData(attentionMaskExpanded.shape.Reduce(k_AxisOne, false));
+                    m_Owner.m_Backend.ReduceSum(attentionMaskExpanded, sumMask, k_AxisOne, false);
+
+                    using var clipped = TensorFloat.AllocNoData(sumMask.shape);
+                    m_Owner.m_Backend.Clip(sumMask, clipped, 1e-9f, 1e9f);
+
+                    pooled = TensorFloat.AllocNoData(reduced.shape);
+                    m_Owner.m_Backend.Div(reduced, clipped, pooled);
                 }
 
                 // normalization
                 TensorFloat embeddings;
                 {
-                    using var reduced = m_Owner.m_Ops.ReduceL2(pooled, k_AxisOne, false);
-                    using var norm = m_Owner.m_Ops.Clip(reduced, 1e-12f, 1e12f);
+                    using var reduced = TensorFloat.AllocNoData(pooled.shape.Reduce(k_AxisOne, false));
+                    m_Owner.m_Backend.ReduceL2(pooled, reduced, k_AxisOne, false);
 
-                    using var reshaped = m_Owner.m_Ops.Reshape(norm, new TensorShape(encodings.Length, 1));
-                    embeddings = m_Owner.m_Ops.Div(pooled, reshaped);
+                    using var norm = TensorFloat.AllocNoData(reduced.shape);
+                    m_Owner.m_Backend.Clip(reduced, norm, 1e-12f, 1e12f);
+
+                    using var reshaped = TensorFloat.AllocNoData(new TensorShape(encodings.Length, 1));
+                    m_Owner.m_Backend.Reshape(norm, reshaped);
+
+                    embeddings = TensorFloat.AllocNoData(pooled.shape);
+                    m_Owner.m_Backend.Div(pooled, reshaped, embeddings);
                 }
 
                 // force the AsyncGPUReadback requests to complete
-                embeddings.MakeReadable();
+                embeddings.CompleteOperationsAndDownload();
 
                 // grab embedding
                 var embeddingsArray = embeddings.ToReadOnlyArray();

@@ -3,6 +3,11 @@
     --muse-chat-color-user-message: #441a2b;
 }
 
+.unity-text-element {
+    /* define default font size to ensure it's consistent across Unity versions */
+    font-size: 12px;
+}
+
 .-muse-chat-panel {
     background-color: var(--appui-backgrounds-200);
 }

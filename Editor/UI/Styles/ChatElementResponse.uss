@@ -21,7 +21,7 @@
     -unity-text-align: upper-left;
 }
 
-.mui-chat-response-button  {
+.mui-chat-response-button {
     margin-top: 8px;
     margin-left: 8px;
     margin-bottom: 8px;
@@ -29,6 +29,21 @@
     height: 24px;
     background-color: rgba(0, 0, 0, 0);
     border-width: 0;
+}
+
+#copyButton .appui-button__leadingicon {
+    width: 16px;
+    height: 16px;
+}
+
+#upVoteButton .appui-button__leadingicon {
+    width: 16px;
+    height: 16px;
+}
+
+#downVoteButton .appui-button__leadingicon {
+    width: 16px;
+    height: 16px;
 }
 
 .mui-chat-response-button:hover {
