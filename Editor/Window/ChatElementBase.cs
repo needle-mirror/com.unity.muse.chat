@@ -179,6 +179,11 @@ namespace Unity.Muse.Chat
             Selection.activeObject = asset;
         }
 
+        protected virtual string GetAnimatedMessage(string message)
+        {
+            return message;
+        }
+
         void BuildMessageChunks()
         {
             m_SourceBlocks?.Clear();
@@ -189,6 +194,12 @@ namespace Unity.Muse.Chat
             }
 
             MessageUtils.ProcessText(Message, ref m_SourceBlocks, out var messageContent);
+
+            if (!Message.IsComplete)
+            {
+                messageContent = GetAnimatedMessage(messageContent);
+            }
+
             string[] lines = messageContent.Split("\n");
             var chunk = new StringBuilder();
             for (var i = 0; i < lines.Length; i++)

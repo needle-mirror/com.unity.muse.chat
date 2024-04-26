@@ -151,6 +151,7 @@ namespace Unity.Muse.Chat
             UpdateContextButton(m_SelectedConsoleWarnButton, MuseEditorDriver.instance.IsConsoleWarningSelected);
             UpdateContextButton(m_SelectedConsoleErrorButton, MuseEditorDriver.instance.IsConsoleErrorSelected);
             UpdateContextButton(m_SelectedGameObjectButton, MuseEditorDriver.instance.IsGameObjectSelected);
+            UpdateSelectedContextWarning();
 
             m_SelectionLabel = view.Q<Text>("selectionLabel");
             m_SelectionLabel.SetEnabled(false);

@@ -38,6 +38,10 @@ namespace Unity.Muse.Chat
 
         private FeedbackEditMode m_FeedbackMode = FeedbackEditMode.None;
 
+        private int m_AnimationIndex;
+        static readonly int k_TextAnimationDelay = 500; // in ms
+        private IVisualElementScheduledItem m_ScheduledAnim;
+
         private enum FeedbackEditMode
         {
             None,
@@ -72,6 +76,66 @@ namespace Unity.Muse.Chat
             RefreshText(m_TextFieldRoot, m_TextFields);
             RefreshSourceBlocks();
             RefreshFeedbackParameters();
+
+            // Cancel any active animations:
+            if (m_ScheduledAnim != null)
+            {
+                m_ScheduledAnim.Pause();
+                m_ScheduledAnim = null;
+            }
+
+            // Schedule update to animate text for incomplete messages:
+            if (!message.IsComplete)
+            {
+                GetAnimationInfo(message.Content, out var remainingSpaces, out _);
+                var delay = k_TextAnimationDelay / Math.Max(1, remainingSpaces);
+                m_ScheduledAnim = schedule.Execute(() =>
+                {
+                    SetData(message);
+                }).StartingIn(delay);
+            }
+        }
+
+        void GetAnimationInfo(string message, out int remainingSpaces, out int lastSpace)
+        {
+            if (string.IsNullOrEmpty(message))
+            {
+                lastSpace = 0;
+                remainingSpaces = 0;
+                return;
+            }
+
+            m_AnimationIndex = Math.Min(m_AnimationIndex, message.Length - 1);
+            lastSpace = message.IndexOf(' ', m_AnimationIndex);
+
+            remainingSpaces = 0;
+            if (lastSpace > 0)
+            {
+                int count = 0;
+                foreach (var c in message.Substring(lastSpace))
+                {
+                    if (c == ' ') count++;
+                }
+
+                remainingSpaces = Math.Max(1, count);
+            }
+        }
+
+        protected override string GetAnimatedMessage(string message)
+        {
+            if (message.Length > 0)
+            {
+                GetAnimationInfo(message, out _, out var lastSpace);
+
+                if (lastSpace > 0)
+                {
+                    m_AnimationIndex = lastSpace + 1;
+                }
+
+                message = message.Substring(0, m_AnimationIndex);
+            }
+
+            return message;
         }
 
         protected override void InitializeView(TemplateContainer view)

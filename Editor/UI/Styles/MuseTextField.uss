@@ -2,6 +2,14 @@
     flex-grow: 1;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
+}
+
+.musetextfield__element-root {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .mui-mtf-root {
@@ -13,7 +21,6 @@
     border-color: var(--appui-backgrounds-50);
     background-color: var(--appui-backgrounds-100);
     cursor: text;
-    min-width: 700px;
     flex-direction: row;
 }
 

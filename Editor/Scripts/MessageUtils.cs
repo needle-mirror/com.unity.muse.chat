@@ -34,6 +34,8 @@ namespace Unity.Muse.Chat
 
         static readonly DayOfWeek k_FirstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
 
+        static StringBuilder s_stringBuilder = new();
+
         struct SourceOrFootnote
         {
             public bool IsSource;
@@ -79,7 +81,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            var stringBuilder = new StringBuilder();
+            s_stringBuilder.Clear();
 
             var chunks = Regex.Split(message.Content, k_BoundaryRegexComplete);
 
@@ -96,7 +98,8 @@ namespace Unity.Muse.Chat
 
                     if (subChunks.Length < 2)
                     {
-                        var lastSpace = subChunks[0].LastIndexOf(' ');
+                        int lastSpace = subChunks[0].LastIndexOf(' ');
+
                         if (lastSpace > 0)
                         {
                             text = ProcessChunk(subChunks[0].Substring(0, lastSpace));
@@ -128,7 +131,7 @@ namespace Unity.Muse.Chat
                     });
                 }
 
-                stringBuilder.Append(text);
+                s_stringBuilder.Append(text);
 
                 // If this is not the last chunk placeholder source index
                 if (!lastBlock)
@@ -136,13 +139,13 @@ namespace Unity.Muse.Chat
                     if (message.IsComplete)
                     {
                         // Replace source (boundary tag) with placeholders
-                        sourceOrFootnotes.Add(new SourceOrFootnote() { IsSource = true, FootnoteIndex = 0, SourceIndex = i/2 } );
+                        sourceOrFootnotes.Add(new SourceOrFootnote() { IsSource = true, FootnoteIndex = 0, SourceIndex = i / 2 });
 
-                        stringBuilder.Append($"{{{{source:{sourceOrFootnotes.Count}}}}}");
+                        s_stringBuilder.Append($"{{{{source:{sourceOrFootnotes.Count}}}}}");
                     }
                     else
                     {
-                        stringBuilder.Append(GetReferenceSpriteString(i/2 + 1));
+                        s_stringBuilder.Append(GetReferenceSpriteString(i / 2 + 1));
                     }
                 }
             }
@@ -182,7 +185,7 @@ namespace Unity.Muse.Chat
                     sourceBlocks = new List<WebAPI.SourceBlock>();
                 }
 
-                messageContent = stringBuilder.ToString();
+                messageContent = s_stringBuilder.ToString();
 
                 // Fill in footnote title/URL found at end of text
                 messageContent = k_FootnoteURLsRegex.Replace(messageContent, match =>
@@ -270,7 +273,7 @@ namespace Unity.Muse.Chat
             }
             else
             {
-                messageContent = stringBuilder.ToString();
+                messageContent = s_stringBuilder.ToString();
             }
 
             // Replace invalid non-footnote markers
