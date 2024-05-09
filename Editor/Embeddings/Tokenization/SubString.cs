@@ -81,6 +81,11 @@ namespace Unity.Muse.Chat.Tokenization
         int? m_HashCode;
 
         /// <summary>
+        ///     The number of UTF-8 characters of this portion.
+        /// </summary>
+        int? m_UtfLength;
+
+        /// <summary>
         ///     Initializes a new instance of the <see cref="SubString" /> type.
         /// </summary>
         /// <param name="source">
@@ -104,6 +109,7 @@ namespace Unity.Muse.Chat.Tokenization
             Offset = offset;
             Length = length;
             m_HashCode = source is null ? 0 : default;
+            m_UtfLength = default;
         }
 
         /// <summary>
@@ -140,6 +146,11 @@ namespace Unity.Muse.Chat.Tokenization
         public int Length { get; }
 
         /// <summary>
+        ///     The number of Utf-8 valid characters of this portion.
+        /// </summary>
+        public int UtfLength => m_UtfLength ??= GetUtfLength();
+
+        /// <summary>
         ///     Tells whether the substring does not reference any valid source.
         /// </summary>
         public bool IsNull => Source is null;
@@ -167,6 +178,20 @@ namespace Unity.Muse.Chat.Tokenization
 
                 return true;
             }
+        }
+
+        int GetUtfLength()
+        {
+            var count = 0;
+            for (int i = Offset, limit = Offset + Length; i < limit; i++)
+            {
+                while (i + 1 < limit && char.IsSurrogate(Source[i]))
+                    i++;
+
+                count++;
+            }
+
+            return count;
         }
 
         /// <summary>
@@ -220,6 +245,62 @@ namespace Unity.Muse.Chat.Tokenization
             return IsNull
                 ? throw new NullReferenceException(k_NullSourceExceptionMessage)
                 : new SubString(Source, offset + Offset, Length - offset);
+        }
+
+        public SubString UtfSub(int offset, int length)
+        {
+            if (IsNull)
+                throw new NullReferenceException(k_NullSourceExceptionMessage);
+
+            var charOffset = 0;
+
+            for (var i = 0; i < offset; i++)
+            {
+                if (charOffset >= Length)
+                    throw new ArgumentOutOfRangeException(nameof(offset));
+
+                while (charOffset < Length && char.IsSurrogate(Source[Offset + charOffset]))
+                    charOffset++;
+
+                charOffset++;
+            }
+
+            var charLength = 0;
+
+            for (var i = 0; i < length; i++)
+            {
+                if (charOffset + charLength >= Length)
+                    throw new ArgumentOutOfRangeException(nameof(length));
+
+                while (charOffset + charLength < Length
+                    && char.IsSurrogate(Source[Offset + charOffset + charLength]))
+                    charLength++;
+
+                charLength++;
+            }
+
+            return new(Source, Offset + charOffset, charLength);
+        }
+
+        public SubString UtfSub(int offset)
+        {
+            if (IsNull)
+                throw new NullReferenceException(k_NullSourceExceptionMessage);
+
+            var charOffset = 0;
+
+            for (var i = 0; i < offset; i++)
+            {
+                if (charOffset >= Length)
+                    throw new ArgumentOutOfRangeException(nameof(offset));
+
+                while (charOffset < Length && char.IsSurrogate(Source[Offset + charOffset]))
+                    charOffset++;
+
+                charOffset++;
+            }
+
+            return new(Source, Offset + charOffset, Length - charOffset);
         }
 
         public bool StartsWith(SubString prefix)

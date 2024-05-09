@@ -35,14 +35,14 @@ namespace Unity.Muse.Chat
                 }
             }
 
-            public IWebAPI.RequestStatus RequestStatus
+            public RequestStatus RequestStatus
             {
                 get
                 {
                     if (m_DebugTimeOffset < k_DebugTotalTime)
-                        return IWebAPI.RequestStatus.InProgress;
+                        return RequestStatus.InProgress;
                     else
-                        return IWebAPI.RequestStatus.Complete;
+                        return RequestStatus.Complete;
                 }
             }
 

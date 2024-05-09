@@ -1,27 +1,20 @@
 .musetextfield__element {
     flex-grow: 1;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
 }
 
 .musetextfield__element-root {
     flex-grow: 1;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
 }
 
 .mui-mtf-root {
     flex-grow: 1;
     min-height: 42px;
-    max-width: 700px;
     border-width: 1px;
     border-radius: 8px;
     border-color: var(--appui-backgrounds-50);
     background-color: var(--appui-backgrounds-100);
     cursor: text;
-    flex-direction: row;
+    justify-content: center;
 }
 
 .mui-mtf-root:hover {
@@ -48,7 +41,7 @@
 }
 
 .mui-mtf-scroll-view {
-    flex-grow: 1;
+    flex-grow: 0;
     margin: 8px;
     max-height: 160px;
     align-self: center;
@@ -61,6 +54,10 @@
     flex-grow: 1;
     white-space: normal;
     margin-right: 42px;
+}
+
+#inputScrollView {
+    align-self: flex-start;
 }
 
 #characterCount {
@@ -107,9 +104,3 @@
     height: 24px;
     align-self: center;
 }
-
-#inputScrollView {
-    align-items: flex-start;
-    flex-direction: row;
-}
-

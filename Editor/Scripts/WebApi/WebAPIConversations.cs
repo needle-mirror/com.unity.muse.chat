@@ -17,7 +17,7 @@ namespace Unity.Muse.Chat
         Task<List<ConversationInfo>> m_CurrentContextualConvosRequest;
         Task<List<ConversationInfo>> m_CurrentContextlessConvosRequest;
 
-        public IEnumerable<IWebAPI.ContextIndicatedConversationInfo> LastConversations { get; private set; }
+        public IEnumerable<WebAPI.ContextIndicatedConversationInfo> LastConversations { get; private set; }
 
 
         /// <summary>
@@ -26,9 +26,9 @@ namespace Unity.Muse.Chat
         /// </summary>
         /// <remarks>If the request is already in flight, the new <see cref="onComplete"/> callback will be ignored
         /// and the function will return immediately</remarks>
-        public void GetConversations(
+        public virtual void GetConversations(
             ILoopRegistration loop,
-            Action<IEnumerable<IWebAPI.ContextIndicatedConversationInfo>> onComplete,
+            Action<IEnumerable<ContextIndicatedConversationInfo>> onComplete,
             Action<Exception> onError)
         {
             if (m_CurrentConversationsRequest != null)
@@ -61,11 +61,11 @@ namespace Unity.Muse.Chat
                 if (contextualTask.IsCompletedSuccessfully && contextlessTask.IsCompletedSuccessfully)
                 {
                     var contextInfos = contextualTask.Result
-                        .Select(c => new IWebAPI.ContextIndicatedConversationInfo(true, c));
+                        .Select(c => new ContextIndicatedConversationInfo(true, c));
 
                     var contextlessInfos = contextlessTask.Result
                         .Where(c => contextInfos.All(v => v.ConversationId != c.ConversationId))
-                        .Select(c => new IWebAPI.ContextIndicatedConversationInfo(false, c));
+                        .Select(c => new ContextIndicatedConversationInfo(false, c));
 
                     CacheLastAndInvokeComplete(contextInfos.Concat(contextlessInfos));
                 }
@@ -81,7 +81,7 @@ namespace Unity.Muse.Chat
                 }
             }
 
-            void CacheLastAndInvokeComplete(IEnumerable<IWebAPI.ContextIndicatedConversationInfo> contextlessInfos)
+            void CacheLastAndInvokeComplete(IEnumerable<ContextIndicatedConversationInfo> contextlessInfos)
             {
                 LastConversations = contextlessInfos;
                 onComplete?.Invoke(contextlessInfos);
@@ -152,6 +152,7 @@ namespace Unity.Muse.Chat
                 loop.Unregister(RequestTick);
                 Task<ResponseGetConversationMuseConversationConversationIdGet> tsc = m_CurrentConversationRequest;
                 m_CurrentConversationRequest = null;
+                m_CurrentConversationRequestId = null;
 
                 if (tsc.IsCompletedSuccessfully)
                 {

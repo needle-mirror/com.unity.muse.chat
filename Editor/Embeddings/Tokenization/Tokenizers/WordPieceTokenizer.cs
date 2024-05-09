@@ -104,7 +104,7 @@ namespace Unity.Muse.Chat.Tokenization.Tokenizers
 
         protected override void TokenizeInternal(SubString input, ICollection<int> output)
         {
-            if (input.Length > MaxInputCharsPerWord)
+            if (input.UtfLength > MaxInputCharsPerWord)
             {
                 foreach (var id in UnknownToken.Ids)
                     output.Add(id);
@@ -113,14 +113,26 @@ namespace Unity.Muse.Chat.Tokenization.Tokenizers
 
             using var _ = m_TokenListPool.Get(out var tokens);
 
-            var searchInput = input;
+            SubString prefix = ContinuingSubWordPrefix;
+
             var @continue = false;
-            while (searchInput.Length > 0)
+            while (input.UtfLength > 0)
             {
-                var found = m_Vocabulary.Find(
-                    searchInput,
-                    out var result,
-                    @continue ? ContinuingSubWordPrefix : null);
+                var searchInput = input;
+                var utfLength = searchInput.UtfLength;
+
+                var found = m_Vocabulary.TryGetToken(
+                    searchInput, out var result,
+                    prefix: @continue ? prefix : (SubString?)null);
+
+                while (!found && utfLength > 1)
+                {
+                    utfLength--;
+                    searchInput = input.UtfSub(0, utfLength);
+
+                    found = m_Vocabulary.TryGetToken(
+                        searchInput, out result, prefix: @continue ? prefix : (SubString?)null);
+                }
 
                 if (!found)
                 {
@@ -129,12 +141,12 @@ namespace Unity.Muse.Chat.Tokenization.Tokenizers
                     return;
                 }
 
-                tokens.AddRange(result.definition.Ids);
+                tokens.AddRange(result.Ids);
 
-                if (searchInput.Length - result.length == 0)
+                if (input.UtfLength - utfLength == 0)
                     break;
-                searchInput = searchInput.Sub(result.length);
 
+                input = input.UtfSub(utfLength);
                 @continue = true;
             }
 

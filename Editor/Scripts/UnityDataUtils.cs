@@ -228,6 +228,7 @@ namespace Unity.Muse.Chat
         /// <param name="maxDepth">If 0 or greater, how many levels deep of nested objects to travel</param>
         /// <param name="rootFields">The list of fields to write. Null means all fields.</param>
         /// <param name="useDisplayName">Write field using their beautified display name.</param>
+        /// <param name="ignorePrefabInstance">If true, prefab instances are ignored.</param>
         /// <returns>A string summary of the given object and its components</returns>
         public static string OutputUnityObject(Object targetObject, bool includeTypes, bool includeTooltips, int maxDepth = -1, string[] rootFields = default, bool useDisplayName = false, bool ignorePrefabInstance = true)
         {

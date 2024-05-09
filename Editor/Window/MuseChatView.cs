@@ -275,13 +275,13 @@ namespace Unity.Muse.Chat
 
         public void PopulateConversation(MuseConversation conversation)
         {
-            m_ConversationName.text = conversation.Title;
-
             var sw = new Stopwatch();
             sw.Start();
             try
             {
                 ClearChat();
+                m_ConversationName.text = conversation.Title;
+
                 for (var i = 0; i < conversation.Messages.Count; i++)
                 {
                     AddOrUpdateChatElement(conversation.Messages[i]);
@@ -317,6 +317,7 @@ namespace Unity.Muse.Chat
 
         public void ClearChat()
         {
+            m_ConversationName.text = "New chat";
             m_ChatInput.ClearText();
             m_ConversationContent.Clear();
             k_ActiveChatElements.Clear();

@@ -4,7 +4,6 @@ using System.Linq;
 using Unity.Muse.Chat.Processors;
 using Unity.Muse.Chat.VectorStorage;
 using UnityEditor;
-using UnityEngine;
 
 #if UNITY_2023_1_OR_NEWER
 using UnityEngine;
@@ -16,18 +15,14 @@ namespace Unity.Muse.Chat
 {
     class ContextRetrieval : IDisposable
     {
-        static ContextRetrieval s_Instance;
-
-        static async
+        public static async
 #if UNITY_2023_1_OR_NEWER
-        Awaitable
+            Awaitable<ContextRetrieval>
 #else
-        Task
+            Task<ContextRetrieval>
 #endif
-        Init()
+            Create()
         {
-            AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
-
             var contextSelections = TypeCache
 
                 // I get all the methods tagged with the ContextRetrievalBuilder attribute
@@ -63,53 +58,12 @@ namespace Unity.Muse.Chat
                 .Zip(classifiers, (key, classifier) => (key, classifier))
                 .ToDictionary(t => t.key, t => t.classifier);
 
-            s_Instance = new()
+            return new()
             {
                 m_VectorStore = vectorStore,
                 m_ContextSelections = contextSelections,
                 m_Classifiers = classifierLut
             };
-        }
-
-        static void OnBeforeAssemblyReload()
-        {
-            AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
-
-            s_Instance?.Dispose();
-            s_Instance = null;
-        }
-
-        public static async
-#if UNITY_2023_1_OR_NEWER
-        Awaitable<(string classifier, float priority)[]>
-#else
-            Task<(string classifier, float priority)[]>
-#endif
-            GetClassifiers(string question, int topK, float minScore=0.01f)
-        {
-            if (s_Instance is null)
-                await Init();
-
-            return (await s_Instance!.m_VectorStore.Query(question, topK, minScore))
-                .Select(t => (s_Instance.m_Classifiers[t.key], t.priority))
-                .ToArray();
-        }
-
-
-        public static async
-#if UNITY_2023_1_OR_NEWER
-        Awaitable<IContextSelection[]>
-#else
-            Task<IContextSelection[]>
-#endif
-            GetContext(params string[] classifiers)
-        {
-            if (s_Instance is null)
-                await Init();
-
-            return classifiers
-                .SelectMany(classifier => s_Instance.m_ContextSelections[classifier])
-                .ToArray();
         }
 
         Dictionary<string, string> m_Classifiers;
@@ -120,6 +74,24 @@ namespace Unity.Muse.Chat
         {}
 
         ~ContextRetrieval() => DisposeObject();
+
+        public async
+#if UNITY_2023_1_OR_NEWER
+            Awaitable<(string classifier, float priority)[]>
+#else
+            Task<(string classifier, float priority)[]>
+#endif
+            GetClassifiers(string question, int topK, float minScore = 0.01f)
+        {
+            return (await m_VectorStore.Query(question, topK, minScore))
+                .Select(t => (m_Classifiers[t.key], t.priority))
+                .ToArray();
+        }
+
+        public IContextSelection[] GetContext(params string[] classifiers) =>
+            classifiers
+                .SelectMany(classifier => m_ContextSelections[classifier])
+                .ToArray();
 
         public void Dispose()
         {

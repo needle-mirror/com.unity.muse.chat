@@ -294,7 +294,16 @@ namespace Unity.Muse.Chat
         private void OnCopyClicked(PointerUpEvent evt)
         {
             string disclaimerHeader = string.Format(MuseChatConstants.DisclaimerText, DateTime.Now.ToShortDateString());
-            GUIUtility.systemCopyBuffer = string.Concat(disclaimerHeader, Message.Content);
+
+            // Format message with footnotes (indices to sources)
+            IList<WebAPI.SourceBlock> sourceBlocks = new List<WebAPI.SourceBlock>();
+            MessageUtils.ProcessText(Message, ref sourceBlocks, out var outMessage,
+                MessageUtils.FootnoteFormat.SimpleIndexForClipboard);
+
+            // Add sources in same order of footnote indices
+            MessageUtils.AppendSourceBlocks(sourceBlocks, ref outMessage);
+
+            GUIUtility.systemCopyBuffer = string.Concat(disclaimerHeader, outMessage);
 
             MuseChatView.ShowNotification("Copied to clipboard", PopNotificationIconType.Info);
         }

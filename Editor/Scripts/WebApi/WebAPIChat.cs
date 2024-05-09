@@ -19,7 +19,7 @@ namespace Unity.Muse.Chat
     {
         ChatRequestOperation m_ActiveChatRequestOperation;
 
-        public IWebAPI.RequestStatus chatStatus
+        public virtual RequestStatus chatStatus
         {
             get
             {
@@ -30,29 +30,29 @@ namespace Unity.Muse.Chat
                         return m_DebugMessage.RequestStatus;
 
                     }
-                    return IWebAPI.RequestStatus.Empty;
+                    return RequestStatus.Empty;
                 }
 
                 if (m_ActiveChatRequestOperation == null)
-                    return IWebAPI.RequestStatus.Empty;
+                    return RequestStatus.Empty;
 
                 // Task completion indicates that the whole request has completed
                 if (m_ActiveChatRequestOperation.Task.IsCompletedSuccessfully)
                 {
-                    return IWebAPI.RequestStatus.Complete;
+                    return RequestStatus.Complete;
                 }
                 else if (m_ActiveChatRequestOperation.Task.IsCanceled || m_ActiveChatRequestOperation.Task.IsFaulted)
                 {
-                    return IWebAPI.RequestStatus.Error;
+                    return RequestStatus.Error;
                 }
 
-                return IWebAPI.RequestStatus.InProgress;
+                return RequestStatus.InProgress;
             }
         }
 
         public void GetErrorDetails(out int errorCode, out string errorText)
         {
-            if (chatStatus != IWebAPI.RequestStatus.Error)
+            if (chatStatus != RequestStatus.Error)
             {
                 errorCode = 0;
                 errorText = null;
@@ -170,7 +170,7 @@ namespace Unity.Muse.Chat
             return conversationId;
         }
 
-        public string GetChatResponseData(out string assistantFragmentId, out string userFragmentId)
+        public virtual string GetChatResponseData(out string assistantFragmentId, out string userFragmentId)
         {
             assistantFragmentId = null;
             userFragmentId = null;

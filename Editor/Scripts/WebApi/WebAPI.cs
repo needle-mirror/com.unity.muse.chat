@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.Api;
 using Unity.Muse.Chat.Client;
+using Unity.Muse.Chat.Model;
 using Unity.Muse.Common.Account;
 using UnityEditor;
 using UnityEngine;
@@ -12,19 +13,49 @@ using UnityEngine;
 
 namespace Unity.Muse.Chat
 {
-    partial class WebAPI : IWebAPI
+    partial class WebAPI
     {
+        internal enum RequestStatus
+        {
+            Empty,
+            InProgress,
+            Complete,
+            Error
+        }
+
+        [Serializable]
+        public class ContextIndicatedConversationInfo : ConversationInfo
+        {
+            public ContextIndicatedConversationInfo(bool isContextual, ConversationInfo info)
+                : base(info.ConversationId, info.Title, info.LastMessageTimestamp)
+            {
+                IsContextual = isContextual;
+            }
+
+            public ContextIndicatedConversationInfo(bool isContextual, string conversationId = default(string), string title = default(string), long lastMessageTimestamp = default(long))
+                : base(conversationId, title, lastMessageTimestamp)
+            {
+                IsContextual = isContextual;
+            }
+
+            /// <summary>
+            /// Indicated whether this conversation has been created by providing context to the LLM or not. This boils
+            /// down to whether or not the chat was started from the web or from the editor.
+            /// </summary>
+            public bool IsContextual { get; set; }
+        }
+
         static string[] k_UnityVersionField;
 
         Task m_ConnectTask;
-        ClientWebSocket m_ClientSocket = null;
+        ClientWebSocket m_ClientSocket;
 
         static WebAPI()
         {
             k_UnityVersionField = new string[1] { UnityDataUtils.GetProjectVersion(UnityDataUtils.VersionDetail.Major) };
         }
 
-        [System.Serializable]
+        [Serializable]
         public struct SourceBlock
         {
             public string source;
@@ -50,13 +81,13 @@ namespace Unity.Muse.Chat
             m_ActiveChatRequestOperation = null;
         }
 
-        public IWebAPI.RequestStatus pluginConnectStatus
+        public RequestStatus pluginConnectStatus
         {
             get
             {
                 if (MuseChatConstants.DebugMode)
                 {
-                    return IWebAPI.RequestStatus.Complete;
+                    return RequestStatus.Complete;
                 }
 
                 if (m_ConnectTask == null)
@@ -64,23 +95,21 @@ namespace Unity.Muse.Chat
                     if (m_ClientSocket != null)
                     {
                         if (m_ClientSocket.State == WebSocketState.Open)
-                            return IWebAPI.RequestStatus.Complete;
+                            return RequestStatus.Complete;
                     }
 
-                    return IWebAPI.RequestStatus.Empty;
+                    return RequestStatus.Empty;
                 }
 
                 if (!m_ConnectTask.IsCompleted)
-                    return IWebAPI.RequestStatus.InProgress;
+                    return RequestStatus.InProgress;
 
                 if (m_ConnectTask.IsCompletedSuccessfully)
                 {
-                    return IWebAPI.RequestStatus.Complete;
+                    return RequestStatus.Complete;
                 }
-                else
-                {
-                    return IWebAPI.RequestStatus.Error;
-                }
+
+                return RequestStatus.Error;
             }
         }
 

@@ -27,7 +27,8 @@ namespace Unity.Muse.Chat
         static readonly Regex k_FootnoteInvalidInlineRegex = new(@"\s*(\[(\d+)\])+(?=[:.]($|\s|\n))", RegexOptions.Compiled);
 
         static readonly Regex k_SourceMarkerRegex = new(@"{{source:(\d+)}}", RegexOptions.Compiled);
-        static readonly Regex k_DoubleSourceMarkerRegex = new(@"{{source:(\d+)}}{{source:(\d+)}}", RegexOptions.Compiled);
+        static readonly Regex k_SourceMarkersSequenceRegEx = new (@"{{source:\d+}}({{source:(\d+)}})+", RegexOptions.Compiled);
+        static readonly Regex k_FirstSourceMarkerRegEx = new Regex(@"(?<!{{source:\d+}})({{source:\d+}})", RegexOptions.Compiled);
 
         static readonly Regex k_BoldRegex = new(@"\*\*(.*?)\*\*", RegexOptions.Compiled);
         static readonly Regex k_ContextRegex = new($"{MuseChatConstants.ContextTagEscaped}(.*){MuseChatConstants.ContextTagEscaped}", RegexOptions.Compiled | RegexOptions.Singleline );
@@ -35,6 +36,12 @@ namespace Unity.Muse.Chat
         static readonly DayOfWeek k_FirstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
 
         static StringBuilder s_stringBuilder = new();
+
+        public enum FootnoteFormat
+        {
+            SpritesForText,
+            SimpleIndexForClipboard,
+        }
 
         struct SourceOrFootnote
         {
@@ -65,7 +72,8 @@ namespace Unity.Muse.Chat
             return chunk;
         }
 
-        public static void ProcessText(MuseMessage message, ref IList<WebAPI.SourceBlock> sourceBlocks, out string messageContent)
+        public static void ProcessText(MuseMessage message, ref IList<WebAPI.SourceBlock> sourceBlocks,
+            out string messageContent, FootnoteFormat mode = FootnoteFormat.SpritesForText)
         {
             List<SourceOrFootnote> sourceOrFootnotes = new();
 
@@ -150,12 +158,10 @@ namespace Unity.Muse.Chat
                 }
             }
 
-            for (var i = 1; i < chunks.Length; i += 2)
+            // If the message is complete, store all sources from odd chunks
+            if (message.IsComplete)
             {
-                // Odd chunk, reference block
-                // If the message is complete, store all this data so we can display the source links
-                // Otherwise, ignore it
-                if (message.IsComplete)
+                for (var i = 1; i < chunks.Length; i += 2)
                 {
                     try
                     {
@@ -177,8 +183,8 @@ namespace Unity.Muse.Chat
                 }
             }
 
-            // Reliably parsing footnotes only works with complete messages with footnotes
-            if (message.IsComplete && sourceOrFootnotes.Count > 0)
+            // Parse sources and footnotes, if any, and consolidate them as SourceBlocks
+            if (sourceOrFootnotes.Count > 0)
             {
                 if (sourceBlocks == null)
                 {
@@ -232,52 +238,102 @@ namespace Unity.Muse.Chat
                     }
                 }
 
-                // Remove duplicate placeholders that effectively refer to the same source
-                bool removeDuplicates = true;
-                while (removeDuplicates)
+                // Reorder placeholders by final source index; remove duplicates and unresolved references (index 0)
+                messageContent = k_SourceMarkersSequenceRegEx.Replace(messageContent, m =>
                 {
-                    removeDuplicates = false;
+                    List<int> validFootnoteIndices = new List<int>();
 
-                    messageContent = k_DoubleSourceMarkerRegex.Replace(messageContent, match =>
+                    var matches = k_SourceMarkerRegex.Matches(m.Value);
+                    foreach (Match match in matches)
                     {
-                        int index1 = int.Parse(match.Groups[1].Value);
-                        int index2 = int.Parse(match.Groups[2].Value);
-                        var footnoteInfo1 = sourceOrFootnotes[index1 - 1];
-                        var footnoteInfo2 = sourceOrFootnotes[index2 - 1];
+                        int index = int.Parse(match.Groups[1].Value);
+                        var footnoteInfo = sourceOrFootnotes[index-1];
 
-                        if (footnoteInfo1.FinalSourceIndex == footnoteInfo2.FinalSourceIndex)
-                        {
-                            // Rerun afterwards in case we had more then one duplicate in a row
-                            removeDuplicates = true;
+                        if (footnoteInfo.FinalSourceIndex == 0)
+                            continue;
 
-                            return $"{{{{source:{index1}}}}}";
-                        }
+                        validFootnoteIndices.Add(index);
+                    }
 
-                        return match.Value;
+                    validFootnoteIndices.Sort((i, j) =>
+                    {
+                        if (sourceOrFootnotes[i - 1].FinalSourceIndex == sourceOrFootnotes[j - 1].FinalSourceIndex)
+                            return 0;
+                        return sourceOrFootnotes[i - 1].FinalSourceIndex < sourceOrFootnotes[j - 1].FinalSourceIndex ? -1 : 1;
+                    });
+
+                    if (validFootnoteIndices.Count == 0)
+                        return "";
+
+                    StringBuilder sb = new StringBuilder();
+                    int lastSourceIndex = -1;
+                    foreach (var index in validFootnoteIndices)
+                    {
+                        if (sourceOrFootnotes[index - 1].FinalSourceIndex == lastSourceIndex)
+                            continue;
+
+                        sb.Append($"{{{{source:{index}}}}}");
+
+                        lastSourceIndex = sourceOrFootnotes[index - 1].FinalSourceIndex;
+                    }
+
+                    return sb.ToString();
+                });
+
+                // For clipboard string add a space for readability before source marker (which becomes a footnote, e.g. " [1]")
+                if (mode == FootnoteFormat.SimpleIndexForClipboard)
+                {
+                    messageContent = k_FirstSourceMarkerRegEx.Replace(messageContent, m =>
+                    {
+                        return $" {m.Value}";
                     });
                 }
 
-                // Replace all placeholders with sprites/indices
+                // Replace invalid non-footnote markers
+                messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
+
+                // Replace all placeholders with final footnotes
                 messageContent = k_SourceMarkerRegex.Replace(messageContent, match =>
                 {
                     int index = int.Parse(match.Groups[1].Value);
-                    var footnoteInfo = sourceOrFootnotes[index-1];
+                    var footnoteInfo = sourceOrFootnotes[index - 1];
 
                     if (footnoteInfo.FinalSourceIndex == 0)
                     {
                         return "";
                     }
 
-                    return GetReferenceSpriteString(footnoteInfo.FinalSourceIndex);
+                    // Sprites with indices for text field output
+                    if (mode == FootnoteFormat.SpritesForText)
+                        return GetReferenceSpriteString(footnoteInfo.FinalSourceIndex);
+
+                    // Simple indices for clipboard output
+                    return $"[{footnoteInfo.FinalSourceIndex}]";
                 });
             }
             else
             {
                 messageContent = s_stringBuilder.ToString();
+
+                // Replace invalid non-footnote markers
+                messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
+            }
+        }
+
+        public static void AppendSourceBlocks(IList<WebAPI.SourceBlock> sourceBlocks, ref string messageContent)
+        {
+            if (sourceBlocks == null || sourceBlocks.Count == 0)
+            {
+                return;
             }
 
-            // Replace invalid non-footnote markers
-            messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
+            messageContent += "\n\nSources:";
+
+            int index = 1;
+            foreach (var s in sourceBlocks)
+            {
+                messageContent += $"\n[{index++}] {s.reason} - {s.source}";
+            }
         }
 
         private static void AddFootnoteAsSource(Match match, List<SourceOrFootnote> sourceOrFootnotes, bool noTitle = false)

@@ -25,6 +25,7 @@ namespace Unity.Muse.Chat
 
         MuseConversation m_ActiveConversation;
         MuseConversation m_ResponseConversation;
+        ContextRetrieval m_ContextRetrieval;
 
         float m_LastRefreshTokenTime;
 
@@ -39,7 +40,7 @@ namespace Unity.Muse.Chat
         /// <summary>
         /// The WebAPI implementation used to communicate with the Muse Backend.
         /// </summary>
-        public IWebAPI WebAPI { get; set; } = new WebAPI();
+        public WebAPI WebAPI { get; set; } = new();
 
         string m_LastContext = "";
 
@@ -105,7 +106,7 @@ namespace Unity.Muse.Chat
         {
             switch (WebAPI.pluginConnectStatus)
             {
-                case IWebAPI.RequestStatus.Complete:
+                case WebAPI.RequestStatus.Complete:
                 {
                     // Start send and receive tasks
                     OnConnectionChanged?.Invoke("Connected", true);
@@ -113,14 +114,14 @@ namespace Unity.Muse.Chat
                 }
                 break;
 
-                case IWebAPI.RequestStatus.Error:
+                case WebAPI.RequestStatus.Error:
                 {
                     // Print error message to UI
                     OnConnectionChanged?.Invoke($"Could not connect to server: {WebAPI.GetConnectError()}", false);
                 }
                 break;
 
-                case IWebAPI.RequestStatus.Empty:
+                case WebAPI.RequestStatus.Empty:
                 {
                     // We should never have an empty state while this function is active
                     Debug.LogError("Plugin Update called without a corresponding connection request");
@@ -198,9 +199,9 @@ namespace Unity.Muse.Chat
 
             var currentResponse = m_ResponseConversation.Messages[messageIndex];
             currentResponse.Content = WebAPI.GetChatResponseData(out string assistantFragmentId, out string userFragmentId);
-            currentResponse.IsComplete = WebAPI.chatStatus is IWebAPI.RequestStatus.Complete or IWebAPI.RequestStatus.Error;
+            currentResponse.IsComplete = WebAPI.chatStatus is WebAPI.RequestStatus.Complete or WebAPI.RequestStatus.Error;
 
-            if (WebAPI.chatStatus == IWebAPI.RequestStatus.Error)
+            if (WebAPI.chatStatus == WebAPI.RequestStatus.Error)
             {
                 WebAPI.GetErrorDetails(out currentResponse.ErrorCode, out currentResponse.ErrorText);
                 CheckForInvalidAccessToken(currentResponse.ErrorCode, ref currentResponse.ErrorText);
@@ -258,7 +259,7 @@ namespace Unity.Muse.Chat
             {
                 Type = MuseChatUpdateType.MessageUpdate,
                 Message = currentResponse,
-                IsMusing = WebAPI.chatStatus is IWebAPI.RequestStatus.Empty or IWebAPI.RequestStatus.InProgress
+                IsMusing = WebAPI.chatStatus is WebAPI.RequestStatus.Empty or WebAPI.RequestStatus.InProgress
             });
         }
 
@@ -267,13 +268,13 @@ namespace Unity.Muse.Chat
             // Check for updates from Muse Chat
             switch (WebAPI.chatStatus)
             {
-                case IWebAPI.RequestStatus.InProgress:
+                case WebAPI.RequestStatus.InProgress:
                 {
                     ProcessMessageUpdate();
                 }
                 break;
-                case IWebAPI.RequestStatus.Complete:
-                case IWebAPI.RequestStatus.Error:
+                case WebAPI.RequestStatus.Complete:
+                case WebAPI.RequestStatus.Error:
                 {
                     // If this thread does not yet have an ID, read that in
                     if(!m_ResponseConversation.Id.IsValid)
@@ -287,7 +288,7 @@ namespace Unity.Muse.Chat
                     StartConversationRefresh();
                     StopChatUpdate();
 
-                    if (WebAPI.chatStatus == IWebAPI.RequestStatus.Error)
+                    if (WebAPI.chatStatus == WebAPI.RequestStatus.Error)
                     {
                         MuseChatView.ShowNotification("Request failed, please try again", PopNotificationIconType.Error);
                     }
@@ -350,6 +351,7 @@ namespace Unity.Muse.Chat
         /// Starts a webrequest that attempts to rename a conversation with <see cref="conversationId"/>.
         /// </summary>
         /// <param name="conversationId">If not null or empty function acts as noop.</param>
+        /// <param name="newName">New name of the conversation</param>
         public void StartConversationRename(MuseConversationId conversationId, string newName)
         {
             if (!conversationId.IsValid)
@@ -662,9 +664,12 @@ namespace Unity.Muse.Chat
             }
         }
 
+        async Task<ContextRetrieval> GetContextRetrieval() => m_ContextRetrieval ??= await ContextRetrieval.Create();
+
         internal string GetSelectedContextString(int maxLength, bool isFullContext = false)
         {
             var contextString = new StringBuilder();
+
             // Grab any selected objects
             if (IsGameObjectSelected && Selection.gameObjects.Length > 0)
             {
@@ -713,8 +718,9 @@ namespace Unity.Muse.Chat
             contextString.Append(GetSelectedContextString(maxLength));
 
             // Add retrieved project settings
-            var classifiers = await ContextRetrieval.GetClassifiers(prompt, k_TopK, k_MinScore);
-            var smartContext = await ContextRetrieval.GetContext(classifiers.Select(c => c.classifier).ToArray());
+            var contextRetrieval = await GetContextRetrieval();
+            var classifiers = await contextRetrieval.GetClassifiers(prompt, k_TopK, k_MinScore);
+            var smartContext = contextRetrieval.GetContext(classifiers.Select(c => c.classifier).ToArray());
             if (smartContext != null)
             {
                 contextString.Append("\nHere are the project settings that might be related to user's question:\n");
@@ -773,10 +779,10 @@ namespace Unity.Muse.Chat
             });
         }
 
-        void OnConversationHistoryReceived(IEnumerable<IWebAPI.ContextIndicatedConversationInfo> historyData)
+        void OnConversationHistoryReceived(IEnumerable<WebAPI.ContextIndicatedConversationInfo> historyData)
         {
             k_History.Clear();
-            foreach (IWebAPI.ContextIndicatedConversationInfo remoteInfo in historyData)
+            foreach (WebAPI.ContextIndicatedConversationInfo remoteInfo in historyData)
             {
                 var localInfo = new MuseConversationInfo
                 {
@@ -804,6 +810,12 @@ namespace Unity.Muse.Chat
             {
                 OnDataChanged?.Invoke(k_Updates.Dequeue());
             }
+        }
+
+        void OnDisable()
+        {
+            m_ContextRetrieval?.Dispose();
+            m_ContextRetrieval = default;
         }
     }
 }
