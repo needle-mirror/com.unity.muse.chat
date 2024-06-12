@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using IBytes = System.Collections.Generic.IReadOnlyCollection<byte>;
 
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     partial class ByteLevelPreTokenizer : PreTokenizerBase
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     partial class ByteLevelPreTokenizer
     {

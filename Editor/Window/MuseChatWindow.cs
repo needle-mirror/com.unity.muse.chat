@@ -25,6 +25,8 @@ namespace Unity.Muse.Chat
         {
             m_View = new MuseChatView();
             m_View.Initialize();
+            m_View.style.flexGrow = 1;
+            m_View.style.minWidth = 400;
             rootVisualElement.Add(m_View);
 
             AccountController.Register(this);

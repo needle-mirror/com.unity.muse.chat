@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization.Decoders
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Decoders
 {
     /// <summary>
     ///     Strip Decoder removes certain char from the substring of the token in the list.

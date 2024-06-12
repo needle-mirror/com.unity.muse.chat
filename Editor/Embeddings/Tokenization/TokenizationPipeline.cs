@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Unity.Muse.Chat.Tokenization.Decoders;
-using Unity.Muse.Chat.Tokenization.PaddingProcessors;
-using Unity.Muse.Chat.Tokenization.PostProcessors;
-using Unity.Muse.Chat.Tokenization.PreTokenizers;
-using Unity.Muse.Chat.Tokenization.Tokenizers;
-using Unity.Muse.Chat.Tokenization.Truncators;
+using Unity.Muse.Chat.Embeddings.Tokenization.Decoders;
+using Unity.Muse.Chat.Embeddings.Tokenization.PaddingProcessors;
+using Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors;
+using Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers;
+using Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers;
+using Unity.Muse.Chat.Embeddings.Tokenization.Truncators;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     <para>

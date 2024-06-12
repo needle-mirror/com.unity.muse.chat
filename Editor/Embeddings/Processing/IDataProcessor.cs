@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.Muse.Chat.Processing
+namespace Unity.Muse.Chat.Embeddings.Processing
 {
     /// <summary>
     ///     Base interface for data processor.

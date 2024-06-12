@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 using Unity.Collections;
-using Unity.Muse.Chat.Processing;
+using Unity.Muse.Chat.Embeddings.Processing;
 using Unity.Jobs;
 
 #if UNITY_2023_1_OR_NEWER
@@ -13,7 +13,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 #endif
 
-namespace Unity.Muse.Chat.VectorStorage
+namespace Unity.Muse.Chat.Embeddings.VectorStorage
 {
     partial class VectorStore : IVectorStore, IDisposable
     {

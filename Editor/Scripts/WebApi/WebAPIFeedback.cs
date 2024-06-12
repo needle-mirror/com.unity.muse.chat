@@ -18,7 +18,7 @@ namespace Unity.Muse.Chat
         FeedbackRequestOperation m_ActiveFeedbackRequestOperation;
 
         public void SendFeedback(string text, string conversationID, string conversationFragmentId,
-            AssistantModelsMuseRequestsSentiment sentiment, Category feedbackType)
+            Sentiment sentiment, Category feedbackType)
         {
             if (!GetOrganizationID(out string organizationId))
             {
@@ -30,7 +30,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            var request = new FeedbackRequest(
+            var request = new Feedback(
                 details: text,
                 conversationId: conversationID,
                 conversationFragmentId: conversationFragmentId,
@@ -100,7 +100,7 @@ namespace Unity.Muse.Chat
 
         class FeedbackRequestOperation
         {
-            public FeedbackRequest Request;
+            public Feedback Request;
             public Task Task;
             public UnityWebRequest WebRequest;
             public string ConversationId;

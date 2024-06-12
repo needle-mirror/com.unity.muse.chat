@@ -8,7 +8,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 #endif
 
-namespace Unity.Muse.Chat.VectorStorage
+namespace Unity.Muse.Chat.Embeddings.VectorStorage
 {
     interface IVectorStore : IReadOnlyVectorStore, IDisposable
     {

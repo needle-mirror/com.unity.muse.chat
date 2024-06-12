@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Unity.Muse.Chat.Tokenization.PostProcessors;
+using Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors;
 
-namespace Unity.Muse.Chat.Tokenization.Truncators
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Truncators
 {
     /// <summary>
     ///     Splits sequences of tokens into smaller collection of sequences.

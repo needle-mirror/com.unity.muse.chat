@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using UnityEngine;
 #endif
 
-namespace Unity.Muse.Chat.Processing
+namespace Unity.Muse.Chat.Embeddings.Processing
 {
     interface IBatchedDataProcess<in TInput, TOutput> : IDisposable
     {

@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Unity.Muse.Chat.Tokenization.PreTokenizers;
+using Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers;
 
-namespace Unity.Muse.Chat.Tokenization.Tokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers
 {
     /// <summary>
     ///     Caches the result of the tokenization of each chunk returned by the pre-tokenizer

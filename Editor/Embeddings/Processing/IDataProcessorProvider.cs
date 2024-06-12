@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 #endif
 
-namespace Unity.Muse.Chat.Processing
+namespace Unity.Muse.Chat.Embeddings.Processing
 {
     /// <summary>
     ///     It defines a <see cref="GetProcessor"/> method returning an instance of

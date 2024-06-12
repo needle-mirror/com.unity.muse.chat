@@ -2,21 +2,34 @@ using System.Diagnostics;
 
 namespace Unity.Muse.Chat
 {
-    [DebuggerDisplay("{Value}")]
+    [DebuggerDisplay("{k_Value}")]
     internal struct MuseConversationId
     {
+        private const string k_InternalIdPrefix = "INT_";
+        private static int s_NextInternalId = 1;
+
+        private bool m_IsInternal;
+
+        private readonly string k_Value;
+
         // -------------------------------------------------------------------
         // Constructor
         // -------------------------------------------------------------------
         public MuseConversationId(string value)
         {
-            Value = value;
+            k_Value = value;
+            m_IsInternal = false;
+        }
+
+        public static MuseConversationId GetNextInternalId()
+        {
+            return new MuseConversationId($"{k_InternalIdPrefix}{s_NextInternalId++}") { m_IsInternal = true };
         }
 
         // -------------------------------------------------------------------
         // Public
         // -------------------------------------------------------------------
-        public readonly string Value;
+        public string Value => m_IsInternal ? null : k_Value;
 
         public static bool operator ==(MuseConversationId value1, MuseConversationId value2)
         {
@@ -33,21 +46,21 @@ namespace Unity.Muse.Chat
             return obj is MuseConversationId other && Equals(other);
         }
 
-        public bool Equals(MuseConversationId other)
+        private bool Equals(MuseConversationId other)
         {
-            return Value == other.Value;
+            return k_Value == other.k_Value && m_IsInternal == other.m_IsInternal;
         }
 
         public override int GetHashCode()
         {
-            return string.IsNullOrEmpty(Value) ? 0 : Value.GetHashCode();
+            return string.IsNullOrEmpty(k_Value) ? 0 : k_Value.GetHashCode();
         }
 
         public override string ToString()
         {
-            return Value ?? string.Empty;
+            return k_Value ?? string.Empty;
         }
 
-        public bool IsValid => !string.IsNullOrEmpty(Value);
+        public bool IsValid => !string.IsNullOrEmpty(k_Value) && !m_IsInternal;
     }
 }

@@ -21,5 +21,20 @@ namespace Unity.Muse.Chat
         /// The actual data that will be sent to the LLM for evaluation
         /// </summary>
         public string Payload { get; }
+
+        /// <summary>
+        /// The actual data that will be sent to the LLM for evaluation, but downsized.
+        /// </summary>
+        internal string DownsizedPayload { get; }
+
+        /// <summary>
+        /// The context type description used by context builder
+        /// </summary>
+        internal string ContextType { get; }
+
+        /// <summary>
+        /// The name of the target object
+        /// </summary>
+        internal string TargetName { get; }
     }
 }

@@ -1,0 +1,16 @@
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChatShared.uss");
+
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChatView.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseTextField.uss");
+
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/PopupNotification.uss");
+
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/HistoryPanel.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/HistoryPanelEntry.uss");
+
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementWrapper.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementShared.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementResponse.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementUser.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementSourceEntry.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementCodeBlock.uss");

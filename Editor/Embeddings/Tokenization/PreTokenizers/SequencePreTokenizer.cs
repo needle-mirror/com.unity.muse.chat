@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     class SequencePreTokenizer : PreTokenizerBase
     {

@@ -8,6 +8,6 @@ namespace Unity.Muse.Chat
         public bool FlagInappropriate;
         public Category Type;
         public string Message;
-        public AssistantModelsMuseRequestsSentiment Sentiment;
+        public Sentiment Sentiment;
     }
 }

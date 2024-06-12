@@ -1,4 +1,4 @@
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     /// <summary>
     ///     Splits on spaces and punctuation, removing spaces, and keeping each punctuation as

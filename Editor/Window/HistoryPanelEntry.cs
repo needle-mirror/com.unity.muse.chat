@@ -7,7 +7,7 @@ using TextField = Unity.Muse.AppUI.UI.TextField;
 
 namespace Unity.Muse.Chat
 {
-    internal class HistoryPanelEntry : ManagedTemplate
+    internal class HistoryPanelEntry : AdaptiveListViewEntry
     {
         private const string k_HeaderClass = "mui-history-panel-header-entry";
         private const string k_SelectedClass = "mui-history-panel-entry-selected";
@@ -21,8 +21,6 @@ namespace Unity.Muse.Chat
         VisualElement m_HeaderRoot;
         Text m_HeaderText;
 
-        HistoryPanel m_Parent;
-
         VisualElement m_ConversationRoot;
         Icon m_ConversationIcon;
         Text m_ConversationText;
@@ -32,12 +30,6 @@ namespace Unity.Muse.Chat
         bool m_EditModeActive;
         bool m_IsHeader;
         bool m_IsSelected;
-
-        public HistoryPanelEntry(HistoryPanel parent)
-            : base(MuseChatConstants.UIModulePath)
-        {
-            m_Parent = parent;
-        }
 
         public MuseConversationInfo Data => m_Data;
 
@@ -100,7 +92,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            m_Parent.ChangeSelection(this);
+            NotifySelectionChanged();
         }
 
         void OnButtonClicked(PointerUpEvent evt)
@@ -135,7 +127,24 @@ namespace Unity.Muse.Chat
             MuseChatView.ShowNotification("Chat deleted", PopNotificationIconType.Info);
         }
 
-        public void SetAsHeader(string text)
+        public override void SetData(int index, object newData, bool isSelected = false)
+        {
+            base.SetData(index, newData);
+
+            if (newData is string headerText)
+            {
+                SetAsHeader(headerText);
+                SetSelected(false);
+            }
+            else
+            {
+                var data = (MuseConversationInfo)newData;
+                SetAsData(data);
+                SetSelected(isSelected);
+            }
+        }
+
+        void SetAsHeader(string text)
         {
             m_IsHeader = true;
 
@@ -147,7 +156,7 @@ namespace Unity.Muse.Chat
             RefreshUI();
         }
 
-        public void SetAsData(MuseConversationInfo data)
+        void SetAsData(MuseConversationInfo data)
         {
             m_Data = data;
             m_EditModeActive = false;

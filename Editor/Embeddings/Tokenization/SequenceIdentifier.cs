@@ -1,12 +1,12 @@
-using Unity.Muse.Chat.Tokenization.PostProcessors;
+using Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Identifies a sequence.
     ///     It is used in the <see cref="TemplatePostProcessor" />.
     /// </summary>
-    public enum SequenceIdentifier
+    internal enum SequenceIdentifier
     {
         /// <summary>
         ///     First sequence.

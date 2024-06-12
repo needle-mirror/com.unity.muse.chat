@@ -44,9 +44,24 @@ namespace Unity.Muse.Chat
                 if (m_Target == null)
                     return null;
 
-                return $"{m_Target.GetType().Name}:\n{UnityDataUtils.OutputUnityObject(m_Target, true, false, 1)}";
+                return $"\n{UnityDataUtils.OutputUnityObject(m_Target, true, false, 1)}";
             }
         }
+
+        string IContextSelection.DownsizedPayload
+        {
+            get
+            {
+                if (m_Target == null)
+                    return null;
+
+                return $"\n{UnityDataUtils.OutputUnityObject(m_Target, true, false, 0)}";
+            }
+        }
+
+        string IContextSelection.ContextType => $"serialization data of game object in JSON format";
+
+        string IContextSelection.TargetName => $"{m_Target.name}";
 
         bool System.IEquatable<IContextSelection>.Equals(IContextSelection other)
         {

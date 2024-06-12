@@ -1,4 +1,4 @@
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Converts a input of type <typeparamref name="TFrom" /> into a value of type

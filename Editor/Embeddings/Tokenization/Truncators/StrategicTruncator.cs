@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.Truncators
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Truncators
 {
     /// <summary>
     ///     Base implementation for builtin <see cref="ITruncator" /> types using

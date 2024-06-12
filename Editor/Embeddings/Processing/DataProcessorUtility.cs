@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Processing
+namespace Unity.Muse.Chat.Embeddings.Processing
 {
     static class DataProcessorUtility
     {

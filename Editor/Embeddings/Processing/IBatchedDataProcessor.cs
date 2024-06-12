@@ -1,4 +1,4 @@
-namespace Unity.Muse.Chat.Processing
+namespace Unity.Muse.Chat.Embeddings.Processing
 {
     /// <summary>
     ///     Generic interface for agent processor which supports batching process.

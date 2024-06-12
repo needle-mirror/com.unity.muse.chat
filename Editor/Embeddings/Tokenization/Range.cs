@@ -1,11 +1,11 @@
 using System;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Integer range structure.
     /// </summary>
-    public readonly struct Range : IComparable<Range>, IEquatable<Range>
+    internal readonly struct Range : IComparable<Range>, IEquatable<Range>
     {
         /// <summary>
         ///     Creates a <see cref="Range" /> instance specifying the bounds of it.

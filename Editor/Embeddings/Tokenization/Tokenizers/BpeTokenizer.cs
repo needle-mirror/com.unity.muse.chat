@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.Tokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers
 {
     /// <summary>
     ///     Turns a string input into a sequence of <see cref="ITokenDefinition" /> instances using

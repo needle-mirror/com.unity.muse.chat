@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     class TokenToStringConverter : IConverter<IEnumerable<int>, IEnumerable<string>>
     {

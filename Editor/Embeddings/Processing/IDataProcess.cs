@@ -8,7 +8,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 #endif
 
-namespace Unity.Muse.Chat.Processing
+namespace Unity.Muse.Chat.Embeddings.Processing
 {
     interface IDataProcess<in TInput, TOutput> : IDisposable
     {

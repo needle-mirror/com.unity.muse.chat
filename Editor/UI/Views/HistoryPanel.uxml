@@ -1,5 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" editor-extension-mode="False">
-    <ui:VisualElement class="mui-history-panel -muse-chat-panel">
-        <ui:ListView name="historyContent" />
+    <ui:VisualElement name="historyContentRoot" class="mui-history-panel -muse-chat-panel">
     </ui:VisualElement>
 </ui:UXML>

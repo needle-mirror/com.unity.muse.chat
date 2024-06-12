@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     class CachedConverter<TFrom, TTo> : IConverter<TFrom, TTo>
     {

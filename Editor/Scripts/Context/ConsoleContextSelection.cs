@@ -39,6 +39,21 @@ namespace Unity.Muse.Chat
             }
         }
 
+        string IContextSelection.DownsizedPayload
+        {
+            get
+            {
+                if (m_Target == null)
+                    return null;
+
+                return $"{UnityDataUtils.OutputLogData(m_Target, false)}";
+            }
+        }
+
+        string IContextSelection.ContextType => m_Target.Mode == LogReference.ConsoleMessageMode.Error? "console error" : m_Target.Mode == LogReference.ConsoleMessageMode.Warning? "console warning" : "console log";
+
+        string IContextSelection.TargetName => string.Empty;
+
         bool IEquatable<IContextSelection>.Equals(IContextSelection other)
         {
             if (ReferenceEquals(this, other))

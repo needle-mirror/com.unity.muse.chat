@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.Tokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers
 {
     /// <summary>
     ///     Base type for builtin implementations of <see cref="ITokenizer" />.

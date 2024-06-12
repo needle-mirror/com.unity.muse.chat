@@ -12,7 +12,6 @@ namespace Unity.Muse.Chat
         internal const string TextCutoffSuffix = "...";
 
         internal const char UnityPathSeparator = '/';
-        internal const string StyleExtension = ".uss";
         internal const string TemplateExtension = ".uxml";
 
         internal const string ResourceFolderName = "Resources";
@@ -31,9 +30,6 @@ namespace Unity.Muse.Chat
 
         internal const string UIModulePath = BasePath + UIEditorPath;
 
-        internal const string SharedStyleName = "MuseChatShared";
-
-        internal const string AppUIStylePath = "Packages/com.unity.muse.common/ThirdParty/AppUI/PackageResources/Styles/Themes/App UI.tss";
         internal const string AppUIEditorClass = "unity-editor";
         internal const string AppUIThemeLight = "editor-light";
         internal const string AppUIThemeDark = "editor-dark";

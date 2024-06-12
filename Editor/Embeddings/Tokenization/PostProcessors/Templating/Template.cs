@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Unity.Muse.Chat.Tokenization.PostProcessors.Templating
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors.Templating
 {
     /// <summary>
     ///     Represents a post processing template.

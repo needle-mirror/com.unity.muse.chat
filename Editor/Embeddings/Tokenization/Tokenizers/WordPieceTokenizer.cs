@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.Tokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers
 {
     /// <summary>
     ///     Turns an input string into a sequence of token ids using the Word Piece strategy.

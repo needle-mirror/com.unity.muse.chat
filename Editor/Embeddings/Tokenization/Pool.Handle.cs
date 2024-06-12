@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     partial class Pool<T>
     {

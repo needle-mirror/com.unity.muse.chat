@@ -13,7 +13,7 @@
             </VisualElement>
         </ScrollView>
 
-        <VisualElement name="submitButton">
+        <VisualElement name="submitButton" class="mui-action-cursor">
             <appui:Icon name="submitIconDefault" icon-name="mui-icon-submit" size="L" class="mui-mtf-submit-button-icon"/>
             <appui:Icon name="submitIconMusing" icon-name="mui-icon-stop" size="L" class="mui-mtf-submit-button-icon"/>
         </VisualElement>

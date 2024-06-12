@@ -2,7 +2,7 @@ using SEncoding = System.Text.Encoding;
 using Bytes = System.Collections.ObjectModel.ReadOnlyCollection<byte>;
 using IBytes = System.Collections.Generic.IReadOnlyCollection<byte>;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Convert <see cref="SubString" /> input to a read only sequence of <see cref="byte" />s.

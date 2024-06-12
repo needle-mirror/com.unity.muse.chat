@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization.Truncators
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Truncators
 {
     /// <summary>
     ///     Generates a sequence of <see cref="Range" /> starting from the left (<c>0</c>, the lower

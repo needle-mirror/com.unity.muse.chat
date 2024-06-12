@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Represents a portion of a <see cref="string" /> value.

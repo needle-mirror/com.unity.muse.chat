@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Unity.Muse.Chat.VectorStorage
+namespace Unity.Muse.Chat.Embeddings.VectorStorage
 {
     class Base64KeyGenerator : IDisposable
     {

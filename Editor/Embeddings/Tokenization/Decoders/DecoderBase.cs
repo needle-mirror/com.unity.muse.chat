@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.Decoders
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Decoders
 {
     abstract class DecoderBase : IDecoder
     {

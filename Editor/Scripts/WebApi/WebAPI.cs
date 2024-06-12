@@ -1,5 +1,4 @@
 using System;
-using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.Api;
@@ -8,8 +7,6 @@ using Unity.Muse.Chat.Model;
 using Unity.Muse.Common.Account;
 using UnityEditor;
 using UnityEngine;
-
-#pragma warning disable CS0162 // Unreachable code detected
 
 namespace Unity.Muse.Chat
 {
@@ -48,7 +45,6 @@ namespace Unity.Muse.Chat
         static string[] k_UnityVersionField;
 
         Task m_ConnectTask;
-        ClientWebSocket m_ClientSocket;
 
         static WebAPI()
         {
@@ -75,91 +71,6 @@ namespace Unity.Muse.Chat
             return config;
         }
 
-        public void ClearResponse()
-        {
-            m_DebugMessage = null;
-            m_ActiveChatRequestOperation = null;
-        }
-
-        public RequestStatus pluginConnectStatus
-        {
-            get
-            {
-                if (MuseChatConstants.DebugMode)
-                {
-                    return RequestStatus.Complete;
-                }
-
-                if (m_ConnectTask == null)
-                {
-                    if (m_ClientSocket != null)
-                    {
-                        if (m_ClientSocket.State == WebSocketState.Open)
-                            return RequestStatus.Complete;
-                    }
-
-                    return RequestStatus.Empty;
-                }
-
-                if (!m_ConnectTask.IsCompleted)
-                    return RequestStatus.InProgress;
-
-                if (m_ConnectTask.IsCompletedSuccessfully)
-                {
-                    return RequestStatus.Complete;
-                }
-
-                return RequestStatus.Error;
-            }
-        }
-
-        public void ConnectSession()
-        {
-            if (m_ClientSocket == null)
-            {
-                if (MuseChatEnvironment.instance.DebugModeEnabled)
-                {
-                    Debug.Log("Creating socket...");
-                }
-
-                m_ClientSocket = new ClientWebSocket();
-            }
-
-            if (MuseChatEnvironment.instance.DebugModeEnabled)
-            {
-                Debug.Log("Connecting to server...");
-            }
-
-            m_ConnectTask = m_ClientSocket.ConnectAsync(new Uri(MuseChatEnvironment.instance.PluginEditorUrl), CancellationToken.None);
-        }
-
-        public void DisconnectSession(bool requested = true)
-        {
-            if (m_ClientSocket == null)
-                return;
-
-            Debug.Log($"Muse Editor disconnecting, requested: {requested}");
-            switch (m_ClientSocket.State)
-            {
-                case WebSocketState.Open:
-                    m_ClientSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, "Editor disconnect", CancellationToken.None);
-                    break;
-                case WebSocketState.Connecting:
-                    m_ClientSocket.Abort();
-                    break;
-
-                case WebSocketState.CloseSent:
-                case WebSocketState.Closed:
-                case WebSocketState.None:
-                case WebSocketState.Aborted:
-                    // We're just disposing
-                    break;
-            }
-
-            m_ClientSocket.Dispose();
-            m_ClientSocket = null;
-        }
-
         public string GetConnectError()
         {
             if (m_ConnectTask == null)
@@ -172,11 +83,6 @@ namespace Unity.Muse.Chat
                 return m_ConnectTask.Exception?.Message;
 
             return "Unknown error";
-        }
-
-        string GetErrorStringFromTask(Task task)
-        {
-            return task.Exception?.InnerExceptions[0].Message ?? "Something went wrong";
         }
 
         Exception GetExceptionFromTask(Task task)

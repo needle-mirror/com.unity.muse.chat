@@ -1,4 +1,4 @@
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     /// <summary>
     ///     Default placeholder implementation of a pretokenizer.

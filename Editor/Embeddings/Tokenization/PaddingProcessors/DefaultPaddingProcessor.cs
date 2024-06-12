@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Unity.Muse.Chat.Tokenization.PaddingProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PaddingProcessors
 {
     /// <summary>
     ///     Placeholder padding processor.

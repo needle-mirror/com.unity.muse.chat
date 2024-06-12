@@ -211,43 +211,6 @@ namespace Unity.Muse.Chat
             return view != null;
         }
 
-        protected void LoadStyle<T>()
-        {
-            LoadStyle(typeof(T).Name);
-        }
-
-        protected void LoadStyle(string styleName)
-        {
-            if (LoadStyle(styleName, out var sheet)
-                && !styleSheets.Contains(sheet))
-            {
-                styleSheets.Add(sheet);
-            }
-        }
-
-        protected bool LoadStyle(string styleName, out StyleSheet sheet)
-        {
-            return LoadStyle(styleName, out sheet, m_ResourcePrefix, m_ResourceSuffix);
-        }
-
-        protected bool LoadStyle(string styleName, out StyleSheet sheet, string prefix, string suffix)
-        {
-            sheet = null;
-            if (string.IsNullOrEmpty(styleName))
-            {
-                return false;
-            }
-
-            string styleFile = $"{m_ResourcePrefix}{styleName}{m_ResourceSuffix}";
-
-#if UNITY_EDITOR
-            styleFile = string.Concat(styleFile, MuseChatConstants.StyleExtension);
-#endif
-
-            sheet = m_StyleCache.Load(styleFile);
-            return sheet != null;
-        }
-
         protected bool LoadAsset<T>(string relativePath, ref T target)
             where T : UnityEngine.Object
         {
@@ -344,10 +307,6 @@ namespace Unity.Muse.Chat
 
         void DoInitStyle()
         {
-            this.LoadAppUIStyle();
-            this.LoadSharedStyle();
-            LoadStyle(ResourceName);
-
             AddPrefixedClass("element");
         }
 
@@ -360,17 +319,6 @@ namespace Unity.Muse.Chat
                 x.theme = EditorGUIUtility.isProSkin ? MuseChatConstants.AppUIThemeDark : MuseChatConstants.AppUIThemeLight;
                 x.scale = MuseChatConstants.AppUIScale;
             });
-        }
-
-        void LoadAppUIStyle()
-        {
-            var styleSheet = m_StyleCache.Load(MuseChatConstants.AppUIStylePath, true);
-            if (styleSheet == null)
-            {
-                throw new InvalidDataException("AppUI Style sheet could not be loaded: " + MuseChatConstants.AppUIStylePath);
-            }
-
-            this.styleSheets.Add(styleSheet);
         }
     }
 }

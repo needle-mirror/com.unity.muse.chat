@@ -1,4 +1,4 @@
-namespace Unity.Muse.Chat.Tokenization.Tokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers
 {
     partial class BpeTokenizer
     {

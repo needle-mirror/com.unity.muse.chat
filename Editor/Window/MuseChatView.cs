@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,10 +14,12 @@ namespace Unity.Muse.Chat
 {
     partial class MuseChatView : ManagedTemplate
     {
+        const double k_ConsoleCheckInterval = 0.3f;
+        static readonly List<LogReference> k_LogCheckTempList = new();
+        static double s_LastConsoleCheckTime;
+
         static Texture2D s_NewChatButtonImage;
         static Texture2D s_HistoryButtonImage;
-
-        readonly IDictionary<MuseMessageId, ChatElementBase> k_ActiveChatElements = new Dictionary<MuseMessageId, ChatElementBase>();
 
         VisualElement m_RootMain;
         VisualElement m_NotificationContainer;
@@ -38,9 +39,8 @@ namespace Unity.Muse.Chat
         AccountDropdown m_AccountDropdown;
 
         HistoryPanel m_HistoryPanel;
-        ScrollView m_ConversationRoot;
-        VisualElement m_ConversationContent;
-        Scroller m_ChatScroller;
+        VisualElement m_ConversationRoot;
+        AdaptiveListView<MuseMessage, ChatElementWrapper> m_ConversationList;
 
         VisualElement m_FooterRoot;
         VisualElement m_WarningStatusRoot;
@@ -96,25 +96,26 @@ namespace Unity.Muse.Chat
             m_AccountDropdown = new AccountDropdown();
             view.Q<VisualElement>("museAccountContainer").Add(m_AccountDropdown);
 
-            m_ConversationRoot = view.Q<ScrollView>("conversationRoot");
-            m_ConversationRoot.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
-
-            m_ConversationContent = view.Q<VisualElement>("conversationContent");
-            m_ConversationContent.RegisterCallback<GeometryChangedEvent>(evt => QueueScrollLock());
-
-            m_ChatScroller = m_ConversationRoot.verticalScroller;
-            m_ChatScroller.value = m_ChatScroller.highValue;
+            m_ConversationRoot = view.Q<VisualElement>("conversationRoot");
+            m_ConversationList = new AdaptiveListView<MuseMessage, ChatElementWrapper>
+            {
+                EnableDelayedElements = false,
+                EnableVirtualization = false,
+                EnableScrollLock = true
+            };
+            m_ConversationList.Initialize();
+            m_ConversationRoot.Add(m_ConversationList);
 
             m_HistoryPanelRoot = view.Q<VisualElement>("historyPanelRoot");
             m_HistoryPanel = new HistoryPanel();
             m_HistoryPanel.Initialize();
             m_HistoryPanelRoot.Add(m_HistoryPanel);
-            m_HistoryPanelRoot.style.display = MuseChatEnvironment.instance.IsHistoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
+            m_HistoryPanelRoot.style.display = UserSessionState.instance.IsHistoryOpen ? DisplayStyle.Flex : DisplayStyle.None;
 
             m_MusingElement = new ChatElementResponse();
             m_MusingElement.Initialize();
             m_MusingElement.SetData(new MuseMessage { Id = new MuseMessageId(default, string.Empty, MuseMessageIdType.Internal), IsComplete = true, Content = "Musing...", Role = null });
-            m_ConversationRoot.Add(m_MusingElement);
+            view.Q<VisualElement>("musingPlaceholderRoot").Add(m_MusingElement);
 
             m_SuggestionRoot = view.Q<VisualElement>("suggestionRoot");
             m_SuggestionContent = view.Q<VisualElement>("suggestionContent");
@@ -164,7 +165,6 @@ namespace Unity.Muse.Chat
 
             MuseEditorDriver.instance.OnDataChanged += OnDataChanged;
             MuseEditorDriver.instance.OnConnectionChanged += OnConnectionChanged;
-            MuseEditorDriver.instance.ConnectPlugin();
 
             MuseEditorDriver.instance.OnConversationHistoryChanged += OnConversationHistoryChanged;
 
@@ -176,17 +176,16 @@ namespace Unity.Muse.Chat
             s_ShowNotificationEvent += OnShowNotification;
 
             Selection.selectionChanged += OnGameObjectSelectionChanged;
-            EditorApplication.update += OnConsoleMessageSelectionChanged;
+            EditorApplication.update += CheckForConsoleLogSelectionChange;
 
             OnGameObjectSelectionChanged();
-            OnConsoleMessageSelectionChanged();
+            CheckForConsoleLogSelectionChange();
 
             MuseEditorDriver.instance.ViewInitialized();
 
             MuseEditorDriver.instance.WarmupContext();
 
             AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
-
 
 #if UNITY_2022_3_20 || UNITY_2022_3_21 || UNITY_2022_3_22 || UNITY_2022_3_23 || UNITY_2022_3_24 || UNITY_2022_3_25
             bool showWarning = true;
@@ -199,7 +198,7 @@ namespace Unity.Muse.Chat
             string versionsToUse = "";
 #endif
 
-            if (showWarning)
+                if (showWarning)
             {
                 const string warningShownKey = "MUSE_CHAT_WARNING_SHOWN";
                 if (!SessionState.GetBool(warningShownKey, false))
@@ -214,7 +213,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        void OnSelectedConsoleErrorButtonClicked()
+        private void OnSelectedConsoleErrorButtonClicked()
         {
             MuseEditorDriver.instance.IsConsoleErrorSelected = !MuseEditorDriver.instance.IsConsoleErrorSelected;
             UpdateContextButton(m_SelectedConsoleErrorButton, MuseEditorDriver.instance.IsConsoleErrorSelected);
@@ -258,19 +257,18 @@ namespace Unity.Muse.Chat
         {
             AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
 
-            MuseEditorDriver.instance.DisconnectPlugin();
             MuseEditorDriver.instance.OnDataChanged -= OnDataChanged;
             MuseEditorDriver.instance.OnConnectionChanged -= OnConnectionChanged;
             MuseEditorDriver.instance.OnConversationHistoryChanged -= OnConversationHistoryChanged;
             Selection.selectionChanged -= OnGameObjectSelectionChanged;
-            EditorApplication.update -= OnConsoleMessageSelectionChanged;
+            EditorApplication.update -= CheckForConsoleLogSelectionChange;
             MuseEditorDriver.instance.ClearForNewConversation();
 
             ClientStatus.Instance.OnClientStatusChanged -= CheckClientStatus;
 
             s_ShowNotificationEvent -= OnShowNotification;
 
-            MuseChatEnvironment.instance.ClearSessionState();
+            UserSessionState.instance.Clear();
         }
 
         public void PopulateConversation(MuseConversation conversation)
@@ -282,19 +280,22 @@ namespace Unity.Muse.Chat
                 ClearChat();
                 m_ConversationName.text = conversation.Title;
 
+                m_ConversationList.BeginUpdate();
                 for (var i = 0; i < conversation.Messages.Count; i++)
                 {
-                    AddOrUpdateChatElement(conversation.Messages[i]);
+                    m_ConversationList.AddData(conversation.Messages[i]);
                 }
 
-                if (MuseChatEnvironment.instance.DebugModeEnabled)
+                m_ConversationList.EndUpdate(true);
+
+                if (UserSessionState.instance.DebugModeEnabled)
                 {
-                    MuseEditorDriver.instance.OnDebugTrackMetricsRequest?.Invoke(m_ConversationContent);
+                    MuseEditorDriver.instance.OnDebugTrackMetricsRequest?.Invoke(m_ConversationRoot);
                 }
             } finally{
                 sw.Stop();
 
-                if (MuseChatEnvironment.instance.DebugModeEnabled)
+                if (UserSessionState.instance.DebugModeEnabled)
                 {
                     Debug.Log($"PopulateConversation took {sw.ElapsedMilliseconds}ms ({conversation.Messages.Count} Messages)");
                 }
@@ -307,7 +308,7 @@ namespace Unity.Muse.Chat
 
             foreach (var topic in topics)
             {
-                var suggestionButton = new AppUI.UI.Button { title = topic };
+                var suggestionButton = new Button { title = topic };
                 suggestionButton.AddToClassList("mui-chat-suggestion-button");
                 suggestionButton.RegisterCallback<PointerUpEvent>(_ => OnSuggestionSelected(suggestionButton.title));
 
@@ -319,8 +320,7 @@ namespace Unity.Muse.Chat
         {
             m_ConversationName.text = "New chat";
             m_ChatInput.ClearText();
-            m_ConversationContent.Clear();
-            k_ActiveChatElements.Clear();
+            m_ConversationList.ClearData();
             m_MusingElement.Hide();
             SetSuggestionVisible(true);
         }
@@ -333,7 +333,7 @@ namespace Unity.Muse.Chat
                 ? DisplayStyle.Flex
                 : DisplayStyle.None;
 
-            MuseChatEnvironment.instance.IsHistoryOpen = m_HistoryPanelRoot.style.display == DisplayStyle.Flex;
+            UserSessionState.instance.IsHistoryOpen = m_HistoryPanelRoot.style.display == DisplayStyle.Flex;
         }
 
         void OnNewChatClicked(PointerUpEvent evt)
@@ -354,22 +354,74 @@ namespace Unity.Muse.Chat
             UpdateContextSelectionPanel();
         }
 
-        void OnConsoleMessageSelectionChanged()
+
+        void CheckForConsoleLogSelectionChange()
         {
-            List<LogReference> logs = new List<LogReference>();
-            ConsoleUtils.GetSelectedConsoleLogs(logs);
-            m_SelectedConsoleMessageNum = logs.Count;
+            if (EditorApplication.timeSinceStartup < s_LastConsoleCheckTime + k_ConsoleCheckInterval)
+            {
+                return;
+            }
 
-            var errorLogs = logs.Where(log => log.Mode == LogReference.ConsoleMessageMode.Error).ToList();
-            var warningLogs = logs.Where(log => log.Mode == LogReference.ConsoleMessageMode.Warning).ToList();
-            var infoLogs = logs.Where(log => log.Mode == LogReference.ConsoleMessageMode.Log).ToList();
+            s_LastConsoleCheckTime = EditorApplication.timeSinceStartup;
+            k_LogCheckTempList.Clear();
+            ConsoleUtils.GetSelectedConsoleLogs(k_LogCheckTempList);
+            m_SelectedConsoleMessageNum = k_LogCheckTempList.Count;
 
-            UpdateSelectedContextLabel(errorLogs.Count, m_SelectedConsoleErrorButton,
-                errorLogs.Count > 0 ? errorLogs[0].Message : string.Empty, ref MuseEditorDriver.instance.IsConsoleErrorSelected);
-            UpdateSelectedContextLabel(infoLogs.Count, m_SelectedConsoleInfoButton,
-                infoLogs.Count > 0 ? infoLogs[0].Message : string.Empty, ref MuseEditorDriver.instance.IsConsoleInfoSelected);
-            UpdateSelectedContextLabel(warningLogs.Count, m_SelectedConsoleWarnButton,
-                warningLogs.Count > 0 ? warningLogs[0].Message : string.Empty, ref MuseEditorDriver.instance.IsConsoleWarningSelected);
+            string warnMsg = string.Empty;
+            string logMsg = string.Empty;
+            string errMsg = string.Empty;
+
+            int logCount = 0;
+            int warnCount = 0;
+            int errCount = 0;
+
+            for (var i = 0; i < k_LogCheckTempList.Count; i++)
+            {
+                LogReference logRef = k_LogCheckTempList[i];
+                switch (logRef.Mode)
+                {
+                    case LogReference.ConsoleMessageMode.Log:
+                    {
+                        if (string.IsNullOrEmpty(logMsg))
+                        {
+                            logMsg = logRef.Message;
+                        }
+
+                        logCount++;
+                        break;
+                    }
+
+                    case LogReference.ConsoleMessageMode.Warning:
+                    {
+                        if (string.IsNullOrEmpty(warnMsg))
+                        {
+                            warnMsg = logRef.Message;
+                        }
+
+                        warnCount++;
+                        break;
+                    }
+
+                    case LogReference.ConsoleMessageMode.Error:
+                    {
+                        if (string.IsNullOrEmpty(errMsg))
+                        {
+                            errMsg = logRef.Message;
+                        }
+
+                        errCount++;
+                        break;
+                    }
+                }
+            }
+
+            UpdateSelectedContextLabel(errCount, m_SelectedConsoleErrorButton,
+                errCount > 0 ? errMsg : string.Empty, ref MuseEditorDriver.instance.IsConsoleErrorSelected);
+            UpdateSelectedContextLabel(logCount, m_SelectedConsoleInfoButton,
+                logCount > 0 ? logMsg : string.Empty, ref MuseEditorDriver.instance.IsConsoleInfoSelected);
+            UpdateSelectedContextLabel(warnCount, m_SelectedConsoleWarnButton,
+                warnCount > 0 ? warnMsg : string.Empty, ref MuseEditorDriver.instance.IsConsoleWarningSelected);
+
             UpdateContextSelectionPanel();
         }
 
@@ -411,8 +463,9 @@ namespace Unity.Muse.Chat
 
         void UpdateSelectedContextWarning(MouseEnterEvent evt = null)
         {
-            if (MuseEditorDriver.instance.GetSelectedContextString(MuseChatConstants.PromptContextLimit, true).Length
-                > MuseChatConstants.PromptContextLimit)
+            var contextBuilder = new ContextBuilder();
+            MuseEditorDriver.instance.GetSelectedContextString(ref contextBuilder);
+            if (contextBuilder.BuildContext(int.MaxValue).Length > MuseChatConstants.PromptContextLimit)
             {
                 m_ExceedingSelectedConsoleMessageLimitRoot.style.display = DisplayStyle.Flex;
             }
@@ -440,7 +493,7 @@ namespace Unity.Muse.Chat
 
                 case MuseChatUpdateType.MessageDelete:
                 {
-                    DeleteChatElement(data.Message.Id);
+                    DeleteChatMessage(data.Message.Id);
                     break;
                 }
 
@@ -453,9 +506,8 @@ namespace Unity.Muse.Chat
                 case MuseChatUpdateType.NewMessage:
                 case MuseChatUpdateType.MessageUpdate:
                 {
-                    // Add a new div to the dynamic content
-                    AddOrUpdateChatElement(data.Message);
-
+                    UpdateOrChangeChatMessage(data.Message);
+                    m_ConversationList.ScrollToEnd();
                     break;
                 }
 
@@ -475,16 +527,14 @@ namespace Unity.Muse.Chat
             m_ChatInput.SetMusingState(state);
 
             bool hasActiveResponseShown = false;
-            if (k_ActiveChatElements.Count > 0)
+
+            var lastMessageHolder = MuseEditorDriver.instance.GetActiveConversation()?.Messages.LastOrDefault();
+            if (lastMessageHolder.HasValue)
             {
-                // Sort by timestamp and get latest:
-                var sortedElements = k_ActiveChatElements.Values.ToArray();
-                Array.Sort(sortedElements, (a, b) => a.Message.Timestamp.CompareTo(b.Message.Timestamp));
+                var lastMessage = lastMessageHolder.Value;
 
-                var lastElement = sortedElements.Last();
-
-                if (lastElement.Message.Role == MuseEditorDriver.k_AssistantRole &&
-                    !string.IsNullOrEmpty(lastElement.Message.Content))
+                if (lastMessage.Role == MuseEditorDriver.k_AssistantRole &&
+                    !string.IsNullOrEmpty(lastMessage.Content))
                 {
                     hasActiveResponseShown = true;
                 }
@@ -571,16 +621,53 @@ namespace Unity.Muse.Chat
             m_WarningStatusRoot.Add(textGroup);
         }
 
-        private void DeleteChatElement(MuseMessageId messageId)
+        private bool TryGetChatMessageIndex(MuseMessageId id, out int index)
         {
-            if (!k_ActiveChatElements.TryGetValue(messageId, out var chatElement))
+            for (var i = 0; i < m_ConversationList.Data.Count; i++)
             {
-                Debug.LogWarning("Delete Message called for non-existent message: " + messageId);
+                if (m_ConversationList.Data[i].Id == id)
+                {
+                    index = i;
+                    return true;
+                }
+            }
+
+            index = default;
+            return false;
+        }
+
+        private void UpdateOrChangeChatMessage(MuseMessage message)
+        {
+            if (TryGetChatMessageIndex(message.Id, out int existingMessageIndex))
+            {
+                if (UserSessionState.instance.DebugModeEnabled && message.Content != m_ConversationList.Data[existingMessageIndex].Content)
+                {
+                    Debug.Log($"MSG_UPD: {message.Id} - {message.Content?.Length}");
+                }
+
+                m_ConversationList.UpdateData(existingMessageIndex, message);
                 return;
             }
 
-            k_ActiveChatElements.Remove(messageId);
-            m_ConversationContent.Remove(chatElement);
+            if (UserSessionState.instance.DebugModeEnabled)
+            {
+                Debug.Log($"MSG_ADD: {message.Id} - {message.Content?.Length}");
+            }
+
+            m_ConversationList.AddData(message);
+        }
+
+        private void DeleteChatMessage(MuseMessageId messageId)
+        {
+            if (TryGetChatMessageIndex(messageId, out var messageIndex))
+            {
+                if (UserSessionState.instance.DebugModeEnabled)
+                {
+                    Debug.Log($"MSG_DEL: {messageIndex} - {messageId}");
+                }
+
+                m_ConversationList.RemoveData(messageIndex);
+            }
         }
 
         private void UpdateChatElementId(MuseMessageId currentId, MuseMessageId newId)
@@ -590,88 +677,28 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            if (!k_ActiveChatElements.TryGetValue(currentId, out var chatElement))
+            if(!TryGetChatMessageIndex(currentId, out var messageIndex))
             {
-                Debug.LogWarning("Change Message ID called for non-existent message: " + currentId);
+                if (UserSessionState.instance.DebugModeEnabled)
+                    Debug.LogWarning("Change Message ID called for non-existent message: " + currentId);
+
                 return;
             }
 
-            var message = chatElement.Message;
-            message.Id = newId;
+            var messageData = m_ConversationList.Data[messageIndex];
 
-            chatElement.SetData(message);
-            k_ActiveChatElements.Remove(currentId);
-            k_ActiveChatElements.Add(message.Id, chatElement);
-        }
-
-        private void AddOrUpdateChatElement(MuseMessage message)
-        {
-            if (!k_ActiveChatElements.TryGetValue(message.Id, out var chatElement))
+            if (UserSessionState.instance.DebugModeEnabled)
             {
-                // Add a new element
-                if (message.Role == MuseEditorDriver.k_UserRole)
-                {
-                    chatElement = new ChatElementUser { EditEnabled = true };
-                    if (m_LastUserElement != null)
-                    {
-                        m_LastUserElement.EditEnabled = false;
-                    }
-
-                    m_LastUserElement = (ChatElementUser)chatElement;
-                }
-                else
-                {
-                    chatElement = new ChatElementResponse();
-                }
-
-                chatElement.Initialize();
-                k_ActiveChatElements.Add(message.Id, chatElement);
-                m_ConversationContent.Add(chatElement);
+                Debug.Log($"MSG_ID_CHANGE: {messageIndex} - {messageData.Id} -> {newId}");
             }
 
-            if (chatElement.Message.Content == message.Content &&
-                chatElement.Message.IsComplete == message.IsComplete)   // complete flag removes last word when false.
-            {
-                // No change to content, no need to update
-                return;
-            }
-
-            chatElement.SetData(message);
+            messageData.Id = newId;
+            m_ConversationList.UpdateData(messageIndex, messageData);
         }
 
-        void QueueScrollLock()
+        void SetSuggestionVisible(bool value)
         {
-            var lastScrollPosition = MuseChatEnvironment.instance.ScrollPosition;
-            if (lastScrollPosition.HasValue)
-            {
-                // Need to set scroll position here and again in the next update to avoid the scrollview jumping after its internal update:
-                m_ChatScroller.value = lastScrollPosition.Value;
-                EditorApplication.delayCall += ScrollToLastPosition;
-            }
-            else if (m_ChatInput.HasFocus || (m_ChatScroller.value >= m_ChatScroller.highValue))
-            {
-                EditorApplication.delayCall += ApplyScrollLock;
-            }
-        }
-
-        void ScrollToLastPosition()
-        {
-            var lastScrollPosition = MuseChatEnvironment.instance.ScrollPosition;
-            if (lastScrollPosition.HasValue)
-            {
-                m_ChatScroller.value = lastScrollPosition.Value;
-                MuseChatEnvironment.instance.ScrollPosition = null;
-            }
-        }
-
-        void ApplyScrollLock()
-        {
-            m_ChatScroller.value = m_ChatScroller.highValue;
-        }
-
-        void SetSuggestionVisible(bool visible)
-        {
-            m_SuggestionRoot.style.display = visible ? DisplayStyle.Flex:DisplayStyle.None;
+            m_SuggestionRoot.style.display = value ? DisplayStyle.Flex:DisplayStyle.None;
         }
 
         void OnViewGeometryChanged(GeometryChangedEvent evt)
@@ -695,10 +722,8 @@ namespace Unity.Muse.Chat
 
         void OnBeforeAssemblyReload()
         {
-            MuseChatEnvironment.instance.ScrollPosition = m_ChatScroller.value;
-
             var activeConversation = MuseEditorDriver.instance.GetActiveConversation();
-            MuseChatEnvironment.instance.LastActiveConversationId = activeConversation == null
+            UserSessionState.instance.LastActiveConversationId = activeConversation == null
                 ? null
                 : activeConversation.Id.Value;
         }

@@ -1,8 +1,3 @@
-.musechatview__element {
-    flex-grow: 1;
-    min-width: 400px;
-}
-
 .musechatview__element-root {
     flex-grow: 1;
 }
@@ -184,10 +179,6 @@
     background-color: var(--appui-backgrounds-200);
 }
 
-#conversationContent {
-    flex-grow: 1;
-}
-
 #notificationContainer {
     align-self: center;
     align-items: center;
@@ -244,7 +235,7 @@
 }
 
 .mui-selected-context-button-selected {
-    background-color: var(--appui-alias-actions-background-color-default);
+    background-color: var(--appui-alias-actions-background-color-hover);
     color: var(--appui-foregrounds-100);
 }
 

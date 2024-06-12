@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization.Truncators
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Truncators
 {
     /// <summary>
     ///     Base implementation of the builtin <see cref="IRangeGenerator" />.

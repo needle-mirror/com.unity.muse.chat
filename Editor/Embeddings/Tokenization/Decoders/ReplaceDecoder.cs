@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization.Decoders
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Decoders
 {
     /// <summary>
     ///     Replace Decoder replaces certain char to another char from the tokens in the list.

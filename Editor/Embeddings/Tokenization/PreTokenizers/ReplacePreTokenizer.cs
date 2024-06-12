@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     /// <summary>
     ///     Replaces a specified pattern by another string.

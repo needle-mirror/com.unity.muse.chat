@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.PostProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors
 {
     /// <summary>
     ///     Base implementation for builtin <see cref="IPostProcessor" /> types.

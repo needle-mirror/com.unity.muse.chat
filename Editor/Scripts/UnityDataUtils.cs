@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using UnityEditor;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Object = UnityEngine.Object;
 
 [assembly: InternalsVisibleTo("Unity.Muse.Chat.Editor.Tests")]
 
@@ -173,7 +175,7 @@ namespace Unity.Muse.Chat
         /// <returns>A dictionary where the package is the key and version is the value</returns>
         public static Dictionary<string, string> GetPackageMap()
         {
-            if (s_PackageMap.Count == 0)
+            if (s_PackageMap.Count == 0 && UserSessionState.instance.DebugModeEnabled)
                 Debug.LogWarning("No package data available. Please call CachePackageData first.");
 
             return s_PackageMap;
@@ -220,6 +222,34 @@ namespace Unity.Muse.Chat
         }
 
         /// <summary>
+        /// Returns true if the given rootField exists as a serialized property on the given object
+        /// </summary>
+        /// <param name="targetObject">The object to display as a string</param>
+        /// <param name="rootField">The field to check. Cannot be null.</param>
+        /// <returns></returns>
+        public static bool UnityObjectFieldExists(Object targetObject, string rootField)
+        {
+            if (string.IsNullOrEmpty(rootField))
+                throw new ArgumentException($"{nameof(rootField)} cannot be null or empty");
+
+            if (targetObject == null)
+                return false;
+
+            var targetSerializedObject = new SerializedObject(targetObject);
+
+            var iter = targetSerializedObject.GetIterator();
+            iter.Next(true);
+
+            do
+            {
+                if (iter.name == rootField)
+                    return true;
+            } while (iter.Next(false));
+
+            return false;
+        }
+
+        /// <summary>
         /// Returns a string summary of the given object
         /// </summary>
         /// <param name="targetObject">The object to display as a string</param>
@@ -260,16 +290,19 @@ namespace Unity.Muse.Chat
         /// <summary>
         /// Retrieves a list of all project settings assets for serialization
         /// </summary>
-        /// <returns>A list with each project setting asset loaded</returns>
-        public static List<UnityEngine.Object> GetSettingsAssets()
+        /// <returns>A list of tuples containing each project setting asset loaded and its project asset name</returns>
+        public static List<Tuple<UnityEngine.Object, string>> GetSettingsAssets()
         {
-            var settingsList = new List<UnityEngine.Object>();
+            var settingsList = new List<Tuple<UnityEngine.Object, string>>();
 
             var assetsPath = Application.dataPath;
-            var projectSettingsPath = assetsPath.Substring(0, assetsPath.LastIndexOf("/Assets")) + "/ProjectSettings";
-            var assetPaths = Directory.EnumerateFiles(projectSettingsPath, "*.asset");
+            var projectSettingsPath =
+                assetsPath.Substring(0,
+                    assetsPath.LastIndexOf("/Assets", StringComparison.Ordinal)) +
+                "/ProjectSettings";
+            var assetPaths = Directory.EnumerateFiles(projectSettingsPath, "*.asset").ToArray();
 
-            if (assetPaths.Count() == 0)
+            if (!assetPaths.Any())
             {
                 Debug.LogError("Project settings cannot be found.");
                 return settingsList;
@@ -277,14 +310,15 @@ namespace Unity.Muse.Chat
 
             foreach (var assetPath in assetPaths)
             {
-                var localPath = $"ProjectSettings/{Path.GetFileName(assetPath)}";
+                var filename = Path.GetFileName(assetPath);
+                var localPath = $"ProjectSettings/{filename}";
 
                 var type = AssetDatabase.GetMainAssetTypeAtPath(localPath);
                 var asset = AssetDatabase.LoadAssetAtPath(localPath, type);
                 if (asset == null)
                     continue;
 
-                settingsList.Add(asset);
+                settingsList.Add(new Tuple<Object, string>(asset, filename));
             }
 
             return settingsList;

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SEncoding = System.Text.Encoding;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <inheritdoc />
     class CharToByteConverter : IConverter<char, IReadOnlyCollection<byte>>

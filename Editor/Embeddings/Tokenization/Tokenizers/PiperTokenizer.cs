@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine.Assertions;
 
-namespace Unity.Muse.Chat.Tokenization.Tokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers
 {
     /// <summary>
     ///     Converts a string into a sequence of phonemes using the Piper Phonemizer strategy.

@@ -1,4 +1,4 @@
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     /// <summary>
     ///     Converts the input into its phoneme representation, using ESpeak as conversion backend.

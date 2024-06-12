@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Separates each UTF-8 character from a <see cref="SubString" /> input.

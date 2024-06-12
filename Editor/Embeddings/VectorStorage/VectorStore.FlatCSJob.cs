@@ -4,7 +4,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using UnityEngine;
 
-namespace Unity.Muse.Chat.VectorStorage
+namespace Unity.Muse.Chat.Embeddings.VectorStorage
 {
     partial class VectorStore
     {

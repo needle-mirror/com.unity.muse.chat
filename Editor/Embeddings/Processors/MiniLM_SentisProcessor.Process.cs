@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Muse.Chat.Processing;
+using Unity.Muse.Chat.Embeddings.Processing;
 using Unity.Sentis;
-namespace Unity.Muse.Chat.Processors
+namespace Unity.Muse.Chat.Embeddings.Processors
 {
     partial class MiniLM_SentisProcessor
     {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Unity.Muse.AppUI.UI;
+using Unity.Muse.Common.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -133,8 +134,6 @@ namespace Unity.Muse.Chat
 
         protected override void InitializeView(TemplateContainer view)
         {
-            base.InitializeView(view);
-
             m_ChatRoot = view.Q<VisualElement>("chatRoot");
 
             m_EditControls = view.Q<VisualElement>("editControls");
@@ -142,15 +141,6 @@ namespace Unity.Muse.Chat
             m_EditCancelButton = view.SetupButton("editCancelButton", x => { SetEditMode(false); });
 
             m_TextFieldRoot = view.Q<VisualElement>("textFieldRoot");
-
-            m_EditField = new MuseTextField();
-            m_EditField.Initialize();
-            m_EditField.ShowPlaceholder = false;
-            m_EditField.HighlightFocus = false;
-            m_EditField.OnSubmit += OnEditFieldSubmit;
-            m_EditField.style.display = DisplayStyle.None;
-            m_EditField.AddToClassList(k_EditModeRWTextFieldClass);
-            m_TextFieldRoot.parent.Add(m_EditField);
 
             // Hide the icon until we find a way to display that:
             m_UserIcon = view.Q<AppUI.UI.Avatar>("userIcon");
@@ -163,6 +153,23 @@ namespace Unity.Muse.Chat
         static string TrimDisplayString(string s)
         {
             return s.Trim('\n', '\r');
+        }
+
+        private void InitializeEditField()
+        {
+            if (m_EditField != null)
+            {
+                return;
+            }
+
+            m_EditField = new MuseTextField();
+            m_EditField.Initialize();
+            m_EditField.ShowPlaceholder = false;
+            m_EditField.HighlightFocus = false;
+            m_EditField.OnSubmit += OnEditFieldSubmit;
+            m_EditField.style.display = DisplayStyle.None;
+            m_EditField.AddToClassList(k_EditModeRWTextFieldClass);
+            m_TextFieldRoot.parent.Add(m_EditField);
         }
 
         private void OnEditFieldSubmit(string value)
@@ -196,6 +203,8 @@ namespace Unity.Muse.Chat
                 state = false;
             }
 
+            InitializeEditField();
+
             m_EditModeActive = state;
             if (m_EditModeActive)
             {
@@ -216,19 +225,13 @@ namespace Unity.Muse.Chat
             m_EditControls.style.display = EditEnabled ? DisplayStyle.Flex : DisplayStyle.None;
             m_ChatRoot.EnableInClassList(k_EditModeActiveClass, m_EditModeActive);
 
-            if (m_EditModeActive)
+            m_EditButton.SetDisplay(!m_EditModeActive);
+            m_EditCancelButton.SetDisplay(m_EditModeActive);
+            m_TextFieldRoot.SetDisplay(!m_EditModeActive);
+
+            if (m_EditField != null)
             {
-                m_EditButton.style.display = DisplayStyle.None;
-                m_EditCancelButton.style.display = DisplayStyle.Flex;
-                m_TextFieldRoot.style.display = DisplayStyle.None;
-                m_EditField.style.display = DisplayStyle.Flex;
-            }
-            else
-            {
-                m_EditButton.style.display = DisplayStyle.Flex;
-                m_EditCancelButton.style.display = DisplayStyle.None;
-                m_TextFieldRoot.style.display = DisplayStyle.Flex;
-                m_EditField.style.display = DisplayStyle.None;
+                m_EditField.SetDisplay(m_EditModeActive);
             }
         }
     }

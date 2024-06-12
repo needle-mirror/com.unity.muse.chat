@@ -10,9 +10,11 @@ namespace Unity.Muse.Chat
         {
             string m_FilePath;
             string[] m_Parameters;
+            string m_type;
 
             public Selector(string type, string path, string description, string[] parameters)
             {
+                m_type = type;
                 Classifier =
                     $"The setting file {type} has this description: {description} has these parameters: {string.Join(" ", parameters)}";
 
@@ -48,6 +50,13 @@ namespace Unity.Muse.Chat
                         asset, false, false, rootFields: m_Parameters, useDisplayName: true);
                 }
             }
+
+            string IContextSelection.DownsizedPayload => Payload;
+
+            string IContextSelection.ContextType => "project setting";
+
+            string IContextSelection.TargetName => string.Empty;
+
 
             public bool Dirty => true;
 

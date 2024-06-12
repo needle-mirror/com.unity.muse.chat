@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SEncoding = System.Text.Encoding;
 
-namespace Unity.Muse.Chat.Tokenization.Decoders
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Decoders
 {
     /// <summary>
     ///     Converts byte-level characters to unicode characters, then concat them into a single

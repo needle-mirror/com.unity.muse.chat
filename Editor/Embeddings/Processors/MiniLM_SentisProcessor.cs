@@ -1,11 +1,11 @@
 using System;
 using JetBrains.Annotations;
-using Unity.Muse.Chat.Processing;
-using Unity.Muse.Chat.Tokenization;
+using Unity.Muse.Chat.Embeddings.Processing;
+using Unity.Muse.Chat.Embeddings.Tokenization;
 using Unity.Sentis;
 using UnityEngine;
 
-namespace Unity.Muse.Chat.Processors
+namespace Unity.Muse.Chat.Embeddings.Processors
 {
     /// <summary>
     ///     Computes an embedding (<see cref="float"/> array) from an input <see cref="string"/>.

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Definition of a token, its <see cref="Value" /> and its <see cref="Ids" />.

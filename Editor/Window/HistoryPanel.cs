@@ -1,7 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Muse.Common.Utils;
 using UnityEngine.UIElements;
 
 namespace Unity.Muse.Chat
@@ -10,11 +10,11 @@ namespace Unity.Muse.Chat
     {
         static readonly IDictionary<string, List<MuseConversationInfo>> k_ConversationCache = new Dictionary<string, List<MuseConversationInfo>>();
 
-        readonly IList k_ContentData = new List<object>();
+        private readonly IList<object> k_TempList = new List<object>();
 
-        ListView m_Content;
+        VisualElement m_ContentRoot;
+        AdaptiveListView<object, HistoryPanelEntry> m_ContentList;
 
-        HistoryPanelEntry m_LastSelectedEntry;
         MuseConversationId m_SelectedConversation;
 
         public HistoryPanel()
@@ -24,24 +24,42 @@ namespace Unity.Muse.Chat
 
         public void Reload()
         {
-            k_ContentData.Clear();
             k_ConversationCache.Clear();
 
-            m_Content.ClearSelection();
+            m_ContentList.ClearData();
+            m_ContentList.ClearSelection();
 
             var nowRaw = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            LoadData(MuseEditorDriver.instance.History, k_ContentData, nowRaw);
-
             var activeConversation = MuseEditorDriver.instance.GetActiveConversation();
-            m_LastSelectedEntry = null;
+
+            k_TempList.Clear();
+            LoadData(MuseEditorDriver.instance.History, k_TempList, nowRaw);
+            int selectedIndex = -1;
+            m_ContentList.BeginUpdate();
+            for (var i = 0; i < k_TempList.Count; i++)
+            {
+                var entry = k_TempList[i];
+                if (activeConversation != null && entry is MuseConversationInfo info && info.Id == activeConversation.Id)
+                {
+                    selectedIndex = i;
+                }
+
+                m_ContentList.AddData(entry);
+            }
+
+            m_ContentList.EndUpdate(false);
+            if (selectedIndex >= 0)
+            {
+                m_ContentList.SetSelectionWithoutNotify(selectedIndex, true);
+            }
+
             m_SelectedConversation = activeConversation?.Id ?? default;
 
-            m_Content.RefreshItems();
-            m_Content.style.display = k_ContentData.Count == 0 ? DisplayStyle.None : DisplayStyle.Flex;
+            m_ContentList.SetDisplay(m_ContentList.Data.Count != 0);
         }
 
-        public static void LoadData(IEnumerable<MuseConversationInfo> data, IList result, long nowRaw)
+        public static void LoadData(IEnumerable<MuseConversationInfo> data, IList<object> result, long nowRaw)
         {
             k_ConversationCache.Clear();
             result.Clear();
@@ -72,60 +90,32 @@ namespace Unity.Muse.Chat
             }
         }
 
-        public void ChangeSelection(HistoryPanelEntry newSelectedEntry)
+        public void SelectionChanged(int index, object data)
         {
-            if (m_LastSelectedEntry != null)
+            if (index == -1 || data is string)
             {
-                m_LastSelectedEntry.SetSelected(false);
+                return;
             }
 
-            m_SelectedConversation = newSelectedEntry.Data.Id;
-            m_LastSelectedEntry = newSelectedEntry;
-            m_LastSelectedEntry.SetSelected(true);
+            var conversationInfo = (MuseConversationInfo)data;
+            m_SelectedConversation = conversationInfo.Id;
 
             MuseEditorDriver.instance.StartConversationLoad(m_SelectedConversation);
         }
 
         protected override void InitializeView(TemplateContainer view)
         {
-            m_Content = view.Q<ListView>("historyContent");
-            m_Content.itemsSource = k_ContentData;
-            m_Content.makeItem = MakeItem;
-            m_Content.bindItem = BindItem;
-            m_Content.selectionType = SelectionType.None;
-            m_Content.virtualizationMethod = CollectionVirtualizationMethod.DynamicHeight;
+            m_ContentRoot = view.Q<VisualElement>("historyContentRoot");
+            m_ContentList = new AdaptiveListView<object, HistoryPanelEntry>
+            {
+                EnableVirtualization = true
+            };
+            m_ContentList.Initialize();
+            m_ContentList.SelectionChanged += SelectionChanged;
+            m_ContentRoot.Add(m_ContentList);
 
             // Schedule a history update every 5 minutes
             schedule.Execute(MuseEditorDriver.instance.StartConversationRefresh).Every(1000 * 60 * 5);
-        }
-
-        void BindItem(VisualElement element, int index)
-        {
-            var entry = (HistoryPanelEntry)element;
-
-            if (k_ContentData[index] is string headerText)
-            {
-                entry.SetAsHeader(headerText);
-                entry.SetSelected(false);
-            }
-            else
-            {
-                var data = (MuseConversationInfo)k_ContentData[index];
-                entry.SetAsData(data);
-                entry.SetSelected(m_SelectedConversation == data.Id);
-
-                if (m_SelectedConversation == data.Id)
-                {
-                    m_LastSelectedEntry = entry;
-                }
-            }
-        }
-
-        VisualElement MakeItem()
-        {
-            HistoryPanelEntry entry = new(this);
-            entry.Initialize();
-            return entry;
         }
     }
 }

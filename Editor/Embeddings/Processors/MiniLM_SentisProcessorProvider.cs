@@ -1,25 +1,32 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Muse.Chat.Processing;
-using Unity.Muse.Chat.Tokenization;
-using Unity.Muse.Chat.Tokenization.PaddingProcessors;
-using Unity.Muse.Chat.Tokenization.PostProcessors;
-using Unity.Muse.Chat.Tokenization.PostProcessors.Templating;
-using Unity.Muse.Chat.Tokenization.PreTokenizers;
-using Unity.Muse.Chat.Tokenization.Tokenizers;
-using Unity.Muse.Chat.Tokenization.Truncators;
+using Unity.Muse.Chat.Embeddings.Processing;
+using Unity.Muse.Chat.Embeddings.Tokenization;
+using Unity.Muse.Chat.Embeddings.Tokenization.PaddingProcessors;
+using Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors;
+using Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors.Templating;
+using Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers;
+using Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers;
+using Unity.Muse.Chat.Embeddings.Tokenization.Truncators;
 using Unity.Sentis;
 using UnityEditor;
 using UnityEngine;
 
-namespace Unity.Muse.Chat.Processors
+namespace Unity.Muse.Chat.Embeddings.Processors
 {
     static class MiniLM_SentisProcessorProvider
     {
+        public enum Backend
+        {
+            Cpu,
+            Gpu
+        }
+
         const string k_MiniLM_SentisModelGuid = "7dc3bc5cb146a4d00bcbdf09b2230f29";
         const string k_MiniLM_TokenizerDataGuid = "8806eb8dd84694df29c2538bb2ac1f40";
         const int k_MaxSequenceLength = 128;
-        const BackendType k_BackendType = BackendType.GPUCompute;
+        const Backend k_DefaultBackend = Backend.Gpu;
 
         static TokenizerUtility.TokenizerData GetTokenizerData()
         {
@@ -71,11 +78,19 @@ namespace Unity.Muse.Chat.Processors
             return t;
         }
 
-        public static IDataProcessor<string, float[]> BuildProcessor(BackendType backendType = k_BackendType)
+        static BackendType GetBackend(Backend value) =>
+            value switch
+            {
+                Backend.Cpu => BackendType.CPU,
+                Backend.Gpu => BackendType.GPUCompute,
+                _ => throw new ArgumentOutOfRangeException(nameof(value), value, null)
+            };
+
+        public static IDataProcessor<string, float[]> BuildProcessor(Backend backend = k_DefaultBackend)
         {
             var modelPath = AssetDatabase.GUIDToAssetPath(k_MiniLM_SentisModelGuid);
             var model = ModelLoader.Load(modelPath);
-            var worker = WorkerFactory.CreateWorker(backendType, model);
+            var worker = WorkerFactory.CreateWorker(GetBackend(backend), model);
 
             var tokenizationPipeline = CreateTokenizer();
 

@@ -1,6 +1,6 @@
-using Unity.Muse.Chat.Tokenization.Tokenizers;
+using Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers;
 
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     /// <summary>
     ///     Pre-cuts the input <see cref="string" /> into smaller parts.

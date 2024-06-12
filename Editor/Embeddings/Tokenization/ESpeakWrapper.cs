@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     static class EspeakWrapper
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.Muse.Chat.Tokenization.PreTokenizers
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PreTokenizers
 {
     /// <summary>
     ///     Base implementation for the builtin <see cref="IPreTokenizer" />s.

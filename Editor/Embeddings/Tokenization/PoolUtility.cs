@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     static class PoolUtility
     {

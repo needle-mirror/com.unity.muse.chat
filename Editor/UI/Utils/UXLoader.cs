@@ -1,22 +1,11 @@
 using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Unity.Muse.Chat
 {
     internal static class UXLoader
     {
-        private static readonly StyleCache m_StaticStyleCache;
-
-        /// <summary>
-        /// Static constructor to initialize the static style cache
-        /// </summary>
-        static UXLoader()
-        {
-            m_StaticStyleCache = StyleCache.Get(MuseChatConstants.UIModulePath);
-        }
-
         /// <summary>
         /// Load a custom asset from the editor if the asset is not already loaded as provided by the target.
         /// </summary>
@@ -46,44 +35,6 @@ namespace Unity.Muse.Chat
             }
 
             return true;
-        }
-
-        /// <summary>
-        /// Load the shared style into a generic TemplateContainer (not managed)
-        /// </summary>
-        /// <param name="target">the target to load the style into</param>
-        public static void LoadSharedStyle(this TemplateContainer target)
-        {
-#if UNITY_EDITOR
-            string styleFile = string.Concat(MuseChatConstants.SharedStyleName, MuseChatConstants.StyleExtension);
-#else
-            string styleFile = Constants.SharedStyleName;
-#endif
-
-            var sheet = m_StaticStyleCache.Load(styleFile);
-            if (sheet != null && !target.styleSheets.Contains(sheet))
-            {
-                target.styleSheets.Add(sheet);
-            }
-        }
-
-        /// <summary>
-        /// Load the shared style for a managed template
-        /// </summary>
-        /// <param name="target">the template to load the style for</param>
-        internal static void LoadSharedStyle(this ManagedTemplate target)
-        {
-#if UNITY_EDITOR
-            string styleFile = string.Concat(MuseChatConstants.SharedStyleName, MuseChatConstants.StyleExtension);
-#else
-            string styleFile = Constants.SharedStyleName;
-#endif
-
-            var sheet = m_StaticStyleCache.Load(styleFile);
-            if (sheet != null && !target.styleSheets.Contains(sheet))
-            {
-                target.styleSheets.Add(sheet);
-            }
         }
 
         static T LoadAssetInternal<T>(string file)

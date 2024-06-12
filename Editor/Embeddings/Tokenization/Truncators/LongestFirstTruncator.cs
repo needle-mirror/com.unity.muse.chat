@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Unity.Muse.Chat.Tokenization.Truncators
+namespace Unity.Muse.Chat.Embeddings.Tokenization.Truncators
 {
     /// <summary>
     ///     This truncation strategy truncates the longest sequence of tokens first.

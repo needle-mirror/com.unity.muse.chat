@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization
+namespace Unity.Muse.Chat.Embeddings.Tokenization
 {
     /// <summary>
     ///     Assistant for <see cref="IVocabulary" /> instance creation.

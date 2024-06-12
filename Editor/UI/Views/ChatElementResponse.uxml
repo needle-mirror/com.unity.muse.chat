@@ -1,13 +1,13 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
     <VisualElement class="mui-chat-root mui-chat-response">
-        <VisualElement class="mui-chat-content">
+        <VisualElement class="mui-chat-message-content">
             <appui:Avatar name="museAvatar" class="mui-chat-avatar" variant="Square"/>
             <VisualElement name="textFieldRoot" class="mui-chat-element-text-area">
             </VisualElement>
         </VisualElement>
         <VisualElement>
             <appui:Accordion name="sourcesFoldout" class="mui-chat-sources-foldout">
-                <appui:AccordionItem title="Sources" value="true" class="mui-chat-sources-accordion-entry">
+                <appui:AccordionItem title="Sources" value="false" class="mui-chat-sources-accordion-entry">
                     <VisualElement name="sourcesContent">
                     </VisualElement>
                 </appui:AccordionItem>

@@ -14,7 +14,7 @@ namespace Unity.Muse.Chat
         // Note: We may have to tweak this dynamically based on what content we intend to add to the text element
         private const int k_MessageChunkSize = 5000;
 
-        private const string k_LinkCursorClassName = "mui-link-cursor";
+        private const string k_ActionCursorClassName = "mui-action-cursor";
 
         private IList<WebAPI.SourceBlock> m_SourceBlocks;
 
@@ -42,6 +42,10 @@ namespace Unity.Muse.Chat
             }
         }
 
+        public virtual void Reset()
+        {
+        }
+
         public MuseMessageId Id => Message.Id;
 
         public MuseMessage Message { get; private set; }
@@ -51,11 +55,6 @@ namespace Unity.Muse.Chat
         protected IList<string> MessageChunks { get; }
 
         protected IList<WebAPI.SourceBlock> SourceBlocks => m_SourceBlocks;
-
-        protected override void InitializeView(TemplateContainer view)
-        {
-            LoadStyle("ChatElementShared");
-        }
 
         protected void RefreshText(VisualElement root, IList<VisualElement> textFields)
         {
@@ -87,14 +86,14 @@ namespace Unity.Muse.Chat
                     }
                 }
 
-                for (var id = textFields.Count - 1; id >= MessageChunks.Count; id++)
+                for (var i = textFields.Count - 1; i >= MessageChunks.Count; i--)
                 {
-                    var obsoleteField = textFields[id];
+                    var obsoleteField = textFields[i];
                     obsoleteField.RemoveFromHierarchy();
                     obsoleteField.UnregisterCallback<PointerDownLinkTagEvent>(OnLinkClicked);
                     obsoleteField.UnregisterCallback<PointerOverLinkTagEvent>(OnLinkOver);
                     obsoleteField.UnregisterCallback<PointerOutLinkTagEvent>(OnLinkOut);
-                    textFields.RemoveAt(id);
+                    textFields.RemoveAt(i);
                 }
 
                 return;
@@ -137,18 +136,24 @@ namespace Unity.Muse.Chat
                         root.Insert(oldIndex, visualElement);
                         root.Remove(textFields[id]);
                         textFields[id] = visualElement;
+
+                        if (visualElement is ChatElementCodeBlock codeBlock)
+                        {
+                            codeBlock.SetSelectable(true);
+                        }
                     }
                 }
+            }
 
-                for (var id = textFields.Count - 1; id >= m_NewTextElements.Count; id--)
-                {
-                    var obsoleteField = textFields[id];
-                    obsoleteField.RemoveFromHierarchy();
-                    obsoleteField.UnregisterCallback<PointerDownLinkTagEvent>(OnLinkClicked);
-                    obsoleteField.UnregisterCallback<PointerOverLinkTagEvent>(OnLinkOver);
-                    obsoleteField.UnregisterCallback<PointerOutLinkTagEvent>(OnLinkOut);
-                    textFields.RemoveAt(id);
-                }
+            // Clear out obsolete fields
+            for (var id = textFields.Count - 1; id >= m_NewTextElements.Count; id--)
+            {
+                var obsoleteField = textFields[id];
+                obsoleteField.RemoveFromHierarchy();
+                obsoleteField.UnregisterCallback<PointerDownLinkTagEvent>(OnLinkClicked);
+                obsoleteField.UnregisterCallback<PointerOverLinkTagEvent>(OnLinkOver);
+                obsoleteField.UnregisterCallback<PointerOutLinkTagEvent>(OnLinkOut);
+                textFields.RemoveAt(id);
             }
         }
 
@@ -156,7 +161,7 @@ namespace Unity.Muse.Chat
         {
             if (evt.target is Text text)
             {
-                text.RemoveFromClassList(k_LinkCursorClassName);
+                text.RemoveFromClassList(k_ActionCursorClassName);
             }
         }
 
@@ -164,7 +169,7 @@ namespace Unity.Muse.Chat
         {
             if (evt.target is Text text)
             {
-                text.AddToClassList(k_LinkCursorClassName);
+                text.AddToClassList(k_ActionCursorClassName);
             }
         }
 

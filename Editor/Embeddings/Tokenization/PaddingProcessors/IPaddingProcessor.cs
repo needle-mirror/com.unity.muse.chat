@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.PaddingProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PaddingProcessors
 {
     /// <summary>
     ///     Applies a padding to sequences of tokens.

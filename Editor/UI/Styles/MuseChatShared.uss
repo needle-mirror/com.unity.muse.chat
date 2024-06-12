@@ -8,6 +8,14 @@
     font-size: 12px;
 }
 
+.mui-action-cursor {
+    cursor: arrow;
+}
+
+.appui-button {
+    cursor: arrow;
+}
+
 .-muse-chat-panel {
     background-color: var(--appui-backgrounds-200);
 }
@@ -36,6 +44,10 @@
 
 .appui-icon--mui-icon-copy {
     --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CopySimple.png');
+}
+
+.appui-icon--mui-icon-save {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/SaveAs.png');
 }
 
 .appui-icon--mui-icon-upvote {

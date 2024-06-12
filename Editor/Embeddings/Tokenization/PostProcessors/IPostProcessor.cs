@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Unity.Muse.Chat.Tokenization.Tokenizers;
+using Unity.Muse.Chat.Embeddings.Tokenization.Tokenizers;
 
-namespace Unity.Muse.Chat.Tokenization.PostProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors
 {
     /// <summary>
     ///     Transforms the sequences of tokens from the truncated output of <see cref="ITokenizer" />

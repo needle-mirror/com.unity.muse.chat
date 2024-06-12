@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Muse.Chat.Processors;
-using Unity.Muse.Chat.VectorStorage;
+using Unity.Muse.Chat.Embeddings.Processors;
+using Unity.Muse.Chat.Embeddings.VectorStorage;
 using UnityEditor;
 
 #if UNITY_2023_1_OR_NEWER

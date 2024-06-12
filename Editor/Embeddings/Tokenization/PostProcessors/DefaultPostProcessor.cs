@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization.PostProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors
 {
     /// <summary>
     ///     Interlaces the primary and secondary sequences of tokens.

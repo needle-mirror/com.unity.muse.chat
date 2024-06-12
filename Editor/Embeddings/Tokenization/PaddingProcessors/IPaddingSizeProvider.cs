@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat.Tokenization.PaddingProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PaddingProcessors
 {
     /// <summary>
     ///     Computes the size of the padded sequence of tokens.

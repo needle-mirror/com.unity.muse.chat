@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Unity.Muse.Chat.Tokenization.PostProcessors.Templating;
+using Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors.Templating;
 
-namespace Unity.Muse.Chat.Tokenization.PostProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors
 {
     class TemplatePostProcessor : PostProcessorBase
     {

@@ -8,19 +8,24 @@ namespace Unity.Muse.Editor.Markup
 {
     internal class MarkdownAPI
     {
-        internal static void MarkupText(string text, IList<WebAPI.SourceBlock> sourceBlocks, IList<VisualElement> newTextElements)
+        private static readonly MarkdownPipeline k_Pipeline;
+
+        static MarkdownAPI()
         {
-            MarkdownPipelineBuilder pipelineBuilder = new MarkdownPipelineBuilder();
+            var pipelineBuilder = new MarkdownPipelineBuilder();
             pipelineBuilder.InlineParsers.TryRemove<EscapeInlineParser>();
             pipelineBuilder.InlineParsers.TryRemove<LinkInlineParser>();
             pipelineBuilder.InlineParsers.AddIfNotAlready<ChatLinkInlineParser>();
 
-            var markdownPipeline = pipelineBuilder.Build();
+            k_Pipeline = pipelineBuilder.Build();
+        }
+
+        internal static void MarkupText(string text, IList<WebAPI.SourceBlock> sourceBlocks, IList<VisualElement> newTextElements)
+        {
             var ourRenderer = new ChatMarkdownRenderer(sourceBlocks, newTextElements);
+            k_Pipeline.Setup(ourRenderer);
 
-            markdownPipeline.Setup(ourRenderer);
-
-            Markdown.Convert(text, ourRenderer, markdownPipeline);
+            Markdown.Convert(text, ourRenderer, k_Pipeline);
         }
     }
 }

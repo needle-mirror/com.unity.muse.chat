@@ -38,9 +38,36 @@ namespace Unity.Muse.Chat
 
         private FeedbackEditMode m_FeedbackMode = FeedbackEditMode.None;
 
-        private int m_AnimationIndex;
+        private MuseMessageId m_MessageId;
         static readonly int k_TextAnimationDelay = 500; // in ms
         private IVisualElementScheduledItem m_ScheduledAnim;
+
+        private bool m_FeedbackParametersSetup = false;
+
+        private static readonly Dictionary<MuseMessageId, int> k_AnimationIndices = new();
+
+        private int AnimationIndex
+        {
+            get
+            {
+                if(k_AnimationIndices.TryGetValue(m_MessageId, out var index))
+                {
+                    return index;
+                }
+
+                k_AnimationIndices[m_MessageId] = 0;
+
+                return 0;
+            }
+            set
+            {
+                // Don't store non-external message IDs:
+                if (m_MessageId.Type == MuseMessageIdType.External)
+                {
+                    k_AnimationIndices[m_MessageId] = value;
+                }
+            }
+        }
 
         private enum FeedbackEditMode
         {
@@ -63,6 +90,16 @@ namespace Unity.Muse.Chat
                 // Override message text for errors to make it more user-friendly:
                 message.Content = ErrorTranslator.GetErrorMessage(message.ErrorCode, message.ErrorText, message.Content);
             }
+
+            if (m_MessageId != message.Id)
+            {
+                if (k_AnimationIndices.ContainsKey(m_MessageId))
+                {
+                    k_AnimationIndices.Remove(m_MessageId);
+                }
+            }
+
+            m_MessageId = message.Id;
 
             base.SetData(message);
 
@@ -94,30 +131,50 @@ namespace Unity.Muse.Chat
                     SetData(message);
                 }).StartingIn(delay);
             }
+
+            RemoveCompleteMessageFromAnimationDictionary();
         }
 
-        void GetAnimationInfo(string message, out int remainingSpaces, out int lastSpace)
+        public override void Reset()
+        {
+            // If the message is complete, set the animation index to a high value to start the next animation at the last space:
+            if (!Message.IsComplete)
+            {
+                AnimationIndex = int.MaxValue;
+            }
+        }
+
+        private void RemoveCompleteMessageFromAnimationDictionary()
+        {
+            // No need to keep complete messages in animation data dictionary:
+            if (Message.IsComplete && k_AnimationIndices.ContainsKey(m_MessageId))
+            {
+                k_AnimationIndices.Remove(m_MessageId);
+            }
+        }
+
+        void GetAnimationInfo(string message, out int remainingSpaces, out int nextSpace)
         {
             if (string.IsNullOrEmpty(message))
             {
-                lastSpace = 0;
+                nextSpace = 0;
                 remainingSpaces = 0;
                 return;
             }
 
-            m_AnimationIndex = Math.Min(m_AnimationIndex, message.Length - 1);
-            lastSpace = message.IndexOf(' ', m_AnimationIndex);
+            AnimationIndex = Math.Min(AnimationIndex, message.Length - 1);
+            nextSpace = message.IndexOf(' ', AnimationIndex);
 
             remainingSpaces = 0;
-            if (lastSpace > 0)
+            if (nextSpace > 0)
             {
-                int count = 0;
-                foreach (var c in message.Substring(lastSpace))
+                remainingSpaces = 0;
+                for (var i = nextSpace + 1; i < message.Length; i++)
                 {
-                    if (c == ' ') count++;
+                    if (message[i] == ' ') remainingSpaces++;
                 }
 
-                remainingSpaces = Math.Max(1, count);
+                remainingSpaces = Math.Max(1, remainingSpaces);
             }
         }
 
@@ -125,14 +182,14 @@ namespace Unity.Muse.Chat
         {
             if (message.Length > 0)
             {
-                GetAnimationInfo(message, out _, out var lastSpace);
+                GetAnimationInfo(message, out _, out var nextSpace);
 
-                if (lastSpace > 0)
+                if (nextSpace > 0)
                 {
-                    m_AnimationIndex = lastSpace + 1;
+                    AnimationIndex = nextSpace + 1;
                 }
 
-                message = message.Substring(0, m_AnimationIndex);
+                message = message.Substring(0, AnimationIndex);
             }
 
             return message;
@@ -140,8 +197,6 @@ namespace Unity.Muse.Chat
 
         protected override void InitializeView(TemplateContainer view)
         {
-            base.InitializeView(view);
-
             LoadSharedAsset("icons/muse.png", ref k_MuseAvatarImage);
             view.Q<Avatar>("museAvatar").src = Background.FromTexture2D(k_MuseAvatarImage);
 
@@ -156,18 +211,28 @@ namespace Unity.Muse.Chat
             m_DownVoteButton = view.SetupButton("downVoteButton", OnDownvoteClicked);
 
             m_FeedbackParamSection = view.Q<VisualElement>("feedbackParamSection");
-            m_FeedbackFlagInappropriateCheckbox = view.Q<Checkbox>("feedbackFlagCheckbox");
-            m_FeedbackTypeDropdown = view.SetupEnumDropdown<Category>("feedbackType", GetFeedbackTypeDisplayString);
-            m_FeedbackTypeDropdown.RegisterValueChangedCallback(_ => CheckFeedbackState());
-
-            m_FeedbackText = view.Q<TextField>("feedbackValueText");
-            m_FeedbackText.multiline = true;
-            m_FeedbackText.maxLength = MuseChatConstants.MaxFeedbackMessageLength;
-            m_FeedbackText.RegisterValueChangedCallback(_ => CheckFeedbackState());
-            m_FeedbackSendButton = view.SetupButton("feedbackSendButton", OnSendFeedback);
 
             m_ErrorSection = view.Q<VisualElement>("errorFrame");
             m_ErrorSection.style.display = DisplayStyle.None;
+        }
+
+        private void SetupFeedbackParameters()
+        {
+            if (m_FeedbackParametersSetup)
+            {
+                return;
+            }
+
+            m_FeedbackParametersSetup = true;
+            m_FeedbackFlagInappropriateCheckbox = m_FeedbackParamSection.Q<Checkbox>("feedbackFlagCheckbox");
+            m_FeedbackTypeDropdown = m_FeedbackParamSection.SetupEnumDropdown<Category>("feedbackType", GetFeedbackTypeDisplayString);
+            m_FeedbackTypeDropdown.RegisterValueChangedCallback(_ => CheckFeedbackState());
+
+            m_FeedbackText = m_FeedbackParamSection.Q<TextField>("feedbackValueText");
+            m_FeedbackText.multiline = true;
+            m_FeedbackText.maxLength = MuseChatConstants.MaxFeedbackMessageLength;
+            m_FeedbackText.RegisterValueChangedCallback(_ => CheckFeedbackState());
+            m_FeedbackSendButton = m_FeedbackParamSection.SetupButton("feedbackSendButton", OnSendFeedback);
         }
 
         private string GetFeedbackTypeDisplayString(Category type)
@@ -241,8 +306,8 @@ namespace Unity.Muse.Chat
                 Type = type,
                 Message = message,
                 Sentiment = m_FeedbackMode == FeedbackEditMode.UpVote
-                    ? AssistantModelsMuseRequestsSentiment.Positive
-                    : AssistantModelsMuseRequestsSentiment.Negative
+                    ? Sentiment.Positive
+                    : Sentiment.Negative
             };
 
             MuseEditorDriver.instance.SendFeedback(feedback);
@@ -287,8 +352,8 @@ namespace Unity.Muse.Chat
             }
 
             m_FeedbackMode = FeedbackEditMode.UpVote;
-            m_FeedbackFlagInappropriateCheckbox.value = CheckboxState.Unchecked;
             RefreshFeedbackParameters();
+            m_FeedbackFlagInappropriateCheckbox.value = CheckboxState.Unchecked;
         }
 
         private void OnCopyClicked(PointerUpEvent evt)
@@ -338,11 +403,9 @@ namespace Unity.Muse.Chat
                 m_FeedbackParamSection.style.display = DisplayStyle.None;
                 return;
             }
-            else
-            {
-                m_UpVoteButton.SetEnabled(true);
-                m_DownVoteButton.SetEnabled(true);
-            }
+
+            m_UpVoteButton.SetEnabled(true);
+            m_DownVoteButton.SetEnabled(true);
 
             switch (m_FeedbackMode)
             {
@@ -356,6 +419,7 @@ namespace Unity.Muse.Chat
 
                 case FeedbackEditMode.DownVote:
                 {
+                    SetupFeedbackParameters();
                     m_FeedbackParamSection.style.display = DisplayStyle.Flex;
                     m_FeedbackFlagInappropriateCheckbox.style.display = DisplayStyle.Flex;
                     m_UpVoteButton.RemoveFromClassList(k_FeedbackButtonActiveClass);
@@ -365,6 +429,7 @@ namespace Unity.Muse.Chat
 
                 case FeedbackEditMode.UpVote:
                 {
+                    SetupFeedbackParameters();
                     m_FeedbackParamSection.style.display = DisplayStyle.Flex;
                     m_FeedbackFlagInappropriateCheckbox.style.display = DisplayStyle.None;
                     m_UpVoteButton.AddToClassList(k_FeedbackButtonActiveClass);

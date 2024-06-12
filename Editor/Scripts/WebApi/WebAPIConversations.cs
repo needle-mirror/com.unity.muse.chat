@@ -108,7 +108,7 @@ namespace Unity.Muse.Chat
         public void GetConversation(
             string conversationId,
             ILoopRegistration loop,
-            Action<Conversation> onComplete,
+            Action<ClientConversation> onComplete,
             Action<Exception> onError)
         {
             if (string.IsNullOrEmpty(conversationId))
@@ -160,7 +160,7 @@ namespace Unity.Muse.Chat
 
                     switch (res.ActualInstance)
                     {
-                        case Conversation c:
+                        case ClientConversation c:
                             onComplete?.Invoke(c);
                             break;
                         default:

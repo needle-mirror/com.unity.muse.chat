@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" xsi="http://www.w3.org/2001/XMLSchema-instance" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-   <Style src="project:/Packages/com.unity.muse.common/Runtime/UI/PackageResources/uss/Account.uss"/>
+    <Style src="project:/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChat.uss"/>
     <appui:Panel name="root-panel">
         <ui:VisualElement name="root-main">
             <ui:VisualElement class="mui-header -muse-chat-panel">
@@ -26,10 +26,11 @@
                         <appui:Text text="Try these for inspiration" class="mui-chat-suggestion-text"/>
                         <ui:VisualElement name="suggestionContent"/>
                     </ui:VisualElement>
-                    <ui:ScrollView name="conversationRoot">
-                        <ui:VisualElement name="conversationContent">
-                        </ui:VisualElement>
-                    </ui:ScrollView>
+                    <ui:VisualElement name="conversationRoot">
+                    </ui:VisualElement>
+                    <ui:VisualElement name="musingPlaceholderRoot">
+
+                    </ui:VisualElement>
                 </ui:VisualElement>
 
                 <ui:VisualElement name="historyPanelRoot">
@@ -41,7 +42,7 @@
 
             <ui:VisualElement name="footerRoot" class="mui-footer -muse-chat-panel">
                 <ui:VisualElement name="userSelectedContextRoot" class="mui-chat-user-selected-context-root">
-                    <appui:Text name="selectionLabel" text="Selection" class="mui-context-selection-text"/>
+                    <appui:Text name="selectionLabel" text="Selection" tooltip="Selected items appear here, toggle between including or removing them from your prompt" class="mui-context-selection-text"/>
                     <ui:VisualElement name="userSelectedContextLabelsRoot" class="mui-chat-user-selected-context-labels-root">
                         <appui:Button name="selectedConsoleInfoButton" leading-icon="mui-icon-info" size="s" class="mui-selected-context-button"/>
                         <appui:Button name="selectedConsoleWarnButton" leading-icon="mui-icon-warn" size="s" class="mui-selected-context-button"/>

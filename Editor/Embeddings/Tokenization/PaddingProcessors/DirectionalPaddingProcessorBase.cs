@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace Unity.Muse.Chat.Tokenization.PaddingProcessors
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PaddingProcessors
 {
     /// <summary>
     ///     Base type for directional padding processor.

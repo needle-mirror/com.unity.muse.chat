@@ -1,6 +1,6 @@
 using System;
 
-namespace Unity.Muse.Chat.Tokenization.PostProcessors.Templating
+namespace Unity.Muse.Chat.Embeddings.Tokenization.PostProcessors.Templating
 {
     /// <summary>
     ///     A element of a template.

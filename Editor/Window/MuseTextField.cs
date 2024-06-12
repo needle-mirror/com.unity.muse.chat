@@ -220,13 +220,19 @@ namespace Unity.Muse.Chat
                 }
 
                 evt.StopPropagation();
+
+#if !UNITY_2023_1_OR_NEWER
                 evt.PreventDefault();
+#endif
             }
             else if (evt.character == '\n')
             {
                 // Don't do default behaviour of adding a new line with return:
                 evt.StopPropagation();
+
+#if !UNITY_2023_1_OR_NEWER
                 evt.PreventDefault();
+#endif
             }
         }
 
@@ -252,6 +258,8 @@ namespace Unity.Muse.Chat
             {
                 return;
             }
+
+            evt.StopPropagation();
 
             // Do not allow submit while waiting for a response:
             if (!m_IsMusing)

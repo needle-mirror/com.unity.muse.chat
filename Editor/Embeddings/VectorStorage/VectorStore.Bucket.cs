@@ -1,7 +1,7 @@
 using System;
 using Unity.Collections;
 
-namespace Unity.Muse.Chat.VectorStorage
+namespace Unity.Muse.Chat.Embeddings.VectorStorage
 {
     partial class VectorStore
     {
