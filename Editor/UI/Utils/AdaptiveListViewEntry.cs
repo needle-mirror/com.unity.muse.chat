@@ -7,8 +7,8 @@ namespace Unity.Muse.Chat
     {
         private int m_Index;
 
-        protected AdaptiveListViewEntry()
-            : base(MuseChatConstants.UIModulePath)
+        protected AdaptiveListViewEntry(string basePath = null)
+            : base(basePath ?? MuseChatConstants.UIModulePath)
         {
         }
 

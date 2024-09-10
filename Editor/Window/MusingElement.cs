@@ -157,7 +157,7 @@ namespace Unity.Muse.Chat
             {
                 return 0;
             }
-             
+
             var startTime = conversation.StartTime;
             // Init the start time if needed:
             if (startTime < 1)

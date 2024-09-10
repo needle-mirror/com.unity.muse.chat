@@ -400,7 +400,7 @@ namespace Unity.Muse.Chat.BackendApi.Client
         {
             var deserializer = new CustomJsonCodec(SerializerSettings, configuration);
 
-            using(request) 
+            using(request)
             {
                 if (configuration.Timeout > 0)
                 {

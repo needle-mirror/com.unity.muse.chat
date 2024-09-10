@@ -4,6 +4,7 @@ namespace Unity.Muse.Chat
 {
     internal static class MuseChatConstants
     {
+        internal const int MaxInspirationCount = 100;
         internal const int MaxConversationHistory = 1000;
         internal const int MaxFeedbackMessageLength = 1000;
         internal const int MaxMuseMessageLength = 4000;

@@ -24,7 +24,7 @@ namespace Unity.Muse.Chat.BackendApi.Model
         /// Enum MuseBehavior for value: muse-behavior
         /// </summary>
         [EnumMember(Value = "muse-behavior")]
-        MuseBehavior = 1
+        MuseBehavior = 1,
     }
 
 }

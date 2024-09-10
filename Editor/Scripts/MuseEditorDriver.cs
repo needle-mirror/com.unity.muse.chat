@@ -28,6 +28,7 @@ namespace Unity.Muse.Chat
         const int k_MaxInternalConversationTitleLength = 30;
 
         readonly List<MuseConversationInfo> k_History = new();
+        readonly List<MuseChatInspiration> k_InspirationEntries = new();
         readonly Queue<MuseChatUpdateData> k_Updates = new();
 
         MuseConversation m_ActiveConversation;
@@ -57,6 +58,11 @@ namespace Unity.Muse.Chat
         /// Indicates the conversation title has changed
         /// </summary>
         public event Action<string> OnConversationTitleChanged;
+
+        /// <summary>
+        /// Indicates that the inspiration entries have changed
+        /// </summary>
+        public event Action OnInspirationsChanged;
 
         /// <summary>
         /// The WebAPI implementation used to communicate with the Muse Backend.
@@ -97,7 +103,6 @@ namespace Unity.Muse.Chat
 
         internal PromptState CurrentPromptState {get; private set;}
 
-
         internal List<MuseConversationInfo> History
         {
             get
@@ -109,6 +114,26 @@ namespace Unity.Muse.Chat
 
                 return k_History;
             }
+        }
+
+        internal List<MuseChatInspiration> Inspirations
+        {
+            get
+            {
+                return k_InspirationEntries;
+            }
+        }
+
+        /// <summary>
+        /// Starts a request to refresh the list of conversations available. This is non-blocking.
+        /// </summary>
+        public void StartInspirationRefresh()
+        {
+            WebAPI.GetInspirations(
+                EditorLoopUtilities.EditorLoopRegistration,
+                OnInspirationsReceived,
+                Debug.LogException
+            );
         }
 
         /// <summary>
@@ -250,6 +275,30 @@ namespace Unity.Muse.Chat
         public MuseConversation GetActiveConversation()
         {
             return m_ActiveConversation;
+        }
+
+        /// <summary>
+        /// Starts a webrequest that attempts to add or update a inspiration.
+        /// </summary>
+        /// <param name="inspiration">the inspiration data to update.</param>
+        public void StartInspirationUpdate(MuseChatInspiration inspiration)
+        {
+            var externalData = inspiration.ToExternal();
+            if (!inspiration.Id.IsValid)
+            {
+                externalData.Id = null;
+                WebAPI.AddInspiration(externalData,
+                    EditorLoopUtilities.EditorLoopRegistration,
+                    null,
+                    Debug.LogException);
+            }
+            else
+            {
+                WebAPI.UpdateInspiration(externalData,
+                    EditorLoopUtilities.EditorLoopRegistration,
+                    null,
+                    Debug.LogException);
+            }
         }
 
         public MuseMessage AddInternalMessage(string text, string role = null, bool musing = true, bool sendUpdate = true)
@@ -583,6 +632,7 @@ namespace Unity.Muse.Chat
             }
 
             StartConversationRefresh();
+            StartInspirationRefresh();
         }
 
         /// <summary>
@@ -795,6 +845,17 @@ namespace Unity.Muse.Chat
                 IsMusing = IsActiveConversationMusing(),
                 Type = MuseChatUpdateType.ConversationChange
             });
+        }
+
+        void OnInspirationsReceived(IEnumerable<Inspiration> inspirationData)
+        {
+            k_InspirationEntries.Clear();
+            foreach (var entry in inspirationData)
+            {
+                k_InspirationEntries.Add(entry.ToInternal());
+            }
+
+            OnInspirationsChanged?.Invoke();
         }
 
         void OnConversationHistoryReceived(IEnumerable<WebAPI.ContextIndicatedConversationInfo> historyData)

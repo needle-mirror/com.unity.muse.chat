@@ -13,9 +13,7 @@
 
             <ui:VisualElement name="chatContentRoot" class="mui-chat-content">
                 <ui:VisualElement class="mui-conversation-panel">
-                    <ui:VisualElement name="suggestionRoot" >
-                        <appui:Text text="Try these for inspiration" class="mui-chat-suggestion-text"/>
-                        <ui:VisualElement name="suggestionContent"/>
+                    <ui:VisualElement name="inspirationPanelRoot">
                     </ui:VisualElement>
 
                     <ui:VisualElement name="chatPanelRoot">
@@ -49,7 +47,7 @@
 
                 <ui:VisualElement name="userSelectedContextWarningRoot" class="mui-chat-selected-context-warning-root">
                     <appui:Icon name="selectionWarningIcon" icon-name="mui-icon-warn" size="s" class="mui-selected-context-icon"/>
-                    <appui:Text name="selectionWarningText" text="Select fewer or smaller items for a more accurate response." class="mui-selected-context-text"/>
+                    <appui:Text name="selectionWarningText" text="For best results, attach fewer items or smaller objects. &lt;b&gt;[?]&lt;/b&gt;" class="mui-selected-context-text" tooltip="Large objects (e.g. materials, meshes, or animation clips) are not currently supported as attachments and may cause performance issues."/>
                 </ui:VisualElement>
 
                 <ui:VisualElement name="chatTextFieldRoot" class="mui-chat-input-root">

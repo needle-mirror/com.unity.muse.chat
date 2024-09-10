@@ -7,7 +7,13 @@
     --muse-chat-panel-bg: var(--appui-backgrounds-50);
     --muse-chat-header-text-color: var(--appui-primary-1300);
     --muse-chat-source-border-color: var(--appui-backgrounds-100);
+    --muse-chat-inspiration-button-border: var(--appui-backgrounds-200);
+    --muse-chat-inspiration-button-border-hover: var(--appui-foregrounds-25);
     --muse-chat-avatar-bg: var(--appui-backgrounds-50);
+    --muse-chat-context-pill-bg: var(--appui-backgrounds-100);
+    --muse-chat-drop-zone-bg: var(--appui-primary-200);
+    --muse-chat-disclaimer-text: rgba(255, 255, 255, 0.4);
+    --muse-chat-add-context-button-open: #4c607b;
 }
 
 .-muse-chat-panel {

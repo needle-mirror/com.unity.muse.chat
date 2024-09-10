@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using Unity.Muse.Chat.Serialization;
 using Unity.Serialization.Json;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -148,7 +149,16 @@ namespace Unity.Muse.Chat
         internal static string GetCompatibilityLevel()
         {
             var buildTargetGroup = EditorUserBuildSettings.selectedBuildTargetGroup;
-            var apiCompatibilityLevel = PlayerSettings.GetApiCompatibilityLevel(buildTargetGroup);
+            NamedBuildTarget namedBuildTarget = default;
+
+            if (buildTargetGroup != BuildTargetGroup.Standalone)
+                namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
+            else
+                namedBuildTarget = EditorUserBuildSettings.standaloneBuildSubtarget == StandaloneBuildSubtarget.Server
+                ? NamedBuildTarget.Server
+                : NamedBuildTarget.Standalone;
+
+            var apiCompatibilityLevel = PlayerSettings.GetApiCompatibilityLevel(namedBuildTarget);
             return apiCompatibilityLevel.ToString();
         }
 

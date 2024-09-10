@@ -2,16 +2,17 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using UnityEditor;
 
 namespace Unity.Muse.Chat
 {
     internal static class CodeSyntaxHighlight
     {
-        internal const string k_ColorAzure = "#7893e5";
-        internal const string k_ColorLavender = "#bc92f9";
-        internal const string k_ColorTurquoise = "#68c99e";
-        internal const string k_ColorSand = "#c2a473";
-        internal const string k_ColorLime = "#91c275";
+        internal static readonly string k_ColorAzure = EditorGUIUtility.isProSkin ? "#7893e5" : "#1d2c98";
+        internal static readonly string k_ColorLavender = EditorGUIUtility.isProSkin ? "#bc92f9" : "#653ba3";
+        internal static readonly string k_ColorTurquoise = EditorGUIUtility.isProSkin ? "#68c99e" : "#2b8856";
+        internal static readonly string k_ColorSand = EditorGUIUtility.isProSkin ? "#c2a473" : "#aa6932";
+        internal static readonly string k_ColorLime = EditorGUIUtility.isProSkin ? "#91c275" : "#4e7d34";
 
         public static string Highlight(string sourceCode)
         {

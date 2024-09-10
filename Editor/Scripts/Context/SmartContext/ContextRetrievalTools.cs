@@ -32,7 +32,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
             var contextBuilder = new ContextBuilder();
             MuseEditorDriver.instance.GetAttachedContextString(ref contextBuilder);
             var selectedContext = contextBuilder.BuildContext(SmartContextToolbox.SmartContextLimit);
-            
+
             var matchingAsset = ContextRetrievalHelpers.FindObject<Object>(objectName);
 
             var objectContext = new UnityObjectContextSelection();
@@ -68,13 +68,13 @@ namespace Unity.Muse.Chat.Context.SmartContext
                                 : ((IContextSelection)objectContext).DownsizedPayload;
 
                             var componentPayload = ((IContextSelection)objectContext).Payload;
-                            
+
                             // If the payload is already in the selected context, do not include this component:
                             if (selectedContext.Contains(componentPayload))
                             {
                                 continue;
                             }
-                            
+
                             componentsResult += prefix + payload + "\n";
 
                             // If the context is going to get too big, exit early and try again with downsized payload:
@@ -102,7 +102,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             objectContext.SetTarget(matchingAsset);
             var objectPayload = ((IContextSelection)objectContext).Payload;
-     
+
             // If the payload is already in the selected context, do not return anything:
             if (selectedContext.Contains(objectPayload))
             {
@@ -114,7 +114,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
             {
                 return result;
             }
-            
+
             objectPayload = ((IContextSelection)objectContext).DownsizedPayload;
             // If the payload is already in the selected context, do not return anything:
             if (selectedContext.Contains(objectPayload))

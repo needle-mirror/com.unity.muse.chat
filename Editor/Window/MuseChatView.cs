@@ -40,8 +40,8 @@ namespace Unity.Muse.Chat
         MusingElement m_MusingElement;
         ChatElementUser m_LastUserElement;
 
-        VisualElement m_SuggestionRoot;
-        VisualElement m_SuggestionContent;
+        VisualElement m_InspirationRoot;
+        MuseChatInspirationPanel m_InspirationPanel;
 
         HistoryPanel m_HistoryPanel;
 
@@ -152,11 +152,11 @@ namespace Unity.Muse.Chat
             var contentRoot = view.Q<VisualElement>("chatContentRoot");
             contentRoot.SetSessionTracked();
 
-            m_SuggestionRoot = view.Q<VisualElement>("suggestionRoot");
-            m_SuggestionRoot.RegisterCallback<MouseUpEvent>(OnSuggestionRootClicked);
-            m_SuggestionContent = view.Q<VisualElement>("suggestionContent");
-
-            PopulateSuggestionTopics(m_SuggestionContent);
+            m_InspirationRoot = view.Q<VisualElement>("inspirationPanelRoot");
+            m_InspirationPanel = new MuseChatInspirationPanel();
+            m_InspirationPanel.Initialize();
+            m_InspirationPanel.InspirationSelected += OnInspirationSelected;
+            m_InspirationRoot.Add(m_InspirationPanel);
 
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
             m_FooterRoot = view.Q<VisualElement>("footerRoot");
@@ -208,11 +208,9 @@ namespace Unity.Muse.Chat
 
 
             m_DropZone = view.Q<DropZone>("chatDropZone");
-            m_DropZone.tryGetDroppableFromPath = TryGetDroppableFromPath;
-            m_DropZone.tryGetDroppablesFromUnityObjects = TryGetDroppableFromUnityObjects;
-            m_DropZone.dropped += OnDropped;
-            m_DropZone.dragStarted += OnDragStarted;
-            m_DropZone.dragEnded += OnDragEnded;
+            m_DropZone.controller.acceptDrag += OnAcceptDrag;
+            m_DropZone.controller.dropped += OnDropped;
+            m_DropZone.controller.dragEnded += OnDragEnded;
 
             m_DropZoneContent = view.Q<VisualElement>("chatDropZoneContent");
 
@@ -330,20 +328,6 @@ namespace Unity.Muse.Chat
         public void OnConversationTitleChanged(string title)
         {
             m_ConversationName.text = title;
-        }
-
-        public void PopulateSuggestionTopics(VisualElement suggestionParent)
-        {
-            var topics = SuggestionTopics.GetRandomList();
-
-            foreach (var topic in topics)
-            {
-                var suggestionButton = new Button { title = topic };
-                suggestionButton.AddToClassList("mui-chat-suggestion-button");
-                suggestionButton.RegisterCallback<PointerUpEvent>(_ => OnSuggestionSelected(suggestionButton.title));
-
-                suggestionParent.Add(suggestionButton);
-            }
         }
 
         public void ClearChat()
@@ -510,9 +494,9 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnSuggestionSelected(string suggestion)
+        private void OnInspirationSelected(MuseChatInspiration inspiration)
         {
-            m_ChatInput.SetText(suggestion);
+            m_ChatInput.SetText(inspiration.Value);
         }
 
         private void OnDataChanged(MuseChatUpdateData data)
@@ -599,7 +583,7 @@ namespace Unity.Muse.Chat
         private void ToggleEnabled(bool enabled)
         {
             m_HeaderRoot.SetEnabled(enabled);
-            m_SuggestionContent.SetEnabled(enabled);
+            m_InspirationPanel.SetEnabled(enabled);
             m_FooterRoot.SetDisplay(enabled);
         }
 
@@ -622,7 +606,7 @@ namespace Unity.Muse.Chat
 
         void SetSuggestionVisible(bool value)
         {
-            m_SuggestionRoot.style.display = value ? DisplayStyle.Flex:DisplayStyle.None;
+            m_InspirationRoot.style.display = value ? DisplayStyle.Flex:DisplayStyle.None;
         }
 
         void OnViewGeometryChanged(GeometryChangedEvent evt)

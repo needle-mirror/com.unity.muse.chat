@@ -14,7 +14,7 @@ namespace Unity.Muse.Chat
         public string Title;
         public MuseConversationId Id;
         public readonly List<MuseMessage> Messages;
-        
+
         [NonSerialized]
         public double StartTime;
     }

@@ -27,6 +27,7 @@
 
 .mui-chat-element-avatar-area {
     flex-direction: row;
+    margin-bottom: 4px;
 }
 
 .mui-chat-message-content {

@@ -26,13 +26,13 @@
 
 .mui-selection-popup-history-button {
     background-color: var(--appui-backgrounds-300);
-    color: var(--appui-color-blue-1000);
+    color: var(--muse-chat-color-blue);
     border-width: 0;
     padding-right: 8px;
 }
 
 .mui-selection-popup-history-button:hover {
-    color: var(--appui-color-blue-1300);
+    color: var(--appui-color-blue-1400);
 }
 
 .mui-selection-popup-listview {

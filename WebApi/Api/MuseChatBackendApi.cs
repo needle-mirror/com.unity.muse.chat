@@ -163,7 +163,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -179,7 +179,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Healthz
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -435,7 +435,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health Head
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -773,7 +773,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -792,7 +792,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1183,7 +1183,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1194,7 +1194,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1204,7 +1204,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Healthz
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1215,7 +1215,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Healthz
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1485,7 +1485,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health Head
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1496,7 +1496,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health Head
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1854,7 +1854,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1867,7 +1867,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1879,7 +1879,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1891,7 +1891,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -3106,7 +3106,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>Object</returns>
@@ -3117,7 +3117,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -3148,7 +3148,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -3165,7 +3165,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -3206,7 +3206,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>Object</returns>
@@ -3217,7 +3217,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -3248,7 +3248,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -3265,7 +3265,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -4778,7 +4778,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>Object</returns>
@@ -4789,7 +4789,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -4820,7 +4820,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -4837,7 +4837,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -6894,7 +6894,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -6907,7 +6907,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -6956,7 +6956,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -6975,7 +6975,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7034,7 +7034,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7046,7 +7046,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7094,7 +7094,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7112,7 +7112,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>

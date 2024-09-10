@@ -82,6 +82,24 @@ namespace Unity.Muse.Chat.FunctionCalling
                     var namedindex = Array.IndexOf(argNames, argName);
 
                     convertedArgs[namedindex] = converters[namedindex](argValue);
+
+                    // TODO: This is a temporary fix for a backend issue, remove this when the backend is fixed:
+                    if (convertedArgs[namedindex] as string == "AttributedDict()")
+                    {
+                        convertedArgs[namedindex] = "";
+                    }
+
+                    if (convertedArgs[namedindex] is object[] objArray)
+                    {
+                        for (var objArrayIdx = 0; objArrayIdx < objArray.Length; objArrayIdx++)
+                        {
+                            var o = objArray[objArrayIdx];
+                            if (o is string s && s.Trim() == "AttributedDict()")
+                            {
+                                objArray[objArrayIdx] = "";
+                            }
+                        }
+                    }
                 }
                 catch (Exception)
                 {

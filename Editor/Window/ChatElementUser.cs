@@ -39,6 +39,7 @@ namespace Unity.Muse.Chat
 
         private bool m_EditEnabled = true;
         private bool m_EditModeActive;
+        private bool m_EditButtonVisible = false;
 
         public bool EditEnabled
         {
@@ -140,6 +141,9 @@ namespace Unity.Muse.Chat
 
             m_UserName = view.Q<Text>("userName");
             m_UserName.text = GetUserName();
+
+            RegisterCallback<PointerEnterEvent>(OnPointerEnter);
+            RegisterCallback<PointerLeaveEvent>(OnPointerExit);
         }
 
         static string TrimDisplayString(string s)
@@ -217,7 +221,7 @@ namespace Unity.Muse.Chat
             m_EditControls.style.display = EditEnabled ? DisplayStyle.Flex : DisplayStyle.None;
             m_ChatRoot.EnableInClassList(k_EditModeActiveClass, m_EditModeActive);
 
-            m_EditButton.SetDisplay(!m_EditModeActive);
+            m_EditButton.SetDisplay(m_EditButtonVisible && !m_EditModeActive);
             m_EditCancelButton.SetDisplay(m_EditModeActive);
             m_TextFieldRoot.SetDisplay(!m_EditModeActive);
 
@@ -248,6 +252,18 @@ namespace Unity.Muse.Chat
                 entry.SetData(index, contextEntry);
                 m_ContextContent.Add(entry);
             }
+        }
+
+        private void OnPointerExit(PointerLeaveEvent evt)
+        {
+            m_EditButtonVisible = false;
+            RefreshUI();
+        }
+
+        private void OnPointerEnter(PointerEnterEvent evt)
+        {
+            m_EditButtonVisible = true;
+            RefreshUI();
         }
     }
 }

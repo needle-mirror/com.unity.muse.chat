@@ -4,6 +4,8 @@
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseTextField.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MusingElement.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChatNotificationBanner.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChatInspirationEntry.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChatInspirationPanel.uss");
 
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/PopupNotification.uss");
 

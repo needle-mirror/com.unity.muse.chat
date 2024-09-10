@@ -37,7 +37,7 @@
 #editButton {
     background-color: rgba(0,0,0,0);
     border-width: 0;
-    align-items: flex-start;
+    align-items: center;
 }
 
 #editCancelButton {
@@ -47,7 +47,7 @@
 }
 
 #editButton:hover {
-    background-color: var(--muse-chat-color-pink);
+    background-color: var(--appui-backgrounds-300);
 }
 
 #editButton .appui-button__leadingicon {

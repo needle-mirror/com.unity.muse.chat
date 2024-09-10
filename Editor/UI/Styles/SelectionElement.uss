@@ -69,7 +69,6 @@
 }
 
 .mui-selection-element-add-remove-button:hover {
-    -unity-font-definition: var(--appui-font-weights-400);
     color: var(--appui-primary-1200);
 }
 

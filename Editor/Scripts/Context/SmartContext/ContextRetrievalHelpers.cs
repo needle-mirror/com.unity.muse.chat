@@ -20,7 +20,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
         internal static T FindObject<T>(string gameObjectName) where T : Object
         {
             var objectsToSearch =
-                Object.FindObjectsOfType<GameObject>().ToList<Object>()
+                Object.FindObjectsByType<GameObject>(FindObjectsSortMode.InstanceID).ToList<Object>()
                     .Concat(
                         AssetDatabase.FindAssets($"t:{typeof(T).Name}")
                             .Select(AssetDatabase.GUIDToAssetPath)

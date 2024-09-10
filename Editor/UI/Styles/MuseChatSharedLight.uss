@@ -1,14 +1,20 @@
 :root {
-    --muse-chat-color-blue: var(--appui-color-blue-1000);
+    --muse-chat-color-blue: var(--appui-color-blue-500);
     --muse-chat-color-pink: #d33c79;
     --muse-chat-color-user-message: #441a2b;
     --muse-chat-color-crimson-dark: #881f49;
     --muse-chat-light-mode-icon-tint: #585858;
     --muse-chat-user-message-bg: #bbbbbb;
     --muse-chat-panel-bg: #b1b1b1;
-    --muse-chat-header-text-color: var(--appui-primary-400);
+    --muse-chat-header-text-color: var(--appui-primary-300);
     --muse-chat-source-border-color: var(--appui-primary-50);
+    --muse-chat-inspiration-button-border: var(--appui-primary-400);
+    --muse-chat-inspiration-button-border-hover: var(--appui-primary-1000);
     --muse-chat-avatar-bg: var(--appui-backgrounds-50);
+    --muse-chat-context-pill-bg: var(--appui-primary-1300);
+    --muse-chat-drop-zone-bg: var(--appui-primary-1200);
+    --muse-chat-disclaimer-text: rgba(80, 80, 80, 0.8);
+    --muse-chat-add-context-button-open: rgba(5, 91, 159, 0.5);
 }
 
 .-muse-chat-panel {

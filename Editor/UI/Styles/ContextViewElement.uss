@@ -11,7 +11,7 @@
     border-radius: 6px;
     margin-right: 8px;
     margin-bottom: 2px;
-    background-color: var(--appui-backgrounds-50);
+    background-color: var(--muse-chat-context-pill-bg);
 }
 
 .mui-context-view-element-icon {
@@ -27,7 +27,7 @@
     min-width: 24px;
     border-width: 0;
     border-radius: 6px;
-    background-color: var(--appui-backgrounds-50);
+    background-color: var(--muse-chat-context-pill-bg);
 }
 
 .mui-context-view-element-remove-button:hover {

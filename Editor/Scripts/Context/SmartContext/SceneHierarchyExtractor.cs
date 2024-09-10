@@ -280,7 +280,9 @@ namespace Unity.Muse.Chat.Context.SmartContext
             var hierarchyMap = new GameObjectHierarchyMapEntry(null);
 
             // Get all gameObjects:
-            var allObjects = Object.FindObjectsOfType<GameObject>(true);
+            var allObjects = Object.FindObjectsByType<GameObject>(
+                FindObjectsInactive.Include,
+                FindObjectsSortMode.InstanceID);
 
             // Loop through all GameObjects and if their names are in the list of args, add them to the hierarchy map:
             ICollection<GameObject> objectsToSearch;

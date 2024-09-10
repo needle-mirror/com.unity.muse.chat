@@ -70,7 +70,7 @@ Meta Llama 3 is licensed under the Meta Llama 3 Community License, Copyright © 
 
 ---
 
-Component name: BGE 
+Component name: BGE
 
 License name: MIT Licence
 

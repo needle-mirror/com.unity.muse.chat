@@ -4,7 +4,17 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.0.0-pre.12] - 2024-09-16
+## [1.0.0-pre.13] - 2024-09-10
+
+### Changed
+- Reworked Inspiration List
+- Minor UI bug fixes
+- Reduced warnings in the console
+- Updated Muse Common to 2.0.5
+- Updated minimum release version 2022.3.26f1
+- Updated warning banner context
+
+## [1.0.0-pre.12] - 2024-09-06
 
 ### Added
 - Added new context selection UI with "Add Context" button and drag-and-drop support
