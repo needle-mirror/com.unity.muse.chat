@@ -8,7 +8,7 @@ Muse Chat provides real-time help by understanding and responding to your querie
 
 Muse Chat helps to generate code snippets for various Unity features, which reduces the time spent to code and debug. It also helps identify and fix errors, which ensures smoother development processes.
 
-* **Available online (web) and in Unity Editor**: Muse Chat is available both [online](web-chat.md) and within the [Unity Editor](editor-chat.md). This dual availability ensures that you can access Muse Chat's features and support regardless of your preferred working environment. The web version of Muse Chat assists those who need help outside of the Unity Editor, while the in-Editor version of Muse Chat provides support during the development sessions.
+* **Available online (web) and in Unity Editor**: Muse Chat is available both [online](web-chat.md) and within the [Unity Editor](editor-chat.md). This dual availability ensures that you can access Muse Chat's features and support regardless of your preferred working environment. The web version of Muse Chat assists those who need help outside of the Unity Editor, while the Muse Chat Editor version provides support during the development sessions.
 * **Natural language usage**: Muse Chat uses sophisticated natural language processing (NLP) algorithms to comprehend complex queries and provide accurate, context-sensitive responses.
 * **Contextual awareness**: Artificial intelligence (AI) maintains context throughout the conversations and provides relevant help. It remembers previous interactions and enables a personalized user experience.
 * **Extensive knowledge base**: With access to Unity's comprehensive knowledge base, Muse Chat answers a wide range of questions related to game development, asset management, scripting, and more.
@@ -25,4 +25,4 @@ Muse Chat helps to generate code snippets for various Unity features, which redu
 ## Additional resources
 
 * [Muse Chat web version](web-chat.md)
-* [Muse Chat in-editor version](editor-chat.md)
+* [Muse Chat Editor](editor-chat.md)

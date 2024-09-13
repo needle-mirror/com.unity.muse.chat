@@ -11,4 +11,4 @@ Muse Chat Editor is an integrated artificial intelligence (AI)-powered tool to e
 | [Install Muse Chat with the Package Manager](install-chat.md) | Use the Package Manager to install Muse Chat. |
 | [Muse Chat Editor interface](editor-chat-interface.md) | Understand the main window of the Muse Chat Editor and how to use it. |
 | [Use Muse Chat Editor](use-editor-chat.md) | Learn how to use and interact with Muse Chat Editor. |
-| [Interact with Unity GameObjects](unity-object-query.md) | Interact contextually with GameObjects and console errors directly within the Unity Editor. |
+| [Interact with GameObjects, Assets, and Console errors](unity-object-query.md) | Interact contextually with GameObjects, assets, and Console logs and errors directly within the Unity Editor. |

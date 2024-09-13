@@ -1,7 +1,7 @@
 {
   "name": "com.unity.muse.chat",
   "displayName": "Muse Chat",
-  "version": "1.0.0-pre.13",
+  "version": "1.0.0-pre.14",
   "unity": "2022.3",
   "description": "With Muse Chat, you can easily enhance your Unity skills and boost productivity by generating project-specific information, coding solutions, and resolutions to issues such as console errors.",
   "dependencies": {
@@ -12,15 +12,15 @@
   },
   "unityRelease": "26f1",
   "_upm": {
-    "changelog": "### Changed\n- Reworked Inspiration List\n- Minor UI bug fixes\n- Reduced warnings in the console\n- Updated Muse Common to 2.0.5\n- Updated minimum release version 2022.3.26f1\n- Updated warning banner context"
+    "changelog": "### Changed\n- Updated Docs"
   },
   "upmCi": {
-    "footprint": "6c8a45b844b896f6cdde68eb202ad36b7144be0b"
+    "footprint": "6fd108c6b24ba15f5199607738d00050dd1dc0a3"
   },
   "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.muse.chat@1.0/manual/index.html",
   "repository": {
     "url": "https://github.cds.internal.unity3d.com/unity/muse-editor.git",
     "type": "git",
-    "revision": "a8cf1e11526270cd15e0646bc2155aa3c6d3093b"
+    "revision": "c53d4eb6a2ad5be0166da1adf8a89ae8b7173383"
   }
 }

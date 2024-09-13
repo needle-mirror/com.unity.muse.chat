@@ -17,6 +17,6 @@ Explore the Muse Chat features and get started with using Chat.
 | ----- | ----------- |
 | [Muse Chat features](features-chat.md) | Discover the benefits of Muse Chat features, including its integration with the Unity Editor. |
 | [Muse Chat web version](web-chat.md) | Use and explore the web version of Muse Chat. |
-| [Muse Chat in-Editor version](editor-chat.md) | Use and explore the in-Editor version of Muse Chat. |
+| [Muse Chat Editor](editor-chat.md) | Use and explore the Muse Chat Editor version. |
 | [Install Muse Chat with the Package Manager](install-chat.md) | Use the Package Manager to install Muse Chat in Unity Editor. |
 | [Best practices for using Muse Chat](best-practice-chat.md) | Get most out of Muse Chat using the best practice tips. |

@@ -45,7 +45,7 @@ namespace Unity.Muse.Chat
 
         void OnDestroy()
         {
-            m_View.Deinit();
+            m_View?.Deinit();
         }
 
         private void OnLostFocus()

@@ -52,5 +52,5 @@ Once you have successfully signed in and are an active subscriber, start [using 
 
 ## Additional resources
 
-* [Use web version of Muse Chat](use-web-chat.md)
+* [Use Muse Chat web](use-web-chat.md)
 * [Best practices for using Muse Chat](best-practice-chat.md)

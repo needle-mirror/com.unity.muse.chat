@@ -75,4 +75,4 @@ Follow these best practices to enhance your productivity and efficiency when usi
 ## Additional resources
 
 * [Muse Chat web version](web-chat.md)
-* [Muse Chat in-editor version](editor-chat.md)
+* [Muse Chat Editor](editor-chat.md)

@@ -8,7 +8,7 @@ With Muse Chat Editor, you can manage messages and handle code snippets.
 
 ## Manage messages
 
-Use the **Copy message** to copy Muse Chat's response text to your clipboard. For the response you want to copy, select **Copy message**, and paste the copied text into your desired application (for example, a text editor, email, or document).
+Use the **Copy message** icon to copy Muse Chat's response text to your clipboard. For the response you want to copy, select **Copy message**, and paste the copied text into your desired application (for example, a text editor, email, or document).
 
 > [!NOTE]
 > When you copy responses, Muse adds comments to indicate that artificial intelligence (AI) generated the text.

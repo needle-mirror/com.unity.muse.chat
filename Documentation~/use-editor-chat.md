@@ -12,7 +12,7 @@ This section provides information on how to use and interact with Muse Chat Edit
 
    When logged in, you have access to the Muse Chat interface.
 
-4. To begin a new conversation, select **New Chat**.
+4. To begin a new conversation, select **+**.
 5. Click inside the text field at the bottom of the chat window.
 6. Enter your question or query in the text field.
 7. Press **Enter** on your keyboard or select **Send** to submit your query.
@@ -53,5 +53,5 @@ Use the **Try Muse for free** option in Muse Chat to explore Unity’s capabilit
 
 * [Use the History tab](history-tab.md)
 * [Muse Chat Editor interface](editor-chat-interface.md)
-* [Interact with Unity GameObjects](unity-object-query.md)
+* [Interact with GameObjects, assets, and Console errors](unity-object-query.md)
 * [Best practices for using Muse Chat](best-practice-chat.md)

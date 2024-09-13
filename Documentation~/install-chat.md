@@ -22,7 +22,7 @@ After you install Muse Chat, perform the following steps to launch the tool:
    The **Muse Chat** window opens.
 2. When possible, dock the **Muse Chat** window. This keeps you from losing the window and launching it multiple times.
 
-    ![alt text](Images/must-chat.png)
+    ![Muse Chat interface](Images/must-chat.png)
 
 ## Additional resources
 

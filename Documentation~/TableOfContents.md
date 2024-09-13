@@ -11,6 +11,5 @@
       * [Manage messages and code snippets in Muse Chat Editor](messages-code.md)
       * [Use Sources in Muse Chat Editor](sources-citation.md)
       * [Provide feedback in Muse Chat Editor](provide-feedback.md)
-   * [Interact with Unity GameObjects](unity-object-query.md)
+   * [Interact with GameObjects, Assets, and Console errors](unity-object-query.md)
 * [Best practices for using Muse Chat](best-practice-chat.md)
-
