@@ -56,6 +56,10 @@
     margin-right: 42px;
 }
 
+#placeholderText {
+    color: var(--appui-alias-text-disabled);
+}
+
 #inputScrollView {
     align-self: flex-start;
 }

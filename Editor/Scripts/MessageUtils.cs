@@ -35,7 +35,7 @@ namespace Unity.Muse.Chat
 
         static readonly DayOfWeek k_FirstDayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
 
-        static StringBuilder s_stringBuilder = new();
+        static readonly StringBuilder s_StringBuilder = new();
 
         public enum FootnoteFormat
         {
@@ -89,7 +89,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            s_stringBuilder.Clear();
+            s_StringBuilder.Clear();
 
             var chunks = Regex.Split(message.Content, k_BoundaryRegexComplete);
 
@@ -139,7 +139,7 @@ namespace Unity.Muse.Chat
                     });
                 }
 
-                s_stringBuilder.Append(text);
+                s_StringBuilder.Append(text);
 
                 // If this is not the last chunk placeholder source index
                 if (!lastBlock)
@@ -149,11 +149,11 @@ namespace Unity.Muse.Chat
                         // Replace source (boundary tag) with placeholders
                         sourceOrFootnotes.Add(new SourceOrFootnote() { IsSource = true, FootnoteIndex = 0, SourceIndex = i / 2 });
 
-                        s_stringBuilder.Append($"{{{{source:{sourceOrFootnotes.Count}}}}}");
+                        s_StringBuilder.Append($"{{{{source:{sourceOrFootnotes.Count}}}}}");
                     }
                     else
                     {
-                        s_stringBuilder.Append(GetReferenceString(i / 2 + 1));
+                        s_StringBuilder.Append(GetReferenceString(i / 2 + 1));
                     }
                 }
             }
@@ -191,7 +191,7 @@ namespace Unity.Muse.Chat
                     sourceBlocks = new List<WebAPI.SourceBlock>();
                 }
 
-                messageContent = s_stringBuilder.ToString();
+                messageContent = s_StringBuilder.ToString();
 
                 // Fill in footnote title/URL found at end of text
                 messageContent = k_FootnoteURLsRegex.Replace(messageContent, match =>
@@ -313,7 +313,7 @@ namespace Unity.Muse.Chat
             }
             else
             {
-                messageContent = s_stringBuilder.ToString();
+                messageContent = s_StringBuilder.ToString();
 
                 // Replace invalid non-footnote markers
                 messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
@@ -354,7 +354,7 @@ namespace Unity.Muse.Chat
 
         public static string GetReferenceString(int index)
         {
-            return $"<size=11><b><color=#46ADFFff> [ {index} ]</color></b></size>";
+            return $"<size=11><b><color=#{MuseChatConstants.SourcesReferenceColor}> [ {index} ]</color></b></size>";
         }
 
         public static string GetAssetLink<T>(string guid, string title)
@@ -448,6 +448,47 @@ namespace Unity.Muse.Chat
 
             string yearMonthKey = $"{5000 - timeStamp.Year}{50 - timeStamp.Month}";
             return $"{yearMonthKey}#{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(timeStamp.Month)} {timeStamp.Year}";
+        }
+
+        public static Texture2D GetTextureForObject(Object obj)
+        {
+            if (obj is MonoScript && AssetDatabase.Contains(obj))
+                return AssetDatabase.GetCachedIcon(AssetDatabase.GetAssetPath(obj)) as Texture2D;
+
+            return EditorGUIUtility.ObjectContent(null, obj.GetType()).image as Texture2D;
+        }
+
+        public static string GetLogIconClassName(LogReference.ConsoleMessageMode logMessageMode)
+        {
+            switch (logMessageMode)
+            {
+                case LogReference.ConsoleMessageMode.Warning:
+                    return "mui-icon-warn";
+                case LogReference.ConsoleMessageMode.Error:
+                    return "mui-icon-error";
+                default:
+                    return "mui-icon-info";
+            }
+        }
+
+        public static bool IsPrefabType(Object obj)
+        {
+            var isAsset = AssetDatabase.Contains(obj);
+            if (!isAsset)
+                return obj is GameObject && IsPrefabInScene(obj);
+
+            return PrefabUtility.IsPartOfAnyPrefab(obj);
+        }
+
+        public static bool IsPrefabInScene(Object obj)
+        {
+            if (obj is not GameObject)
+                return false;
+
+            if (AssetDatabase.Contains(obj))
+                return false;
+
+            return PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj) != null;
         }
     }
 }

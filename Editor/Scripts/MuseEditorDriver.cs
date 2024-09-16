@@ -1,16 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.Context.SmartContext;
 using Unity.Muse.Chat.FunctionCalling;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi;
+using Unity.Muse.Chat.BackendApi.Model;
 using Unity.Muse.Chat.Plugins;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
+
+#if MUSE_INTERNAL
+using System.Diagnostics;
 using Debug = UnityEngine.Debug;
+#endif
 
 namespace Unity.Muse.Chat
 {
@@ -78,26 +84,25 @@ namespace Unity.Muse.Chat
 
         internal Action<VisualElement> OnDebugTrackMetricsRequest;
 
-        internal bool IsConsoleInfoSelected = true;
-        internal bool IsConsoleWarningSelected = true;
-        internal bool IsConsoleErrorSelected = true;
-        internal bool IsObjectSelected = true;
+        internal List<Object> m_ObjectAttachments;
+        internal List<LogReference> m_ConsoleAttachments;
 
-        internal enum PrompState
+        internal enum PromptState
         {
             None,
             GatheringContext,
-            Musing
+            Musing,
+            Streaming
         }
 
-        internal PrompState CurrentPrompState {get; private set;}
+        internal PromptState CurrentPromptState {get; private set;}
 
 
         internal List<MuseConversationInfo> History
         {
             get
             {
-                if (UserSessionState.instance.DebugModeEnabled && OnRequestDebugHistory != null)
+                if (UserSessionState.instance.DebugUIModeEnabled && OnRequestDebugHistory != null)
                 {
                     return OnRequestDebugHistory.Invoke();
                 }
@@ -114,7 +119,7 @@ namespace Unity.Muse.Chat
             WebAPI.GetConversations(
                 EditorLoopUtilities.EditorLoopRegistration,
                 OnConversationHistoryReceived,
-                _ => OnConversationHistoryChanged?.Invoke()
+                Debug.LogException
             );
         }
 
@@ -142,7 +147,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            if (UserSessionState.instance.DebugModeEnabled && OnRequestDebugConversation != null && OnRequestDebugConversation.Invoke(conversationId, out var debugConversation))
+            if (UserSessionState.instance.DebugUIModeEnabled && OnRequestDebugConversation != null && OnRequestDebugConversation.Invoke(conversationId, out var debugConversation))
             {
                 m_ActiveConversation = debugConversation;
 
@@ -161,6 +166,25 @@ namespace Unity.Muse.Chat
                 ConvertAndPushConversation,
                 Debug.LogException
             );
+        }
+
+        /// <summary>
+        /// Starts a webrequest that attempts to rename change the favorite state of a conversation with <see cref="conversationId"/>.
+        /// </summary>
+        /// <param name="conversationId">If not null or empty function acts as noop.</param>
+        /// <param name="isFavorite">New favorite state of the conversation</param>
+        public void StartConversationFavoriteToggle(MuseConversationId conversationId, bool isFavorite)
+        {
+            if (!conversationId.IsValid)
+            {
+                return;
+            }
+
+            WebAPI.SetConversationFavoriteState(conversationId.Value,
+                isFavorite,
+                EditorLoopUtilities.EditorLoopRegistration,
+                null,
+                Debug.LogException);
         }
 
         /// <summary>
@@ -350,12 +374,16 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            CurrentPrompState = PrompState.GatheringContext;
+            CurrentPromptState = PromptState.GatheringContext;
 
             bool isNewConversation = false;
 
             // Create a thread if needed
-            if (m_ActiveConversation == null)
+            // PATCH NOTES: After a domain reload, if the m_ActiveConversation is null FOR SOME REASON it is no longer
+            // null and is instead an empty version of a MuseConversation
+            // {Id = null, Title = null, Messages = new List}. This needed patching quickly, but I didn't manage to
+            // find the root cause of the issue. This check at least catches the problem
+            if (m_ActiveConversation == null || m_ActiveConversation.Messages.Count == 0)
             {
                 isNewConversation = true;
                 string conversationTitle = prompt;
@@ -369,6 +397,8 @@ namespace Unity.Muse.Chat
                     Title = conversationTitle,
                     Id = MuseConversationId.GetNextInternalId()
                 };
+
+                m_ActiveConversation.StartTime = EditorApplication.timeSinceStartup;
 
                 OnConversationHistoryChanged?.Invoke();
 
@@ -388,7 +418,7 @@ namespace Unity.Muse.Chat
                 catch (Exception e)
                 {
                     InternalLog.LogException(e);
-                    CurrentPrompState = PrompState.None;
+                    CurrentPromptState = PromptState.None;
 
                     ExecuteUpdateImmediate(new MuseChatUpdateData
                     {
@@ -407,6 +437,11 @@ namespace Unity.Muse.Chat
                     return;
                 }
             }
+            else
+            {
+                // Reset start time for next progress bar:
+                m_ActiveConversation.StartTime = EditorApplication.timeSinceStartup;
+            }
 
             AddInternalMessage(prompt, role: k_UserRole, sendUpdate: true);
             AddIncompleteMessage(string.Empty, k_AssistantRole, sendUpdate: !isNewConversation);
@@ -419,11 +454,11 @@ namespace Unity.Muse.Chat
 
                 if (m_SmartContextCancellationTokenSource.IsCancellationRequested)
                 {
-                    CurrentPrompState = PrompState.None;
+                    CurrentPromptState = PromptState.None;
                     return;
                 }
 
-                CurrentPrompState = PrompState.Musing;
+                CurrentPromptState = PromptState.Musing;
 
                 var updateHandler = WebAPI.Chat(prompt, m_ActiveConversation.Id.Value, context);
 
@@ -434,6 +469,12 @@ namespace Unity.Muse.Chat
                         if (updater.Conversation.Id == m_ActiveConversation?.Id)
                         {
                             k_Updates.Enqueue(updateData);
+
+                            // If there is a message in the update, get out of the musing state to hide the musing element:
+                            if (updateData.Message.Content.Length > 0)
+                            {
+                                CurrentPromptState = PromptState.Streaming;
+                            }
                         }
                     },
                     delegate(MuseMessageUpdateHandler updater)
@@ -550,12 +591,13 @@ namespace Unity.Muse.Chat
         /// <param name="maxLength"> The string length limitation. </param>
         /// <param name="contextBuilder"> The context builder reference for temporary context string creation. </param>
         /// <returns></returns>
-        internal void GetSelectedContextString(ref ContextBuilder contextBuilder)
+        internal void GetAttachedContextString(ref ContextBuilder contextBuilder)
         {
             // Grab any selected objects
-            if (IsObjectSelected && Selection.objects.Length > 0)
+            var attachment = GetValidAttachment(m_ObjectAttachments);
+            if (attachment.Count > 0)
             {
-                foreach (var currentObject in Selection.objects)
+                foreach (var currentObject in attachment)
                 {
                     var objectContext = new UnityObjectContextSelection();
                     objectContext.SetTarget(currentObject);
@@ -565,19 +607,34 @@ namespace Unity.Muse.Chat
             }
 
             // Grab any console logs
-            var logs = new List<LogReference>();
-            ConsoleUtils.GetSelectedConsoleLogs(logs);
-            foreach (var currentLog in logs)
+            if (m_ConsoleAttachments != null)
             {
-                if ((IsConsoleInfoSelected && currentLog.Mode == LogReference.ConsoleMessageMode.Log)||
-                    (IsConsoleWarningSelected && currentLog.Mode == LogReference.ConsoleMessageMode.Warning)||
-                    (IsConsoleErrorSelected && currentLog.Mode == LogReference.ConsoleMessageMode.Error))
+                foreach (var currentLog in m_ConsoleAttachments)
                 {
                     var consoleContext = new ConsoleContextSelection();
                     consoleContext.SetTarget(currentLog);
-                    contextBuilder.InjectContext(consoleContext,true);
+                    contextBuilder.InjectContext(consoleContext, true);
                 }
             }
+        }
+
+        internal List<Object> GetValidAttachment(List<Object> contextAttachments)
+        {
+            if (contextAttachments == null)
+                return new List<Object>();
+
+            if (contextAttachments.Any(obj => obj == null))
+                return contextAttachments.Where(obj => obj != null).ToList();
+
+            return contextAttachments;
+        }
+
+        internal bool HasNullAttachments(List<Object> contextAttachment)
+        {
+            if (contextAttachment == null)
+                return false;
+
+            return contextAttachment.Any(obj => obj == null);
         }
 
         internal async Task<string> GetContextString(MuseConversationId conversationId, int maxLength, string prompt,
@@ -585,7 +642,7 @@ namespace Unity.Muse.Chat
         {
             // Initialize all context, if any context has changed, add it all
             var contextBuilder = new ContextBuilder();
-            GetSelectedContextString(ref contextBuilder);
+            GetAttachedContextString(ref contextBuilder);
 
             // Add retrieved project settings
             if (enableSmartContext)
@@ -598,7 +655,8 @@ namespace Unity.Muse.Chat
                     InternalLog.Log("Started V2 Smart Context Extraction");
 #endif
 
-                    var smartContextResponse = await WebAPI.PostSmartContextAsync(prompt,
+                    var editorContext = contextBuilder.BuildContext(maxLength);
+                    var smartContextResponse = await WebAPI.PostSmartContextAsync(prompt, editorContext,
                         SmartContextToolbox.Tools.Select(c => c.FunctionDefinition).ToList(),
                         conversationId.Value,
                         cancellationToken);
@@ -749,7 +807,8 @@ namespace Unity.Muse.Chat
                     Id = new MuseConversationId(remoteInfo.ConversationId),
                     Title = remoteInfo.Title,
                     LastMessageTimestamp = remoteInfo.LastMessageTimestamp,
-                    IsContextual = remoteInfo.IsContextual
+                    IsContextual = remoteInfo.IsContextual,
+                    IsFavorite = remoteInfo.IsFavorite != null && remoteInfo.IsFavorite.Value
                 };
 
                 k_History.Add(localInfo);

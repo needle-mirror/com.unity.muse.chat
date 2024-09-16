@@ -200,6 +200,24 @@ namespace Unity.Muse.Chat
             m_ResourceSuffix = value;
         }
 
+        protected bool LoadStyle(string styleName)
+        {
+            string styleFile = $"{m_ResourcePrefix}{styleName}{m_ResourceSuffix}";
+
+#if UNITY_EDITOR
+            styleFile = string.Concat(styleFile, MuseChatConstants.StyleExtension);
+#endif
+
+            var styleSheet = m_StyleCache.Load(styleFile);
+            if (styleSheet == null)
+            {
+                return false;
+            }
+
+            styleSheets.Add(styleSheet);
+            return true;
+        }
+
         protected bool LoadView<T>(out VisualTreeAsset view)
         {
             return LoadView(typeof(T).Name, out view);

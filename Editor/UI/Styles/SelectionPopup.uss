@@ -1,0 +1,41 @@
+.mui-selection-popup-root {
+    min-width: 200px;
+    min-height: 200px;
+    max-height: 500px;
+    flex-direction: column;
+    flex-shrink: 1;
+}
+
+.mui-selection-popup-title-row {
+    flex-direction: row;
+    background-color: var(--appui-backgrounds-300);
+}
+
+.mui-selection-popup-history-title {
+    flex-grow: 1;
+    padding-left: 10px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    -unity-font-style: bold;
+}
+
+.mui-selection-popup-empty-list-hint-text {
+    padding: 10px;
+    color: var(--appui-color-gray-800)
+}
+
+.mui-selection-popup-history-button {
+    background-color: var(--appui-backgrounds-300);
+    color: var(--appui-color-blue-1000);
+    border-width: 0;
+    padding-right: 8px;
+}
+
+.mui-selection-popup-history-button:hover {
+    color: var(--appui-color-blue-1300);
+}
+
+.mui-selection-popup-listview {
+    flex-grow: 1;
+    background-color: black;
+}

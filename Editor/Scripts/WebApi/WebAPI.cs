@@ -1,9 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Muse.Chat.Api;
-using Unity.Muse.Chat.Client;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi.Api;
+using Unity.Muse.Chat.BackendApi.Client;
+using Unity.Muse.Chat.BackendApi.Model;
 using Unity.Muse.Common.Account;
 using UnityEditor;
 using UnityEngine;
@@ -27,6 +27,7 @@ namespace Unity.Muse.Chat
                 : base(info.ConversationId, info.Title, info.LastMessageTimestamp)
             {
                 IsContextual = isContextual;
+                IsFavorite = info.IsFavorite;
             }
 
             public ContextIndicatedConversationInfo(bool isContextual, string conversationId = default(string), string title = default(string), long lastMessageTimestamp = default(long))
@@ -90,10 +91,10 @@ namespace Unity.Muse.Chat
             return task.Exception?.InnerExceptions[0];
         }
 
-        DefaultApi BoostrapAPI(RequestInterceptDelegate requestIntercept, ResponseInterceptDelegate responseIntercept, out CancellationTokenSource cancellationTokenSource)
+        MuseChatBackendApi BoostrapAPI(RequestInterceptDelegate requestIntercept, ResponseInterceptDelegate responseIntercept, out CancellationTokenSource cancellationTokenSource)
         {
             var configuration = CreateConfig();
-            DefaultApi api = new(configuration);
+            MuseChatBackendApi api = new(configuration);
 
             // Make sure Intercept Request is added the the event
             api.ApiClient.OnRequestIntercepted -= requestIntercept;

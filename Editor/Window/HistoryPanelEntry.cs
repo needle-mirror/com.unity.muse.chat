@@ -1,3 +1,4 @@
+using System;
 using Unity.Muse.AppUI.UI;
 using UnityEditor;
 using UnityEngine;
@@ -20,15 +21,15 @@ namespace Unity.Muse.Chat
         Text m_HeaderText;
 
         VisualElement m_ConversationRoot;
-        Icon m_ConversationIcon;
+        Button m_FavoriteToggle;
         Text m_ConversationText;
         TextField m_ConversationEditText;
-        Button m_ConversationButton;
 
         bool m_EditModeActive;
         bool m_IsHeader;
         bool m_IsSelected;
-        bool m_IsContextClick;
+        bool m_IsButtonClick;
+        bool m_IsFavorited;
 
         public MuseConversationInfo Data => m_Data;
 
@@ -49,17 +50,11 @@ namespace Unity.Muse.Chat
             m_HeaderText = view.Q<Text>("historyPanelHeaderText");
 
             m_ConversationRoot = view.Q<VisualElement>("historyPanelElementConversationRoot");
-            m_ConversationRoot.RegisterCallback<PointerEnterEvent>(_ =>
-            {
-                m_ConversationButton.style.display = m_EditModeActive ? DisplayStyle.None : DisplayStyle.Flex;
-            });
-
-            m_ConversationRoot.RegisterCallback<PointerLeaveEvent>(_ => m_ConversationButton.style.display = DisplayStyle.None);
             m_ConversationRoot.RegisterCallback<PointerUpEvent>(evt =>
             {
                 if (evt.button == (int)MouseButton.RightMouse)
                 {
-                    OnButtonClicked(evt);
+                    OnConversationClicked(evt);
                 }
             });
 
@@ -67,17 +62,18 @@ namespace Unity.Muse.Chat
             {
                 if (evt.button == (int)MouseButton.RightMouse)
                 {
-                    OnButtonClicked(evt);
+                    OnConversationClicked(evt);
                 }
             });
 
-            m_ConversationIcon = view.Q<Icon>("historyPanelElementConversationIcon");
+            m_FavoriteToggle = view.SetupButton("historyPanelFavoriteStateButton", OnToggleFavorite);
+
             m_ConversationText = view.Q<Text>("historyPanelElementConversationText");
             m_ConversationText.enableRichText = false;
+
             m_ConversationEditText = view.Q<TextField>("historyPanelElementConversationEditText");
             m_ConversationEditText.RegisterCallback<FocusOutEvent>(OnEditFocusLost);
             m_ConversationEditText.RegisterValueChangedCallback(OnEditComplete);
-            m_ConversationButton = view.SetupButton("historyPanelElementConversationButton", OnButtonClicked);
 
             RegisterCallback<PointerUpEvent>(OnSelectEntry);
 
@@ -86,18 +82,31 @@ namespace Unity.Muse.Chat
 
         private void OnSelectEntry(PointerUpEvent evt)
         {
-            if (m_IsSelected || m_IsHeader || m_IsContextClick)
+            if (m_IsSelected || m_IsHeader || m_IsButtonClick)
             {
-                m_IsContextClick = false;
+                m_IsButtonClick = false;
                 return;
             }
 
             NotifySelectionChanged();
         }
 
-        void OnButtonClicked(PointerUpEvent evt)
+        void OnToggleFavorite(PointerUpEvent evt)
         {
-            m_IsContextClick = true;
+            m_IsButtonClick = true;
+
+            m_IsFavorited = !m_IsFavorited;
+
+            MuseEditorDriver.instance.StartConversationFavoriteToggle(m_Data.Id, m_IsFavorited);
+            RefreshFavoriteDisplay();
+
+            MuseChatHistoryBlackboard.SetFavoriteCache(m_Data.Id, m_IsFavorited);
+            MuseChatHistoryBlackboard.HistoryPanelRefreshRequired?.Invoke();
+        }
+
+        void OnConversationClicked(PointerUpEvent evt)
+        {
+            m_IsButtonClick = true;
 
             // Create the menu and add items to it
             var menu = new GenericMenu();
@@ -175,24 +184,33 @@ namespace Unity.Muse.Chat
             m_ConversationText.text = data.Title.Replace("\n", " ");
             m_ConversationText.tooltip = data.Title;
 
+            // This field is fetched via cache, which gets invalidated on a full reload
+            // Until then we persist our local state since changing this value can take longer than a conversation refresh
+            m_IsFavorited = MuseChatHistoryBlackboard.GetFavoriteCache(data.Id);
+
             RefreshUI();
+        }
+
+        void RefreshFavoriteDisplay()
+        {
+            m_FavoriteToggle.leadingIcon = m_IsFavorited ? "star-filled-white" : "star-filled-grey";
         }
 
         void RefreshUI()
         {
             if (m_EditModeActive)
             {
-                m_ConversationButton.style.display = DisplayStyle.None;
                 m_ConversationEditText.style.display = DisplayStyle.Flex;
                 m_ConversationText.style.display = DisplayStyle.None;
                 m_ConversationEditText.Focus();
             }
             else
             {
-                m_ConversationButton.style.display = DisplayStyle.None;
                 m_ConversationEditText.style.display = DisplayStyle.None;
                 m_ConversationText.style.display = DisplayStyle.Flex;
             }
+
+            RefreshFavoriteDisplay();
         }
 
         private void OnEditFocusLost(FocusOutEvent evt)

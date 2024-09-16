@@ -132,7 +132,7 @@ namespace Unity.Muse.Chat
             m_EditButton = view.SetupButton("editButton", OnEditClicked);
             m_EditCancelButton = view.SetupButton("editCancelButton", x => { SetEditMode(false); });
 
-            m_TextFieldRoot = view.Q<VisualElement>("textFieldRoot");
+            m_TextFieldRoot = view.Q<VisualElement>("userMessageTextFieldRoot");
 
             // Hide the icon until we find a way to display that:
             m_UserIcon = view.Q<AppUI.UI.Avatar>("userIcon");

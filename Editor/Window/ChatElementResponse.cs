@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Unity.Muse.AppUI.UI;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi;
+using Unity.Muse.Chat.BackendApi.Model;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Avatar = Unity.Muse.AppUI.UI.Avatar;
@@ -360,7 +361,7 @@ namespace Unity.Muse.Chat
 
         private void OnCopyClicked(PointerUpEvent evt)
         {
-            if (UserSessionState.instance.DebugModeEnabled)
+            if (UserSessionState.instance.DebugUIModeEnabled)
             {
                 GUIUtility.systemCopyBuffer = Message.Content;
                 MuseChatView.ShowNotification("!DEBUG! Copied Raw Message to clipboard", PopNotificationIconType.Info);

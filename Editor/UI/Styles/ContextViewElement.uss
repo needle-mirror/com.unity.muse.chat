@@ -1,0 +1,39 @@
+.mui-context-view-element-root {
+    flex-direction: row;
+    border-color: var(--appui-backgrounds-50);
+    background-color: var(--appui-backgrounds-200);
+}
+
+.mui-context-view-element-row {
+    flex-direction: row;
+    flex-grow: 1;
+    max-height: 22px;
+    border-radius: 6px;
+    margin-right: 8px;
+    margin-bottom: 2px;
+    background-color: var(--appui-backgrounds-50);
+}
+
+.mui-context-view-element-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    margin-left: 8px;
+    margin-top: 2px;
+    --unity-image-tint-color: white;
+}
+
+.mui-context-view-element-remove-button {
+    min-width: 24px;
+    border-width: 0;
+    border-radius: 6px;
+    background-color: var(--appui-backgrounds-50);
+}
+
+.mui-context-view-element-remove-button:hover {
+    background-color: var(--appui-backgrounds-100);
+}
+
+.mui-context-view-element-remove-button:disabled {
+    display: none;
+}

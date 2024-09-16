@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi;
 using UnityEngine;
 
 namespace Unity.Muse.Chat.FunctionCalling

@@ -1,3 +1,5 @@
+using UnityEditor;
+
 namespace Unity.Muse.Chat
 {
     internal static class MuseChatConstants
@@ -13,6 +15,7 @@ namespace Unity.Muse.Chat
 
         internal const char UnityPathSeparator = '/';
         internal const string TemplateExtension = ".uxml";
+        internal const string StyleExtension = ".uss";
 
         internal const string ResourceFolderName = "Resources";
         internal const string PackageName = "com.unity.muse.chat";
@@ -26,10 +29,15 @@ namespace Unity.Muse.Chat
 
         internal const string UIModulePath = BasePath + UIEditorPath;
 
+        internal const string MuseChatSharedStyleDark = "MuseChatSharedDark";
+        internal const string MuseChatSharedStyleLight = "MuseChatSharedLight";
+
         internal const string AppUIEditorClass = "unity-editor";
         internal const string AppUIThemeLight = "editor-light";
         internal const string AppUIThemeDark = "editor-dark";
         internal const string AppUIScale = "small";
+
+        internal static readonly string SourcesReferenceColor = EditorGUIUtility.isProSkin ? "FF85ABFF" : "881f49FF";
 
         internal const string ProjectIdTagPrefix = "projId:";
 

@@ -1,4 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" editor-extension-mode="False">
-    <ui:VisualElement name="historyContentRoot" class="mui-history-panel -muse-chat-panel">
+    <ui:VisualElement class="mui-history-panel -muse-chat-panel">
+        <ui:VisualElement>
+            <appui:SearchBar name="historySearchBar"></appui:SearchBar>
+        </ui:VisualElement>
+        <ui:VisualElement name="historyContentRoot" class="mui-history-panel-root">
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
 using UnityEngine.UIElements;
 
@@ -8,33 +9,116 @@ namespace Unity.Muse.Chat
 {
     class HistoryPanel : ManagedTemplate
     {
-        static readonly IDictionary<string, List<MuseConversationInfo>> k_ConversationCache = new Dictionary<string, List<MuseConversationInfo>>();
+        static readonly List<MuseConversationInfo> k_ConversationCache = new();
+        static readonly IDictionary<string, List<MuseConversationInfo>> k_GroupCache = new Dictionary<string, List<MuseConversationInfo>>();
 
         private readonly IList<object> k_TempList = new List<object>();
 
+        SearchBar m_SearchBar;
         VisualElement m_ContentRoot;
         AdaptiveListView<object, HistoryPanelEntry> m_ContentList;
 
         MuseConversationId m_SelectedConversation;
+
+        string m_SearchFilter;
 
         public HistoryPanel()
             : base(MuseChatConstants.UIModulePath)
         {
         }
 
-        public void Reload()
+        protected override void InitializeView(TemplateContainer view)
         {
-            k_ConversationCache.Clear();
+            m_ContentRoot = view.Q<VisualElement>("historyContentRoot");
+            m_ContentList = new AdaptiveListView<object, HistoryPanelEntry>
+            {
+                EnableVirtualization = true
+            };
+            m_ContentList.Initialize();
+            m_ContentList.SelectionChanged += SelectionChanged;
+            m_ContentRoot.Add(m_ContentList);
+
+            m_SearchBar = view.Q<SearchBar>("historySearchBar");
+            m_SearchBar.RegisterCallback<KeyUpEvent>(OnSearchTextChanged);
+            m_SearchBar.RegisterValueChangedCallback(OnSearchValueChanged);
+
+            // Schedule a history update every 5 minutes
+            schedule.Execute(MuseEditorDriver.instance.StartConversationRefresh).Every(1000 * 60 * 5);
+
+            MuseChatHistoryBlackboard.HistoryPanelRefreshRequired += OnRefreshRequired;
+            MuseChatHistoryBlackboard.HistoryPanelReloadRequired += OnReloadRequired;
+        }
+
+        private static void LoadData(IList<object> result, long nowRaw, string searchFilter = null)
+        {
+            bool searchActive = !string.IsNullOrEmpty(searchFilter);
+            k_GroupCache.Clear();
+            result.Clear();
+            foreach (var conversationInfo in k_ConversationCache)
+            {
+                if (searchActive && conversationInfo.Title.IndexOf(searchFilter, StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    continue;
+                }
+
+                string groupKey;
+                if (MuseChatHistoryBlackboard.GetFavoriteCache(conversationInfo.Id))
+                {
+                    groupKey = "000000#Favorites";
+                }
+                else
+                {
+                    groupKey = MessageUtils.GetMessageTimestampGroup(conversationInfo.LastMessageTimestamp, nowRaw);
+                }
+
+                if (!k_GroupCache.TryGetValue(groupKey, out var groupInfos))
+                {
+                    groupInfos = new List<MuseConversationInfo>();
+                    k_GroupCache.Add(groupKey, groupInfos);
+                }
+
+                groupInfos.Add(conversationInfo);
+            }
+
+            var orderedKeys = k_GroupCache.Keys.OrderBy(x => x).ToArray();
+            for (var i = 0; i < orderedKeys.Length; i++)
+            {
+                var title = orderedKeys[i].Split('#')[1];
+                result.Add(title);
+
+                var groupContent = k_GroupCache[orderedKeys[i]];
+                groupContent.Sort((e1, e2) => DateTimeOffset.Compare(DateTimeOffset.FromUnixTimeMilliseconds(e2.LastMessageTimestamp), DateTimeOffset.FromUnixTimeMilliseconds(e1.LastMessageTimestamp)));
+                foreach (var info in groupContent)
+                {
+                    result.Add(info);
+                }
+            }
+        }
+
+        private void Reload(bool fullReload = true, bool resetScrollPosition = false)
+        {
+            if (fullReload)
+            {
+                // Full reload let's get a fresh list of conversations from the driver
+                k_ConversationCache.Clear();
+                k_ConversationCache.AddRange(MuseEditorDriver.instance.History);
+
+                // Update the cache
+                foreach (var conversationInfo in k_ConversationCache)
+                {
+                    MuseChatHistoryBlackboard.SetFavoriteCache(conversationInfo.Id, conversationInfo.IsFavorite);
+                }
+            }
+
+            var nowRaw = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var activeConversation = MuseEditorDriver.instance.GetActiveConversation();
 
             m_ContentList.ClearData();
             m_ContentList.ClearSelection();
 
-            var nowRaw = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
-            var activeConversation = MuseEditorDriver.instance.GetActiveConversation();
-
             k_TempList.Clear();
-            LoadData(MuseEditorDriver.instance.History, k_TempList, nowRaw);
+            LoadData(k_TempList, nowRaw, m_SearchFilter);
+
             int selectedIndex = -1;
             m_ContentList.BeginUpdate();
             for (var i = 0; i < k_TempList.Count; i++)
@@ -57,40 +141,29 @@ namespace Unity.Muse.Chat
             m_SelectedConversation = activeConversation?.Id ?? default;
 
             m_ContentList.SetDisplay(m_ContentList.Data.Count != 0);
+
+            if (resetScrollPosition)
+            {
+                m_ContentList.ScrollToStartIfNotLocked();
+            }
         }
 
-        public static void LoadData(IEnumerable<MuseConversationInfo> data, IList<object> result, long nowRaw)
+        private void OnRefreshRequired()
         {
-            k_ConversationCache.Clear();
-            result.Clear();
-            foreach (var conversationInfo in data)
-            {
-                string groupKey = MessageUtils.GetMessageTimestampGroup(conversationInfo.LastMessageTimestamp, nowRaw);
-                if (!k_ConversationCache.TryGetValue(groupKey, out var groupInfos))
-                {
-                    groupInfos = new List<MuseConversationInfo>();
-                    k_ConversationCache.Add(groupKey, groupInfos);
-                }
-
-                groupInfos.Add(conversationInfo);
-            }
-
-            var orderedKeys = k_ConversationCache.Keys.OrderBy(x => x).ToArray();
-            for (var i = 0; i < orderedKeys.Length; i++)
-            {
-                var title = orderedKeys[i].Split('#')[1];
-                result.Add(title);
-
-                var groupContent = k_ConversationCache[orderedKeys[i]];
-                groupContent.Sort((e1, e2) => DateTimeOffset.Compare(DateTimeOffset.FromUnixTimeMilliseconds(e2.LastMessageTimestamp), DateTimeOffset.FromUnixTimeMilliseconds(e1.LastMessageTimestamp)));
-                foreach (var info in groupContent)
-                {
-                    result.Add(info);
-                }
-            }
+            Reload(fullReload: false);
         }
 
-        public void SelectionChanged(int index, object data)
+        private void OnReloadRequired()
+        {
+            Reload(fullReload: true);
+        }
+
+        private void OnSearchTextChanged(KeyUpEvent evt)
+        {
+            SetSearchFilter(m_SearchBar.value);
+        }
+
+        private void SelectionChanged(int index, object data)
         {
             if (index == -1 || data is string)
             {
@@ -103,19 +176,20 @@ namespace Unity.Muse.Chat
             MuseEditorDriver.instance.StartConversationLoad(m_SelectedConversation);
         }
 
-        protected override void InitializeView(TemplateContainer view)
+        private void OnSearchValueChanged(ChangeEvent<string> evt)
         {
-            m_ContentRoot = view.Q<VisualElement>("historyContentRoot");
-            m_ContentList = new AdaptiveListView<object, HistoryPanelEntry>
-            {
-                EnableVirtualization = true
-            };
-            m_ContentList.Initialize();
-            m_ContentList.SelectionChanged += SelectionChanged;
-            m_ContentRoot.Add(m_ContentList);
+            SetSearchFilter(evt.newValue);
+        }
 
-            // Schedule a history update every 5 minutes
-            schedule.Execute(MuseEditorDriver.instance.StartConversationRefresh).Every(1000 * 60 * 5);
+        private void SetSearchFilter(string filter)
+        {
+            if (m_SearchFilter == filter)
+            {
+                return;
+            }
+
+            m_SearchFilter = filter;
+            Reload(false, true);
         }
     }
 }

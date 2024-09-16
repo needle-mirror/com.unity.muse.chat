@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Unity.Muse.AppUI.UI;
+using Unity.Muse.Common.Account;
 using UnityEngine.UIElements;
 
 namespace Unity.Muse.Chat
@@ -81,6 +82,21 @@ namespace Unity.Muse.Chat
             selectedItem.label = enumDisplayResolver == null
                 ? EnumDef<T>.Names[index]
                 : enumDisplayResolver.Invoke(EnumDef<T>.Values[index]);
+        }
+
+        /// <summary>
+        /// Helper method to register an element as session tracked, which means it's disable state is based on the muse session status
+        /// </summary>
+        /// <param name="element">The element to track</param>
+        public static void SetSessionTracked(this VisualElement element)
+        {
+            if (UserSessionState.instance.DebugUIModeEnabled)
+            {
+                // We don't do session tracking in debug to have controls available
+                return;
+            }
+
+            element.AddManipulator(new SessionStatusTracker());
         }
     }
 }

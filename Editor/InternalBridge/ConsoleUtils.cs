@@ -76,6 +76,17 @@ namespace Unity.Muse.Chat
             }
         }
 
+        internal static bool HasEqualLogReference(List<LogReference> logs, LogReference logRef)
+        {
+            foreach (var l in logs)
+            {
+                if (l.Equals(logRef))
+                    return true;
+            }
+
+            return false;
+        }
+
         static LogReference LogEntryToReference(LogEntry entry)
         {
             var logRef = new LogReference();

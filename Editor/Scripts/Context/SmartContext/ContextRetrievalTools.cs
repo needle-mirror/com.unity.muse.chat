@@ -20,7 +20,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
         [ContextProvider("Returns the serialized data of the object or asset (GameObject, prefab, script, etc.)")]
         internal static string ObjectDataExtractor(
-            [Parameter("Name of the object or asset to extract data from.")] string objectName,
+            [Parameter("Name of the object or asset to extract data from.")]
+            string objectName,
             [Parameter(
                 "Optional: Filter to specify a particular component on the object if it’s a GameObject.")]
             string componentFilter = null)
@@ -28,6 +29,10 @@ namespace Unity.Muse.Chat.Context.SmartContext
             if (string.IsNullOrEmpty(objectName))
                 return string.Empty;
 
+            var contextBuilder = new ContextBuilder();
+            MuseEditorDriver.instance.GetAttachedContextString(ref contextBuilder);
+            var selectedContext = contextBuilder.BuildContext(SmartContextToolbox.SmartContextLimit);
+            
             var matchingAsset = ContextRetrievalHelpers.FindObject<Object>(objectName);
 
             var objectContext = new UnityObjectContextSelection();
@@ -42,14 +47,50 @@ namespace Unity.Muse.Chat.Context.SmartContext
             if (matchingAsset is GameObject gameObject && !string.IsNullOrEmpty(componentFilter))
             {
                 // Find matching component:
-                var component = ContextRetrievalHelpers.FindComponent(gameObject, componentFilter);
+                var components = ContextRetrievalHelpers.FindComponents(gameObject, componentFilter).ToList();
 
-                if (component != null)
+                if (components.Count > 0)
                 {
-                    prefix = $"Contents of component {component.GetType().Name} on GameObject {matchingAsset.name}:\n";
+                    // In first iteration of the loop, try to use full context,
+                    // if that becomes too large, use downsized payload in second iteration:
+                    for (var fullOrDownsizedPayLoad = 0; fullOrDownsizedPayLoad < 2; fullOrDownsizedPayLoad++)
+                    {
+                        var componentsResult = string.Empty;
+                        foreach (var component in components)
+                        {
+                            prefix =
+                                $"Contents of component {component.GetType().Name} on GameObject {matchingAsset.name}:\n";
 
-                    objectContext.SetTarget(component);
-                    return prefix + ((IContextSelection)objectContext).Payload;
+                            objectContext.SetTarget(component);
+
+                            var payload = fullOrDownsizedPayLoad == 0
+                                ? ((IContextSelection)objectContext).Payload
+                                : ((IContextSelection)objectContext).DownsizedPayload;
+
+                            var componentPayload = ((IContextSelection)objectContext).Payload;
+                            
+                            // If the payload is already in the selected context, do not include this component:
+                            if (selectedContext.Contains(componentPayload))
+                            {
+                                continue;
+                            }
+                            
+                            componentsResult += prefix + payload + "\n";
+
+                            // If the context is going to get too big, exit early and try again with downsized payload:
+                            if (componentsResult.Length > SmartContextToolbox.SmartContextLimit &&
+                                fullOrDownsizedPayLoad == 0)
+                            {
+                                break;
+                            }
+                        }
+
+                        if (componentsResult.Length <= SmartContextToolbox.SmartContextLimit ||
+                            fullOrDownsizedPayLoad == 1)
+                        {
+                            return componentsResult;
+                        }
+                    }
                 }
             }
 
@@ -60,14 +101,28 @@ namespace Unity.Muse.Chat.Context.SmartContext
             }
 
             objectContext.SetTarget(matchingAsset);
-            var result = prefix + ((IContextSelection)objectContext).Payload;
+            var objectPayload = ((IContextSelection)objectContext).Payload;
+     
+            // If the payload is already in the selected context, do not return anything:
+            if (selectedContext.Contains(objectPayload))
+            {
+                return string.Empty;
+            }
 
+            var result = prefix + objectPayload;
             if (result.Length <= SmartContextToolbox.SmartContextLimit)
             {
                 return result;
             }
+            
+            objectPayload = ((IContextSelection)objectContext).DownsizedPayload;
+            // If the payload is already in the selected context, do not return anything:
+            if (selectedContext.Contains(objectPayload))
+            {
+                return string.Empty;
+            }
 
-            return prefix + ((IContextSelection)objectContext).DownsizedPayload;
+            return prefix + objectPayload;
         }
     }
 }

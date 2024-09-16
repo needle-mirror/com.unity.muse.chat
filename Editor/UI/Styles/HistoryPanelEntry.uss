@@ -18,11 +18,15 @@
     flex-direction: row;
 }
 
-#historyPanelElementConversationIcon {
-    display: none;
+#historyPanelFavoriteStateButton {
     align-self: center;
-    color: var(--appui-alias-icon-disabled);
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
     margin-right: 4px;
+}
+
+#historyPanelFavoriteStateButton:hover .appui-icon {
+    --unity-image-tint-color: white;
 }
 
 #historyPanelElementConversationText {
@@ -33,17 +37,6 @@
     overflow: hidden;
     white-space: nowrap;
     max-width: 170px;
-}
-
-#historyPanelElementConversationButton {
-    border-width: 0;
-    display: none;
-    background-color: initial;
-    background-image: resource("_Menu@2x");
-    width: 20px;
-    height: 20px;
-
-    align-self: center;
 }
 
 #historyPanelElementConversationEditText {
@@ -58,4 +51,11 @@
 
 .mui-history-panel-entry-selected {
     background-color: var(--appui-accent-50);
+}
+
+.mui-history-panel-entry-controls {
+    flex-grow: 1;
+    min-width: 48px;
+    flex-direction: row;
+    justify-content: flex-end;
 }

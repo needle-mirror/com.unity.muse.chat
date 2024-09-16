@@ -1,0 +1,17 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI"
+      xmlns:ui="UnityEngine.UIElements" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="UnityEngine.UIElements file:/C:/UnityProjects/muse-editor/TestProject/UIElementsSchema/UnityEngine.UIElements.xsd">
+    <VisualElement class="mui-selection-element-root">
+
+        <VisualElement class="mui-selection-element-row">
+
+            <appui:Icon name="mui-selection-element-checkmark" size="s" class="mui-selection-element-check-icon" icon-name="mui-icon-checkmark"/>
+            <appui:Icon name="selectionElementIcon" size="s" class="mui-selection-element-icon"/>
+            <appui:Text name="selectionElementText" class="mui-selection-element-text"/>
+            <ui:VisualElement class="mui-selection-element-spacer"/>
+            <appui:Button name="selectionElementAddRemoveButton" class="mui-selection-element-add-remove-button" text="Add content"/>
+
+        </VisualElement>
+
+    </VisualElement>
+</UXML>

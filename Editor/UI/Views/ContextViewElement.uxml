@@ -1,0 +1,15 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement class="mui-context-view-element-root">
+
+        <VisualElement class="mui-context-view-element-row">
+
+            <appui:Icon name="contextViewElementIcon" size="s" class="mui-context-view-element-icon"/>
+
+            <appui:Text name="contextViewElementText"/>
+
+            <appui:Button name="contextViewElementRemoveButton" class="mui-context-view-element-remove-button" leading-icon="mui-icon-close"/>
+
+        </VisualElement>
+
+    </VisualElement>
+</UXML>

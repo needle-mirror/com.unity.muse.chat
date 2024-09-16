@@ -36,7 +36,7 @@ namespace Unity.Muse.Chat
 
             m_ConversationList.EndUpdate(true);
 
-            if (UserSessionState.instance.DebugModeEnabled)
+            if (UserSessionState.instance.DebugUIModeEnabled)
             {
                 MuseEditorDriver.instance.OnDebugTrackMetricsRequest?.Invoke(m_ConversationRoot);
             }
@@ -110,7 +110,7 @@ namespace Unity.Muse.Chat
         {
             if (TryGetChatMessageIndex(message.Id, out int existingMessageIndex))
             {
-                if (UserSessionState.instance.DebugModeEnabled && message.Content != m_ConversationList.Data[existingMessageIndex].Content)
+                if (UserSessionState.instance.DebugUIModeEnabled && message.Content != m_ConversationList.Data[existingMessageIndex].Content)
                 {
                     Debug.Log($"MSG_UPD: {message.Id} - {message.Content?.Length}");
                 }
@@ -119,10 +119,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            if (UserSessionState.instance.DebugModeEnabled)
-            {
-                Debug.Log($"MSG_ADD: {message.Id} - {message.Content?.Length}");
-            }
+            InternalLog.Log($"MSG_ADD: {message.Id} - {message.Content?.Length}");
 
             m_ConversationList.AddData(message);
         }
@@ -131,10 +128,7 @@ namespace Unity.Muse.Chat
         {
             if (TryGetChatMessageIndex(messageId, out var messageIndex))
             {
-                if (UserSessionState.instance.DebugModeEnabled)
-                {
-                    Debug.Log($"MSG_DEL: {messageIndex} - {messageId}");
-                }
+                InternalLog.Log($"MSG_DEL: {messageIndex} - {messageId}");
 
                 m_ConversationList.RemoveData(messageIndex);
             }
@@ -149,22 +143,16 @@ namespace Unity.Muse.Chat
 
             if(!TryGetChatMessageIndex(currentId, out var messageIndex))
             {
-                if (UserSessionState.instance.DebugModeEnabled)
-                {
-                    // This is currently a side-effect of async reloading, not critical but worth changing at some point
-                    // We reload during a queued update in the driver / message handler, so we can't guarantee the message is still there
-                    Debug.LogWarning("Change Message ID called for non-existent message: " + currentId);
-                }
+                // This is currently a side-effect of async reloading, not critical but worth changing at some point
+                // We reload during a queued update in the driver / message handler, so we can't guarantee the message is still there
+                InternalLog.LogWarning("Change Message ID called for non-existent message: " + currentId);
 
                 return;
             }
 
             var messageData = m_ConversationList.Data[messageIndex];
 
-            if (UserSessionState.instance.DebugModeEnabled)
-            {
-                Debug.Log($"MSG_ID_CHANGE: {messageIndex} - {messageData.Id} -> {newId}");
-            }
+            InternalLog.Log($"MSG_ID_CHANGE: {messageIndex} - {messageData.Id} -> {newId}");
 
             messageData.Id = newId;
             m_ConversationList.UpdateData(messageIndex, messageData);

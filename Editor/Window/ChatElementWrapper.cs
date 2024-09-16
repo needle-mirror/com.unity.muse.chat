@@ -25,7 +25,7 @@ namespace Unity.Muse.Chat
             base.SetData(index, data);
 
             var message = (MuseMessage)data;
-            if (UserSessionState.instance.DebugModeEnabled)
+            if (UserSessionState.instance.DebugUIModeEnabled)
             {
                 m_IndexDebugElement.style.display = DisplayStyle.Flex;
                 m_IndexDebugElement.text = $"Index: {index}";

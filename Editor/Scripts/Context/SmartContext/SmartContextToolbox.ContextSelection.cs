@@ -5,7 +5,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
 {
     internal partial class SmartContextToolbox
     {
-        class ContextSelection : IContextSelection
+        internal class ContextSelection : IContextSelection
         {
             string IContextSelection.DownsizedPayload => Payload;
 
@@ -26,8 +26,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
             public bool Equals(IContextSelection other)
             {
                 return Classifier == other.Classifier
-                    && Description == other.Description
-                    && Payload == other.Payload;
+                       && Description == other.Description
+                       && Payload == other.Payload;
             }
         }
     }

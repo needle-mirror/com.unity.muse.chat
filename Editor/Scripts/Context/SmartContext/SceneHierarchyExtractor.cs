@@ -227,7 +227,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
                     if (collapsedCount > 0)
                     {
-                        child.m_Suffix = $"_({collapsedCount + 1})";
+                        child.m_Suffix = $" - There are {collapsedCount + 1} objects with this name";
                     }
                 }
             }
@@ -283,19 +283,35 @@ namespace Unity.Muse.Chat.Context.SmartContext
             var allObjects = Object.FindObjectsOfType<GameObject>(true);
 
             // Loop through all GameObjects and if their names are in the list of args, add them to the hierarchy map:
+            ICollection<GameObject> objectsToSearch;
+
             if (gameObjectNameFilters == null || gameObjectNameFilters.Length == 0 || gameObjectNameFilters[0] == "*")
             {
-                foreach (var obj in allObjects)
-                    hierarchyMap.Insert(obj);
+                objectsToSearch = allObjects;
             }
             else
             {
+                objectsToSearch = new HashSet<GameObject>();
                 foreach (var filter in gameObjectNameFilters)
                 {
                     foreach (var obj in ContextRetrievalHelpers.FuzzyObjectSearch(filter, allObjects))
                     {
-                        hierarchyMap.Insert(obj);
+                        objectsToSearch.Add(obj);
                     }
+                }
+            }
+
+            objectsToSearch = new List<GameObject>(objectsToSearch.OrderBy(GetDepth));
+
+            var resultLength = 0;
+            foreach (var obj in objectsToSearch)
+            {
+                hierarchyMap.Insert(obj);
+                resultLength += obj.name.Length;
+
+                if (resultLength > GameObjectHierarchyMapEntry.SmartContextLimit)
+                {
+                    break;
                 }
             }
 
@@ -305,6 +321,17 @@ namespace Unity.Muse.Chat.Context.SmartContext
             }
 
             return resultPrefix + hierarchyMap.Serialized();
+
+            // Sort objects by their depth in the hierarchy:
+            int GetDepth(GameObject obj)
+            {
+                if (obj.transform.parent == null)
+                {
+                    return 0;
+                }
+
+                return GetDepth(obj.transform.parent.gameObject) + 1;
+            }
         }
     }
 }

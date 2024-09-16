@@ -1,6 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Unity.Muse.Common.Account;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Unity.Muse.Chat
 {
@@ -11,6 +14,14 @@ namespace Unity.Muse.Chat
         static Vector2 k_MinSize = new(400, 400);
 
         MuseChatView m_View;
+
+        [SerializeField]
+        internal List<Object> m_ObjectSelection = new();
+
+        [SerializeField]
+        internal List<LogReference> m_ConsoleSelection = new();
+
+        internal Action OnLostWindowFocus;
 
         [MenuItem("Muse/Chat")]
         public static void ShowWindow()
@@ -23,7 +34,7 @@ namespace Unity.Muse.Chat
 
         void CreateGUI()
         {
-            m_View = new MuseChatView();
+            m_View = new MuseChatView(this);
             m_View.Initialize();
             m_View.style.flexGrow = 1;
             m_View.style.minWidth = 400;
@@ -35,6 +46,11 @@ namespace Unity.Muse.Chat
         void OnDestroy()
         {
             m_View.Deinit();
+        }
+
+        private void OnLostFocus()
+        {
+            OnLostWindowFocus?.Invoke();
         }
     }
 }

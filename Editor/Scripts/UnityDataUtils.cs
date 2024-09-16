@@ -175,8 +175,8 @@ namespace Unity.Muse.Chat
         /// <returns>A dictionary where the package is the key and version is the value</returns>
         public static Dictionary<string, string> GetPackageMap()
         {
-            if (s_PackageMap.Count == 0 && UserSessionState.instance.DebugModeEnabled)
-                Debug.LogWarning("No package data available. Please call CachePackageData first.");
+            if (s_PackageMap.Count == 0)
+                InternalLog.LogWarning("No package data available. Please call CachePackageData first.");
 
             return s_PackageMap;
         }

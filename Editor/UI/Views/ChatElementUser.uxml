@@ -6,7 +6,7 @@
                 <appui:Text text="User Name" name="userName" class="mui-textbox mui-chat-username" />
             </VisualElement>
             <VisualElement class="mui-chat-element-text-area">
-                <VisualElement name="textFieldRoot">
+                <VisualElement name="userMessageTextFieldRoot">
                 </VisualElement>
             </VisualElement>
             <VisualElement>

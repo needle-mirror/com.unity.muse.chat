@@ -1,4 +1,4 @@
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi.Model;
 
 namespace Unity.Muse.Chat
 {

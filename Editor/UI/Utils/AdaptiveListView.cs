@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.Muse.Chat
@@ -29,6 +28,7 @@ namespace Unity.Muse.Chat
         public bool EnableScrollLock = false;
         public bool EnableVirtualization = true;
         public bool EnableDelayedElements = false;
+        public bool EnableHorizontalScroll = false;
 
         public int DelayedElementOperations = 5;
 
@@ -67,6 +67,10 @@ namespace Unity.Muse.Chat
 
                 m_InnerScroll = new ScrollView();
                 m_InnerScroll.AddToClassList(k_BaseClassName + "-inner");
+
+                if (EnableHorizontalScroll == false)
+                    m_InnerScroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+
                 Add(m_InnerScroll);
 
                 m_VerticalScroller = m_InnerScroll.Q<Scroller>(null, "unity-scroller--vertical");

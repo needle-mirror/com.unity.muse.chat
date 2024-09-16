@@ -1,4 +1,4 @@
-namespace Unity.Muse.Chat.Model
+namespace Unity.Muse.Chat.BackendApi.Model
 {
     internal partial class ParameterDefinition
     {

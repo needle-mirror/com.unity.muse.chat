@@ -4,8 +4,8 @@
         <ui:VisualElement name="root-main">
             <ui:VisualElement name="headerRoot" class="mui-header -muse-chat-panel">
                 <appui:Text name="conversationNameLabel" class="mui-header-label" text="Conversation Name"/>
-                <appui:Button name="newChatButton" class="mui-header-button" title="New Chat" leading-icon="plus--regular"/>
-                <appui:Button name="historyButton" class="mui-header-button" title="History" leading-icon="mui-icon-history"/>
+                <appui:Button name="newChatButton" class="mui-header-button" leading-icon="plus--regular"/>
+                <appui:Button name="historyButton" class="mui-header-button" title="History"/>
                 <ui:VisualElement name="museAccountContainer" class="mui-header-dropdown"/>
             </ui:VisualElement>
 
@@ -34,26 +34,44 @@
             </ui:VisualElement>
 
             <ui:VisualElement name="footerRoot" class="mui-footer -muse-chat-panel">
-                <ui:VisualElement name="userSelectedContextRoot" class="mui-chat-user-selected-context-root">
-                    <appui:Text name="selectionLabel" text="Selection" tooltip="Selected items appear here, toggle between including or removing them from your prompt" class="mui-context-selection-text"/>
-                    <ui:VisualElement name="userSelectedContextLabelsRoot" class="mui-chat-user-selected-context-labels-root">
-                        <appui:Button name="selectedConsoleInfoButton" leading-icon="mui-icon-info" size="s" class="mui-selected-context-button"/>
-                        <appui:Button name="selectedConsoleWarnButton" leading-icon="mui-icon-warn" size="s" class="mui-selected-context-button"/>
-                        <appui:Button name="selectedConsoleErrorButton" leading-icon="mui-icon-error" size="s" class="mui-selected-context-button"/>
-                        <appui:Button name="selectedGameObjectButton" leading-icon="mui-icon-game-object" size="s" class="mui-selected-context-button"/>
+
+                <ui:VisualElement name="addContextRoot" class="mui-chat-selected-context-root">
+                    <appui:Button name="addContextButton" size="s" class="mui-chat-selected-context-button mui-selected-context-button-default-behavior" leading-icon="mui-icon-pick" title="Attach items" tooltip="Attach items from your project"/>
+                    <ui:VisualElement class="mui-chat-context-spacer"/>
+                    <appui:Button name="clearContextButton" size="s" class="mui-chat-clear-context-button" title="Clear Context"/>
+                </ui:VisualElement>
+
+                <ui:VisualElement name="contextRoot" class="mui-chat-user-context-root">
+                    <ui:VisualElement name="userSelectedContextRoot" class="mui-chat-selected-context-root">
+                        <ui:ScrollView name="userSelectedContextListView" class="mui-chat-selected-context-scrollview"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
 
-                <ui:VisualElement name="userSelectedContextWarningRoot" class="mui-chat-user-selected-context-warning-root">
+                <ui:VisualElement name="userSelectedContextWarningRoot" class="mui-chat-selected-context-warning-root">
                     <appui:Icon name="selectionWarningIcon" icon-name="mui-icon-warn" size="s" class="mui-selected-context-icon"/>
                     <appui:Text name="selectionWarningText" text="Select fewer or smaller items for a more accurate response." class="mui-selected-context-text"/>
                 </ui:VisualElement>
 
                 <ui:VisualElement name="chatTextFieldRoot" class="mui-chat-input-root">
                 </ui:VisualElement>
+
+                <ui:VisualElement class="mui-chat-input-command-root">
+                    <appui:ActionGroup name="commandGroup" quiet="true" selection-type="Single" allow-no-selection="false">
+                        <appui:ActionButton name="commandAsk" class="mui-chat-command-button mui-chat-cmd-ask" quiet="true" label="" icon="mui-icon-cmd-ask" tooltip="/&lt;b&gt;ask&lt;/b&gt;  Ask Muse queries or troubleshoot"/>
+                        <appui:ActionButton name="commandRun" class="mui-chat-command-button mui-chat-cmd-run" quiet="true" label="" icon="mui-icon-cmd-run" tooltip="/&lt;b&gt;run&lt;/b&gt;  Run a command in the editor"/>
+                        <appui:ActionButton name="commandCode" class="mui-chat-command-button mui-chat-cmd-code" quiet="true" label="" icon="mui-icon-cmd-code" tooltip="/&lt;b&gt;code&lt;/b&gt;  Use a dedicated code generator"/>
+                    </appui:ActionGroup>
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="notificationBannerRoot"/>
+        <appui:DropZone name="chatDropZone" class="mui-chat-context-dropzone">
+            <ui:VisualElement name="chatDropZoneContent" class="mui-chat-context-dropzone-container">
+                <appui:Text name="chatDropZoneTextTitle" text="Attach items" class="mui-chat-dropzone-text-title"/>
+                <appui:Text name="chatDropZoneText" text="Drag and drop items to focus your question" class="mui-chat-dropzone-text"/>
+            </ui:VisualElement>
+        </appui:DropZone>
+
     </appui:Panel>
 </ui:UXML>

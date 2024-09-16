@@ -18,6 +18,9 @@
 
     height: 22px;
     min-height: 22px;
+    min-width: 30px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 .mui-header-button .appui-button__titlecontainer     {
@@ -35,6 +38,7 @@
     align-self: center;
     -unity-text-align: middle-center;
     -unity-font-style: bold;
+    color: var(--muse-chat-header-text-color);
 }
 
 .mui-header-dropdown {
@@ -55,6 +59,7 @@
     flex-shrink: 0;
     justify-content: center;
     padding: 14px;
+    flex-direction: column;
 }
 
 .mui-chat-suggestion-button {
@@ -77,7 +82,7 @@
 }
 
 #chatContentRoot {
-    background-color: var(--appui-backgrounds-50);
+    background-color: var(--muse-chat-panel-bg);
     flex-grow: 1;
 }
 
@@ -148,7 +153,35 @@
     align-self: center;
 }
 
-.mui-chat-user-selected-context-root {
+.mui-chat-input-command-root {
+    max-width: 700px;
+    flex-direction: row;
+    align-self: center;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding-top: 6px;
+}
+
+.mui-chat-command-button {
+    margin: 0px;
+    padding: 4px;
+    min-height: 24px;
+}
+
+.mui-chat-cmd-ask.is-selected .appui-icon{
+   --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdAskOn.png');
+}
+
+.mui-chat-cmd-run.is-selected .appui-icon{
+   --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdRunOn.png');
+}
+
+.mui-chat-cmd-code.is-selected .appui-icon{
+   --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdCodeOn.png');
+}
+
+.mui-chat-selected-context-root {
     max-width: 700px;
     flex-direction: row;
     align-self: center;
@@ -158,7 +191,55 @@
     padding-bottom: 8px;
 }
 
-.mui-chat-user-selected-context-labels-root{
+.mui-chat-selected-context-notification {
+    max-width: 700px;
+    flex-direction: row;
+    align-self: center;
+    width: 100%;
+    padding-bottom: 8px;
+}
+
+.mui-chat-selected-context-scrollview {
+    flex-direction: row;
+    flex-wrap: wrap;
+    max-height: 90px;
+}
+
+.mui-chat-context-dropzone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    cursor: arrow;
+}
+
+.mui-chat-context-dropzone-container {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0.07, 0.07, 0.07, 0.8);
+    border-width: 2px;
+    border-color: var(--appui-color-gray-1000);
+}
+
+.mui-chat-dropzone-text-title {
+    align-self: center;
+    color: var(--appui-color-dark-gray-800);
+    -unity-font-style: bold;
+    font-size: var(--appui-font-sizes-200);
+    padding-bottom: 10px;
+}
+
+.mui-chat-dropzone-text {
+    align-self: center;
+    color: var(--appui-color-dark-gray-800);
+    font-size: var(--appui-font-sizes-100);
+}
+
+.mui-chat-selected-context-labels-root{
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
@@ -172,15 +253,57 @@
     display: none;
 }
 
-.mui-selected-context-button {
+.mui-chat-selected-context-root {
+    max-width: 700px;
+    flex-direction: row;
+    align-self: center;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 8px;
+}
+
+.mui-chat-selected-context-button {
     margin-top: 2px;
     margin-bottom: 2px;
     margin-right: 4px;
-    min-width: 35px;
     border-width: 0;
     height: 20px;
-    background-color: var(--appui-backgrounds-100);
-    color: var(--appui-foregrounds-25);
+    background-color: var(--appui-backgrounds-200);
+}
+
+.mui-chat-selected-context-button-default-behavior:hover {
+    background-color: var(--appui-backgrounds-300);
+}
+
+.mui-chat-selected-context-button .appui-button__leadingicon {
+    width: 14px;
+    height: 14px;
+    --unity-image-tint-color: white;
+}
+
+.mui-chat-context-spacer {
+    flex-grow: 1;
+}
+
+.mui-chat-clear-context-button {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-right: 4px;
+    border-width: 0;
+    background-color: var(--appui-backgrounds-200);
+}
+
+.mui-chat-clear-context-button:hover {
+    background-color: var(--appui-backgrounds-300);
+}
+
+.mui-chat-clear-context-button:disabled {
+    display: none;
+}
+
+.mui-selected-context-button-open {
+    background-color: #4c607b;
 }
 
 .mui-selected-context-button .appui-button__title {
@@ -191,12 +314,7 @@
     max-width: 80px;
 }
 
-.mui-selected-context-button-selected {
-    background-color: var(--appui-alias-actions-background-color-hover);
-    color: var(--appui-foregrounds-100);
-}
-
-.mui-chat-user-selected-context-warning-root {
+.mui-chat-selected-context-warning-root {
     max-width: 700px;
     flex-direction: row;
     align-self: center;
@@ -224,3 +342,4 @@
     align-self: center;
     margin-top: 42px;
 }
+

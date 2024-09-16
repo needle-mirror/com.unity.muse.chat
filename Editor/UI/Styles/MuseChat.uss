@@ -21,3 +21,6 @@
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementPluginBlock.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementPluginButton.uss");
 @import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ChatElementContextEntry.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/SelectionElement.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/SelectionPopup.uss");
+@import url("/Packages/com.unity.muse.chat/Editor/UI/Styles/ContextViewElement.uss");

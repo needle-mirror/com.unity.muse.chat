@@ -24,11 +24,11 @@ namespace Unity.Muse.Chat
         internal string BuildContext(int contextLimit)
         {
             var contextString = new StringBuilder();
-            foreach (var (context, userSelected) in m_ContextList)
+            foreach (var (context, userAttachment) in m_ContextList)
             {
                 var payload = context.Payload;
                 var downsizedPayload = context.DownsizedPayload;
-                var prefix = userSelected ? $"I'm about to describe what I am currently selecting. I might refer to what I am currently selecting as 'this', 'it' or 'that'. I am currently selecting something of type: {context.ContextType}]. The data about what I am currently selecting is:" : $"The current project includes ({context.ContextType}):";
+                var prefix = userAttachment ? $"The following describes an object that the user has attached as context for the query. The attached object is of type: {context.ContextType}]. The data about the object the user has attached to context is:" : $"The current project includes ({context.ContextType}):";
                 if (!string.IsNullOrWhiteSpace(payload) && contextString.Length + payload.Length < contextLimit)
                 {
                     contextString.Append($"\n\n{prefix}\n" + payload);
@@ -41,7 +41,7 @@ namespace Unity.Muse.Chat
                 {
                     var errorMessage =
                         $"Failed to extract user selected {context.ContextType} {context.TargetName}. It's too large for the current context limit.";
-                    if (userSelected && contextString.Length + errorMessage.Length < contextLimit)
+                    if (userAttachment && contextString.Length + errorMessage.Length < contextLimit)
                         contextString.Append(errorMessage);
                 }
             }

@@ -1,0 +1,134 @@
+:root {
+    --muse-chat-color-blue: var(--appui-color-blue-1000);
+    --muse-chat-color-pink: #d33c79;
+    --muse-chat-color-user-message: #441a2b;
+    --muse-chat-color-crimson-dark: #FF85AB;
+    --muse-chat-user-message-bg: var(--appui-backgrounds-100);
+    --muse-chat-panel-bg: var(--appui-backgrounds-50);
+    --muse-chat-header-text-color: var(--appui-primary-1300);
+    --muse-chat-source-border-color: var(--appui-backgrounds-100);
+    --muse-chat-avatar-bg: var(--appui-backgrounds-50);
+}
+
+.-muse-chat-panel {
+    background-color: var(--appui-backgrounds-200);
+}
+
+.appui-icon {
+    ---unity-image-tint-color: blue;
+}
+
+.mui-chat-selection-prefab-text-color {
+    color: #76A1FF;
+}
+
+.appui-icon--mui-icon-empty {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/empty.png');
+}
+
+.appui-icon--mui-icon-empty-margin {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/empty.png');
+    width: 28px;
+    height: 14px;
+}
+
+.appui-icon--mui-icon-muse {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/muse.png');
+}
+
+.appui-icon--mui-icon-history {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ClockCounterClockwise.png');
+}
+
+.appui-icon--mui-icon-copy {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CopySimple.png');
+}
+
+.appui-icon--mui-icon-cmd-run {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdRun.png');
+}
+
+.appui-icon--mui-icon-cmd-ask {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdAsk.png');
+}
+
+.appui-icon--mui-icon-cmd-code {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdCode.png');
+}
+
+.appui-icon--mui-icon-save {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/SaveAs.png');
+}
+
+.appui-icon--mui-icon-upvote {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ThumbsUp.png');
+}
+
+.appui-icon--mui-icon-downvote {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ThumbsDown.png');
+}
+
+.appui-icon--mui-icon-cancel {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/XSquare.png')
+}
+
+.appui-icon--mui-icon-stop {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/StopCircle.png');
+}
+
+.appui-icon--mui-icon-submit {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/PaperPlaneRight.png');
+}
+
+.appui-icon--mui-icon-submit-white {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/PaperPlaneRight.png');
+}
+
+.appui-icon--mui-icon-tick {
+    background-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/tick.png');
+}
+
+.appui-icon--star-filled-white--regular {
+    --unity-image: url("project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/StarFilledWhite.png");
+}
+
+.appui-icon--star-filled-grey--regular {
+    --unity-image: url("project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/StarFilledWhite.png");
+    --unity-image-tint-color: rgba(100, 100, 100, 0.2);
+}
+
+.appui-icon--mui-icon-error {
+    background-image: resource('d_console.erroricon');
+}
+
+.appui-icon--mui-icon-close {
+    background-image: resource('d_clear@2x');
+}
+
+.appui-icon--mui-icon-warn {
+    background-image: resource('d_console.warnicon');
+}
+
+.appui-icon--mui-icon-info {
+    background-image: resource('d_console.infoicon');
+}
+
+.appui-icon--mui-icon-game-object {
+    --unity-image: resource('d_GameObject Icon');
+}
+
+.appui-icon--mui-icon-console {
+    --unity-image: resource('d_UnityEditor.ConsoleWindow');
+}
+
+.appui-icon--mui-icon-pick {
+    --unity-image: resource('d_pick.png');
+}
+
+.appui-icon--mui-icon-prefab {
+    --unity-image: resource('d_Prefab Icon');
+}
+
+.appui-icon--mui-icon-checkmark {
+    background-image: resource('check');
+}

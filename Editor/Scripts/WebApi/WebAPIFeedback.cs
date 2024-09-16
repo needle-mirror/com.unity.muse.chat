@@ -1,9 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Muse.Chat.Api;
-using Unity.Muse.Chat.Client;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi.Client;
+using Unity.Muse.Chat.BackendApi.Model;
 using Unity.Muse.Common.Account;
 using UnityEditor;
 using UnityEngine;
@@ -51,7 +50,7 @@ namespace Unity.Muse.Chat
 
                 // Start the request task, this should cause the Intercept code to
                 // populate m_ActiveRequest with a UnityWebRequest
-                Task requestTask = api.FeedbackV1MuseFeedbackPostAsync(request, cancellationTokenSource.Token);
+                Task requestTask = api.PostMuseFeedbackV1Async(request, cancellationTokenSource.Token);
 
                 EditorApplication.update += Tick;
 

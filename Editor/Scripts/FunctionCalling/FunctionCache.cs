@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Muse.Chat.Context.SmartContext;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi.Model;
 
 namespace Unity.Muse.Chat.FunctionCalling
 {

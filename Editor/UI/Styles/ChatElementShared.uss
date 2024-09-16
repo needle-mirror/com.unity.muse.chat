@@ -13,6 +13,7 @@
 
 .mui-chat-username {
     -unity-font-style: bold;
+    color: var(--muse-chat-header-text-color);
     height: 20px;
 }
 

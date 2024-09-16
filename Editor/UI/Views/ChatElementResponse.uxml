@@ -3,7 +3,6 @@
         <VisualElement class="mui-chat-message-content">
             <VisualElement class="mui-chat-element-avatar-area">
                 <appui:Avatar name="museAvatar" class="mui-chat-avatar" variant="Square"/>
-                <appui:Text text="Muse" class="mui-textbox mui-chat-username" />
             </VisualElement>
             <VisualElement name="textFieldRoot" class="mui-chat-element-text-area">
             </VisualElement>

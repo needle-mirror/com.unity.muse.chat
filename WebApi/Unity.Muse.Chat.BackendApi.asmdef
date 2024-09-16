@@ -1,5 +1,5 @@
 {
-    "name": "Unity.Muse.Chat.WebApi",
+    "name": "Unity.Muse.Chat.BackendApi",
     "rootNamespace": "",
     "references": [],
     "includePlatforms": [

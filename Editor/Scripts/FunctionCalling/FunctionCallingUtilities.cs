@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi;
+using Unity.Muse.Chat.BackendApi.Model;
 using UnityEngine;
 using Unity.Muse.Common.Editor.Integration;
 

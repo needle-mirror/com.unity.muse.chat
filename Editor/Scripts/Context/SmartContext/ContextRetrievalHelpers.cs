@@ -39,8 +39,13 @@ namespace Unity.Muse.Chat.Context.SmartContext
             return FuzzyObjectSearch(gameObjectName, listAsT).FirstOrDefault();
         }
 
-        internal static Component FindComponent(GameObject gameObject, string componentName)
+        internal static IEnumerable<Component> FindComponents(GameObject gameObject, string componentName)
         {
+            if (componentName.ToLower() == "script")
+            {
+                componentName = nameof(MonoBehaviour);
+            }
+
             long outScore = 0;
             var result = gameObject.GetComponents<Component>()
                 .Where(comp => comp != null)
@@ -58,9 +63,19 @@ namespace Unity.Muse.Chat.Context.SmartContext
                     .ToList();
             }
 
+            // If there are still no matching components, do a fuzzy search on the base class:
+            if (!result.Any())
+            {
+                result = gameObject.GetComponents<Component>()
+                    .Where(comp => comp != null)
+                    .Where(comp => FuzzySearch.FuzzyMatch(comp.GetType().BaseType?.Name, componentName, ref outScore))
+                    .Select(comp => new Tuple<Component, long>(comp, outScore))
+                    .ToList();
+            }
+
             return result
                 .OrderByDescending(a => a.Item2)
-                .FirstOrDefault()?.Item1;
+                .Select(a => a.Item1);
         }
 
         internal static IEnumerable<T> FuzzyObjectSearch<T>(string pattern, IEnumerable<T> objectsToSearch)

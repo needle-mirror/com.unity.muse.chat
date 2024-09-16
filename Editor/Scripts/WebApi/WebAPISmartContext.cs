@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Muse.Chat.Api;
-using Unity.Muse.Chat.Client;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi.Api;
+using Unity.Muse.Chat.BackendApi.Client;
+using Unity.Muse.Chat.BackendApi.Model;
 using Unity.Muse.Common.Account;
 using UnityEditor;
 using UnityEngine;
@@ -16,7 +16,7 @@ namespace Unity.Muse.Chat
 {
     partial class WebAPI
     {
-        public async Task<SmartContextResponse> PostSmartContextAsync(string prompt, List<FunctionDefinition> catalog, string conversationId, CancellationToken cancellationToken)
+        public async Task<SmartContextResponse> PostSmartContextAsync(string prompt, string editorContext, List<FunctionDefinition> catalog, string conversationId, CancellationToken cancellationToken)
         {
             if (!GetOrganizationID(out string organizationId))
                 return null;
@@ -25,12 +25,13 @@ namespace Unity.Muse.Chat
                 prompt: prompt,
                 organizationId: organizationId,
                 conversationId: conversationId,
-                jsonCatalog: catalog);
+                jsonCatalog: catalog,
+                editorContext: editorContext);
 
             try
             {
-                DefaultApi api = new(CreateConfig());
-                return await api.SmartContextV1SmartContextPostAsync(request, cancellationToken);
+                MuseChatBackendApi api = new(CreateConfig());
+                return await api.PostSmartContextV1Async(request, cancellationToken);
             }
             catch (ApiException e)
             {

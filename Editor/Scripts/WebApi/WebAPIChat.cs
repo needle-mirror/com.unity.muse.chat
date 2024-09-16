@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Unity.Muse.Chat.Client;
-using Unity.Muse.Chat.Model;
+using Unity.Muse.Chat.BackendApi.Client;
+using Unity.Muse.Chat.BackendApi.Model;
 using UnityEngine.Networking;
 
 #pragma warning disable CS0162 // Unreachable code detected
@@ -60,7 +60,7 @@ namespace Unity.Muse.Chat
 
                 // Start the request task, this makes the Intercept code
                 // populate the MuseMessageUpdateHandler with the UnityWebRequest
-                Task request = api.ChatV1MuseChatPostAsync(options, cancellationTokenSource.Token);
+                Task request = api.PostMuseChatV1Async(options, cancellationTokenSource.Token);
 
                 // Add the task too
                 activeChatRequestOperation.Task = request;

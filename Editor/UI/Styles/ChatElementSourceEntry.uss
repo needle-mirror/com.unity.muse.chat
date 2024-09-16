@@ -14,7 +14,7 @@
 
 .mui-source-entry-number {
     margin-right: 4px;
-    color: var(--muse-chat-color-blue);
+    color: var(--muse-chat-color-crimson-dark);
     width: 12px;
     height: 12px;
     flex-grow: 0;
@@ -35,7 +35,7 @@
     max-height: 25px;
     -unity-text-align: middle-left;
     background-color: rgba(0, 0, 0, 0);
-    border-color: var(--appui-backgrounds-100);
+    border-color: var(--muse-chat-source-border-color);
 }
 
 #sourceLinkHint {

@@ -6,5 +6,6 @@ namespace Unity.Muse.Chat
         public string Title;
         public long LastMessageTimestamp;
         public bool IsContextual;
+        public bool IsFavorite;
     }
 }

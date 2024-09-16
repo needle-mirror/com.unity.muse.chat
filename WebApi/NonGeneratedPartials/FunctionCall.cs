@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Unity.Muse.Chat.Model
+namespace Unity.Muse.Chat.BackendApi.Model
 {
     internal partial class FunctionCall
     {

@@ -4,7 +4,19 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.0.0-pre.11] - 3000-06-28
+## [1.0.0-pre.12] - 2024-09-16
+
+### Added
+- Added new context selection UI with "Add Context" button and drag-and-drop support
+- Added Search Field to History Panel
+- Added Favorite Toggle to conversations in the history panel
+
+### Changed
+- Updated Muse Common to 2.0.4
+- Updated WebAPI code to server version 1.5.3
+
+
+## [1.0.0-pre.11] - 2024-08-07
 
 ### Added
 - Added all asset types to selected context category

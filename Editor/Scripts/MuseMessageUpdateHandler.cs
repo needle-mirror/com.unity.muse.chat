@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Unity.Muse.Chat.Client;
+using Unity.Muse.Chat.BackendApi.Client;
 using Unity.Muse.Common;
 using UnityEditor;
 using UnityEngine;
@@ -192,6 +192,8 @@ namespace Unity.Muse.Chat
                 CheckForInvalidAccessToken(currentResponse.ErrorCode, ref currentResponse.ErrorText);
             }
 
+            var isMusing = ChatStatus is WebAPI.RequestStatus.Empty or WebAPI.RequestStatus.InProgress;
+
             // Change the response ID to the external server id:
             if (!string.IsNullOrEmpty(assistantFragmentId))
             {
@@ -207,7 +209,7 @@ namespace Unity.Muse.Chat
                         {
                             Type = MuseChatUpdateType.MessageIdChange,
                             Message = currentResponse,
-                            IsMusing = false,
+                            IsMusing = isMusing,
                             NewMessageId = completeId
                         });
                 }
@@ -236,7 +238,7 @@ namespace Unity.Muse.Chat
                             {
                                 Type = MuseChatUpdateType.MessageIdChange,
                                 Message = currentRequest,
-                                IsMusing = false,
+                                IsMusing = isMusing,
                                 NewMessageId = userMessageId
                             });
                     }
@@ -252,7 +254,7 @@ namespace Unity.Muse.Chat
                 {
                     Type = MuseChatUpdateType.MessageUpdate,
                     Message = currentResponse,
-                    IsMusing = ChatStatus is WebAPI.RequestStatus.Empty or WebAPI.RequestStatus.InProgress
+                    IsMusing = isMusing
                 });
         }
 

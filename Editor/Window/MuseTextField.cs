@@ -14,7 +14,9 @@ namespace Unity.Muse.Chat
         const string k_MusingActiveStyle = "mui-musing-active";
         const string k_ChatSubmitEnabledClass = "mui-submit-enabled";
 
-        const string m_DefaultChatPlaceholderText = "Ask Muse";
+        const string k_DefaultAskPlaceholderText = "Ask Muse";
+        const string k_DefaultRunPlaceholderText = "Run a command";
+        const string k_DefaultCodePlaceholderText = "Use a dedicated code generator";
 
         VisualElement m_Root;
 
@@ -91,7 +93,18 @@ namespace Unity.Muse.Chat
 
         public void Enable()
         {
-            m_Placeholder.text = m_DefaultChatPlaceholderText;
+            switch (UserSessionState.instance.SelectedCommandMode)
+            {
+                case ChatCommandType.Ask:
+                    m_Placeholder.text = k_DefaultAskPlaceholderText;
+                    break;
+                case ChatCommandType.Run:
+                    m_Placeholder.text = k_DefaultRunPlaceholderText;
+                    break;
+                case ChatCommandType.Code:
+                    m_Placeholder.text = k_DefaultCodePlaceholderText;
+                    break;
+            }
             m_ChatInput.SetEnabled(true);
         }
 

@@ -19,7 +19,18 @@ namespace Unity.Muse.Chat
         {
             None,
             ScrollToEnd,
-            Locked
+            Locked,
+            ScrollToStart
+        }
+
+        public void ScrollToStartIfNotLocked()
+        {
+            if (m_ScrollState == ScrollState.Locked)
+            {
+                return;
+            }
+
+            ChangeScrollState(ScrollState.ScrollToStart, true);
         }
 
         public void ScrollToEndIfNotLocked()
@@ -90,6 +101,25 @@ namespace Unity.Muse.Chat
                     if (m_VerticalScroller.value < m_VerticalScroller.highValue)
                     {
                         m_VerticalScroller.value = m_VerticalScroller.highValue;
+                    }
+
+                    break;
+                }
+
+                case ScrollState.ScrollToStart:
+                {
+                    if (EnableVirtualization)
+                    {
+                        m_InnerList.ScrollToItem(0);
+                    }
+                    else
+                    {
+                        m_InnerScroll.ScrollTo(k_VisualElements[0]);
+                    }
+
+                    if (m_VerticalScroller.value > 0)
+                    {
+                        m_VerticalScroller.value = 0;
                     }
 
                     break;
