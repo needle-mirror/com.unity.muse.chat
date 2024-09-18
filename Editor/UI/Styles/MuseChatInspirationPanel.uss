@@ -50,6 +50,10 @@
     border-width: 0;
 }
 
+.mui-chat-inspiration-main-content {
+    margin-bottom: 54px;
+}
+
 #refreshButton:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }

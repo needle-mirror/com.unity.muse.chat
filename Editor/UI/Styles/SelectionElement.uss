@@ -59,7 +59,7 @@
     border-bottom-color: var(--appui-backgrounds-50);
     border-bottom-width: 1px;
     background-color: rgba(0, 0, 0, 0);
-    color: var(--appui-primary-800);
+    color: var(--muse-chat-action-button-default);
     padding-right: 8px;
     border-width: 0;
 }

@@ -36,7 +36,7 @@
                 <ui:VisualElement name="addContextRoot" class="mui-chat-selected-context-root">
                     <appui:Button name="addContextButton" size="s" class="mui-chat-selected-context-button mui-selected-context-button-default-behavior" leading-icon="mui-icon-pick" title="Attach items" tooltip="Attach items from your project"/>
                     <ui:VisualElement class="mui-chat-context-spacer"/>
-                    <appui:Button name="clearContextButton" size="s" class="mui-chat-clear-context-button" title="Clear Context"/>
+                    <appui:Button name="clearContextButton" size="s" class="mui-chat-clear-context-button" title="Clear all"/>
                 </ui:VisualElement>
 
                 <ui:VisualElement name="contextRoot" class="mui-chat-user-context-root">

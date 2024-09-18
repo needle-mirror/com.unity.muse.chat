@@ -14,7 +14,8 @@
     --muse-chat-context-pill-bg: var(--appui-primary-1300);
     --muse-chat-drop-zone-bg: var(--appui-primary-1200);
     --muse-chat-disclaimer-text: rgba(80, 80, 80, 0.8);
-    --muse-chat-add-context-button-open: rgba(5, 91, 159, 0.5);
+    --muse-chat-add-context-button-open: #96C3FB;
+    --muse-chat-action-button-default: var(--appui-primary-300);
 }
 
 .-muse-chat-panel {

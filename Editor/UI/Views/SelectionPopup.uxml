@@ -6,7 +6,7 @@
             <appui:Button name="addSelectionButton" class="mui-selection-popup-history-button" title="Add All"/>
         </VisualElement>
 
-        <appui:Text name="emptyListHint" text="Attach items to your prompt" class="mui-selection-popup-empty-list-hint-text"/>
+        <appui:Text name="emptyListHint" text="Attach items here from your Editor selection" class="mui-selection-popup-empty-list-hint-text"/>
 
         <VisualElement name="adaptiveListViewContainer"/>
 
