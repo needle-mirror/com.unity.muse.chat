@@ -1,9 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI"
-         xsi="http://www.w3.org/2001/XMLSchema-instance" editor="UnityEditor.UIElements"
-         noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement class="mui-wizard-root">
-        <ui:ScrollView class="mui-wizard-scrollview">
- 
-        </ui:ScrollView>
-    </ui:VisualElement>
-</ui:UXML>

@@ -64,12 +64,6 @@ namespace Unity.Muse.Chat
                 }
 
                 case MuseChatUpdateType.NewMessage:
-                {
-                    UpdateOrChangeChatMessage(data.Message);
-                    m_ConversationList.ScrollToEnd();
-                    break;
-                }
-
                 case MuseChatUpdateType.MessageUpdate:
                 {
                     bool messageHasContentUpdate = IsContentDifferent(data.Message);

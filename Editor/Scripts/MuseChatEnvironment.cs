@@ -15,10 +15,7 @@ namespace Unity.Muse.Chat
         [SerializeField]
         public string ApiAccessToken = k_DefaultApiAccessToken;
 
-        [SerializeField]
-        public bool DebugModeEnabled;
-
-        internal void SetApi(string apiUrl, string apiAccessToken, string backend)
+        internal void SetApi(string apiUrl, string apiAccessToken)
         {
             ApiUrl = apiUrl;
             ApiAccessToken = apiAccessToken;
@@ -29,7 +26,6 @@ namespace Unity.Muse.Chat
         {
             ApiUrl = k_DefaultApiUrl;
             ApiAccessToken = k_DefaultApiAccessToken;
-            DebugModeEnabled = false;
             Save(true);
         }
     }

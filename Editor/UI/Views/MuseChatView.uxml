@@ -6,9 +6,7 @@
                 <appui:Text name="conversationNameLabel" class="mui-header-label" text="Conversation Name"/>
                 <appui:Button name="newChatButton" class="mui-header-button" leading-icon="plus--regular"/>
                 <appui:Button name="historyButton" class="mui-header-button" title="History"/>
-                <ui:VisualElement name="museAccountContainer" class="mui-header-dropdown">
-                    <appui:Button name="tutorialButton" class="mui-header-tutorial-button" title="Open tutorial"/>
-                </ui:VisualElement>
+                <ui:VisualElement name="museAccountContainer" class="mui-header-dropdown"/>
             </ui:VisualElement>
 
             <ui:VisualElement name="account-notifications"/>
@@ -57,8 +55,8 @@
 
                 <ui:VisualElement class="mui-chat-input-command-root">
                     <appui:ActionGroup name="commandGroup" quiet="true" selection-type="Single" allow-no-selection="false">
-                        <appui:ActionButton name="commandAsk" class="mui-chat-command-button mui-chat-cmd-ask" quiet="true" label="" icon="mui-icon-cmd-ask" tooltip="/&lt;b&gt;ask&lt;/b&gt;  Ask Muse questions or troubleshoot"/>
-                        <appui:ActionButton name="commandRun" class="mui-chat-command-button mui-chat-cmd-run" quiet="true" label="" icon="mui-icon-cmd-run" tooltip="/&lt;b&gt;run&lt;/b&gt;  Automate tasks by running commands in the Editor"/>
+                        <appui:ActionButton name="commandAsk" class="mui-chat-command-button mui-chat-cmd-ask" quiet="true" label="" icon="mui-icon-cmd-ask" tooltip="/&lt;b&gt;ask&lt;/b&gt;  Ask Muse queries or troubleshoot"/>
+                        <appui:ActionButton name="commandRun" class="mui-chat-command-button mui-chat-cmd-run" quiet="true" label="" icon="mui-icon-cmd-run" tooltip="/&lt;b&gt;run&lt;/b&gt;  Run a command in the editor"/>
                         <appui:ActionButton name="commandCode" class="mui-chat-command-button mui-chat-cmd-code" quiet="true" label="" icon="mui-icon-cmd-code" tooltip="/&lt;b&gt;code&lt;/b&gt;  Use a dedicated code generator"/>
                     </appui:ActionGroup>
                 </ui:VisualElement>

@@ -10,7 +10,7 @@ The **History** tab includes a search bar at the top to locate specific conversa
 
 ## Mark a conversation as Favorites
 
-Mark important conversations as **Favorites** for frequent access and reference. 
+Mark important conversations as **Favorites** for frequent access and reference.
 
 To mark a conversation as **Favorite**, do the following:
 

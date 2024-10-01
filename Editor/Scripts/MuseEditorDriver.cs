@@ -34,12 +34,7 @@ namespace Unity.Muse.Chat
         MuseConversation m_ActiveConversation;
 
         private readonly List<MuseMessageUpdateHandler> k_MessageUpdaters = new();
-        internal int MessageUpdatersNum => k_MessageUpdaters.Count;
         private CancellationTokenSource m_SmartContextCancellationTokenSource;
-        CancellationTokenSource m_ActiveRequestCancellationTokenSource;
-        SmartContextToolbox m_SmartContextToolbox;
-        PluginToolbox m_PluginToolbox;
-        HashSet<MuseMessageId> m_MessagesUnderRepair = new();
 
         public event Action<MuseChatUpdateData> OnDataChanged;
 
@@ -65,15 +60,6 @@ namespace Unity.Muse.Chat
         public event Action<string> OnConversationTitleChanged;
 
         /// <summary>
-        /// Agent that can executes actions in the project
-        /// </summary>
-        public MuseAgent Agent { get; } = new();
-
-        /// <summary>
-        /// Validator for generated script files
-        /// </summary>
-        public CodeBlockValidator CodeBlockValidator { get; } = new();
-
         /// Indicates that the inspiration entries have changed
         /// </summary>
         public event Action OnInspirationsChanged;
@@ -112,12 +98,10 @@ namespace Unity.Muse.Chat
             None,
             GatheringContext,
             Musing,
-            Streaming,
-            RepairCode
+            Streaming
         }
 
         internal PromptState CurrentPromptState {get; private set;}
-
 
         internal List<MuseConversationInfo> History
         {
@@ -508,11 +492,6 @@ namespace Unity.Muse.Chat
                 m_ActiveConversation.StartTime = EditorApplication.timeSinceStartup;
             }
 
-            // Check if the prompt contains a command
-            var command = UserSessionState.instance.SelectedCommandMode;
-            if (ChatCommandParser.IsCommand(prompt))
-                (command, prompt) = ChatCommandParser.Parse(prompt);
-
             AddInternalMessage(prompt, role: k_UserRole, sendUpdate: true);
             AddIncompleteMessage(string.Empty, k_AssistantRole, sendUpdate: !isNewConversation);
 
@@ -530,9 +509,7 @@ namespace Unity.Muse.Chat
 
                 CurrentPromptState = PromptState.Musing;
 
-                var updateHandler = WebAPI.Chat(prompt, m_ActiveConversation.Id.Value, context, command);
-
-                m_ActiveRequestCancellationTokenSource = updateHandler.ActiveRequestCancellationTokenSource;
+                var updateHandler = WebAPI.Chat(prompt, m_ActiveConversation.Id.Value, context);
 
                 updateHandler.InitFromDriver(
                     m_ActiveConversation,
@@ -594,66 +571,10 @@ namespace Unity.Muse.Chat
             }
         }
 
-
-        /// <summary>
-        /// Repair the script with the given error and script.
-        /// </summary>
-        internal async Task<string> RepairScript(MuseMessageId messageId, int messageIndex, string errorToRepair, string scriptToRepair, ScriptType scriptType = ScriptType.AgentAction)
-        {
-            // Add the message to the list of scripts under repair so it doesn't get repaired twice
-            m_MessagesUnderRepair.Add(messageId);
-            // Call the repair route and invoke OnCodeRepairComplete event when the repair is done
-            var webAPI = new WebAPI();
-
-            CurrentPromptState = PromptState.RepairCode;
-
-            OnDataChanged?.Invoke(new MuseChatUpdateData
-            {
-                IsMusing = true,
-                Type = MuseChatUpdateType.CodeRepair
-            });
-
-            var cancellationToken = m_ActiveRequestCancellationTokenSource?.Token ?? new CancellationToken();
-
-            var repairedMessage = await webAPI.CodeRepair(conversationID: messageId.ConversationId.Value,
-                messageIndex: messageIndex,errorToRepair: errorToRepair, scriptToRepair: scriptToRepair,
-                cancellationToken: cancellationToken, scriptType: scriptType);
-
-            OnDataChanged?.Invoke(new MuseChatUpdateData
-            {
-                IsMusing = false,
-                Type = MuseChatUpdateType.CodeRepair
-            });
-
-            m_MessagesUnderRepair.Remove(messageId);
-            return repairedMessage as string;
-        }
-
-        public bool IsUnderRepair(MuseMessageId messageId)
-        {
-            return m_MessagesUnderRepair.Contains(messageId);
-        }
-
-        /// <summary>
-        /// Returns whether or not the given messageId can be sent for repair.
-        /// Only the most recent message in the active message can be repaired.
-        /// </summary>
-        /// <param name="messageId">The id of the message to be repaired</param>
-        /// <returns>True if a repair call can be sent for the given message, false otherwise</returns>
-        public bool ValidRepairTarget(MuseMessageId messageId)
-        {
-            // Messages can be repaired if they are the last message in the conversation
-            // And there is a token cancellation source from the particular conversation
-            if (m_ActiveRequestCancellationTokenSource == null)
-                return false;
-
-            return (m_ActiveConversation.Messages.FindIndex(match => match.Id == messageId) == (m_ActiveConversation.Messages.Count - 1));
-        }
-
         /// <summary>
         /// Finds and returns the message updater for the given conversation ID.
         /// </summary>
-        internal MuseMessageUpdateHandler GetUpdaterForConversation(MuseConversationId conversationId)
+        MuseMessageUpdateHandler GetUpdaterForConversation(MuseConversationId conversationId)
         {
             for (var i = 0; i < k_MessageUpdaters.Count; i++)
             {
@@ -874,18 +795,15 @@ namespace Unity.Muse.Chat
                 Title = remoteConversation.Title
             };
 
-            for (var i = 0; i < remoteConversation.History.Count; i++)
+            foreach (var fragment in remoteConversation.History)
             {
-                var fragment = remoteConversation.History[i];
                 var message = new MuseMessage
                 {
                     Id = new MuseMessageId(conversationId, fragment.Id, MuseMessageIdType.External),
                     IsComplete = true,
                     Role = fragment.Role,
-                    Author = fragment.Author,
                     Content = fragment.Content,
-                    Timestamp = fragment.Timestamp,
-                    MessageIndex = i
+                    Timestamp = fragment.Timestamp
                 };
 
                 localConversation.Messages.Add(message);

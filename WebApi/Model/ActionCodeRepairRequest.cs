@@ -44,7 +44,7 @@ namespace Unity.Muse.Chat.BackendApi.Model
         /// <param name="scriptToRepair">The csharp script to repair. (required)</param>
         /// <param name="scriptType">Type of script for repairing.</param>
         /// <param name="tags">List of tags associated with chat request</param>
-        /// <param name="extraBody">Extra body for code repair request.</param>
+        /// <param name="extraBody">extraBody</param>
         /// <param name="debug">debug</param>
         /// <param name="unityVersion">unityVersion</param>
         public ActionCodeRepairRequest(string conversationId = default(string), bool streamResponse = default(bool), string organizationId = default(string), int messageIndex = default(int), string userPrompt = default(string), string errorToRepair = default(string), string scriptToRepair = default(string), ScriptType? scriptType = default(ScriptType?), List<string> tags = default(List<string>), Object extraBody = default(Object), bool? debug = default(bool?), string unityVersion = default(string))
@@ -134,10 +134,9 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public List<string> Tags { get; set; }
 
         /// <summary>
-        /// Extra body for code repair request.
+        /// Gets or Sets ExtraBody
         /// </summary>
-        /// <value>Extra body for code repair request.</value>
-        [DataMember(Name = "extra_body", EmitDefaultValue = false)]
+        [DataMember(Name = "extra_body", EmitDefaultValue = true)]
         public Object ExtraBody { get; set; }
 
         /// <summary>

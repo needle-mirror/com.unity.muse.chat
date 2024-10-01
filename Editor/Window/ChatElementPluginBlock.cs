@@ -61,7 +61,7 @@ namespace Unity.Muse.Chat
             {
                 ChatElementPluginButton button = new();
                 button.Initialize();
-                button.SetData(TEMPUpdatePluginCall(call));
+                button.SetData(call);
                 m_BlockRoot.Add(button);
             }
         }
@@ -79,23 +79,9 @@ namespace Unity.Muse.Chat
                 case "GenerateTexture": return "Muse Texture";
                 case "GenerateSprite": return "Muse Sprite";
                 case "GenerateAnimationsFromPrompt": return "Muse Animate";
-                case "TriggerAgentFromPrompt": return "Run this with Muse?";
             }
 
             return "Plugin";
-        }
-
-        PluginCall TEMPUpdatePluginCall(PluginCall call)
-        {
-            var newCall = call;
-            switch (call.Function)
-            {
-                case "TriggerAgentFromPrompt":
-                    newCall.Label = "Run Command";
-                    newCall.Parameters[0] = call.Parameters[0].Replace("prompt:", "");
-                    break;
-            }
-            return newCall;
         }
     }
 }

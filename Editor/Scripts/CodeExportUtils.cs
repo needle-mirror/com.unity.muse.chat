@@ -7,7 +7,7 @@ namespace Unity.Muse.Chat
 {
     internal static class CodeExportUtils
     {
-        private static readonly Regex k_UsingsRegex = new(@"\s*using\s+([\w\.]+)\s*;", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex k_UsingsRegex = new(@"\s*using.*?([\w]+)\s*;", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex k_ClassRegex = new Regex(@"^.*?\s*class\s+", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly IList<string> k_UsingTemp = new List<string>();
@@ -85,14 +85,6 @@ namespace Unity.Muse.Chat
                 output.AppendLine("}");
             }
 
-            return output.ToString();
-        }
-
-        public static string AddDisclaimer(string source)
-        {
-            var output = new StringBuilder();
-            output.Append(string.Format(MuseChatConstants.DisclaimerText, DateTime.Now.ToShortDateString()));
-            output.Append(source);
             return output.ToString();
         }
     }

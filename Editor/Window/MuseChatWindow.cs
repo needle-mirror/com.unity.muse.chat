@@ -9,11 +9,11 @@ namespace Unity.Muse.Chat
 {
     internal class MuseChatWindow : EditorWindow
     {
-        const string k_WindowName = "Muse Chat Beta";
+        const string k_WindowName = "Muse Chat";
 
         static Vector2 k_MinSize = new(400, 400);
 
-        internal MuseChatView m_View;
+        MuseChatView m_View;
 
         [SerializeField]
         internal List<Object> m_ObjectSelection = new();

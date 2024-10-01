@@ -163,7 +163,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -179,51 +179,11 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Healthz
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
         ApiResponse<Object> GetHealthzWithHttpInfo();
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> GetMuseBetaCheckEntitlement();
-
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> GetMuseBetaCheckEntitlementWithHttpInfo();
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        ApiResponse<Object> GetMuseBetaCheckEntitlementV1();
-
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> GetMuseBetaCheckEntitlementV1WithHttpInfo();
         /// <summary>
         /// Get Conversations
         /// </summary>
@@ -475,7 +435,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health Head
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -813,7 +773,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -832,7 +792,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1223,7 +1183,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1234,7 +1194,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1244,7 +1204,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Healthz
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1255,56 +1215,12 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Healthz
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (Object)</returns>
         System.Threading.Tasks.Task<ApiResponse<Object>> GetHealthzWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementV1Async(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementV1WithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         /// <summary>
         /// Get Conversations
         /// </summary>
@@ -1569,7 +1485,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health Head
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1580,7 +1496,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Health Head
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1938,7 +1854,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1951,7 +1867,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1963,7 +1879,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -1975,7 +1891,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// Create Conversation
         /// </summary>
         /// <remarks>
-        /// 
+        ///
         /// </remarks>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -3190,7 +3106,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>Object</returns>
@@ -3201,7 +3117,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -3232,7 +3148,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -3249,7 +3165,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health 
+        /// Health
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -3290,7 +3206,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>Object</returns>
@@ -3301,7 +3217,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -3332,7 +3248,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -3349,7 +3265,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Healthz 
+        /// Healthz
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -3379,250 +3295,6 @@ namespace Unity.Muse.Chat.BackendApi.Api
             // make the HTTP request
 
             var task = this.AsynchronousClient.GetAsync<Object>("/healthz", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> GetMuseBetaCheckEntitlement()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = GetMuseBetaCheckEntitlementWithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> GetMuseBetaCheckEntitlementWithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseBetaCheckEntitlementWithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Object>("/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> GetMuseBetaCheckEntitlementV1()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = GetMuseBetaCheckEntitlementV1WithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> GetMuseBetaCheckEntitlementV1WithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/v1/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementV1Async(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseBetaCheckEntitlementV1WithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementV1WithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Object>("/v1/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration, cancellationToken);
 
 #if UNITY_EDITOR || !UNITY_WEBGL
             var localVarResponse = await task.ConfigureAwait(false);
@@ -5106,7 +4778,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>Object</returns>
@@ -5117,7 +4789,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <returns>ApiResponse of Object</returns>
@@ -5148,7 +4820,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -5165,7 +4837,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Health Head 
+        /// Health Head
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -7222,7 +6894,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7235,7 +6907,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7284,7 +6956,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7303,7 +6975,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7362,7 +7034,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7374,7 +7046,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7422,7 +7094,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
@@ -7440,7 +7112,7 @@ namespace Unity.Muse.Chat.BackendApi.Api
         }
 
         /// <summary>
-        /// Create Conversation 
+        /// Create Conversation
         /// </summary>
         /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>

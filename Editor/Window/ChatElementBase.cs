@@ -115,23 +115,18 @@ namespace Unity.Muse.Chat
 
                     if (textFields.Count <= id)
                     {
+                        visualElement.RegisterCallback<PointerDownLinkTagEvent>(OnLinkClicked);
+                        visualElement.RegisterCallback<PointerOverLinkTagEvent>(OnLinkOver);
+                        visualElement.RegisterCallback<PointerOutLinkTagEvent>(OnLinkOut);
+
                         if (visualElement is Text textElement)
                         {
                             textElement.AddToClassList("mui-textbox");
                             textElement.selection.isSelectable = true;
-
-                            visualElement.RegisterCallback<PointerDownLinkTagEvent>(OnLinkClicked);
-                            visualElement.RegisterCallback<PointerOverLinkTagEvent>(OnLinkOver);
-                            visualElement.RegisterCallback<PointerOutLinkTagEvent>(OnLinkOut);
                         }
                         else if (visualElement is ChatElementCodeBlock codeBlock)
                         {
-                            codeBlock.SetMessage(Message);
                             codeBlock.SetSelectable(true);
-                        }
-                        else if (visualElement is ChatElementAgentAction actionBlock)
-                        {
-                            actionBlock.SetMessage(Message);
                         }
 
                         textFields.Add(visualElement);

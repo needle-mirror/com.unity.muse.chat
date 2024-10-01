@@ -1,4 +1,4 @@
-Muse Chat Beta copyright © 2024 Unity Technologies.
+Muse Chat copyright © 2024 Unity Technologies.
 
 This software is subject to, and made available under, the Unity Terms of Service (see https://unity.com/legal). Your use of this software constitutes your acceptance of such terms.
 

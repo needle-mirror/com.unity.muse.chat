@@ -15,7 +15,6 @@
     --muse-chat-disclaimer-text: rgba(255, 255, 255, 0.4);
     --muse-chat-add-context-button-open: #4c607b;
     --muse-chat-action-button-default: var(--appui-primary-700);
-    --muse-agent-action-preview: #D2D2D2;
 }
 
 .-muse-chat-panel {
@@ -139,15 +138,4 @@
 
 .appui-icon--mui-icon-checkmark {
     background-image: resource('check');
-}
-
-.mui-wizard-experimental {
-    -unity-font-style: bold;
-    font-size: 12px;
-    border-width: 1px;
-    border-radius: 3px;
-    border-color: #FFC107;
-    color: #FFC107;
-    padding: 5px;
-    align-self: flex-start;
 }

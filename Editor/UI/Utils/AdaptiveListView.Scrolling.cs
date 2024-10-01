@@ -43,11 +43,6 @@ namespace Unity.Muse.Chat
             ChangeScrollState(ScrollState.ScrollToEnd, true);
         }
 
-        public void ScrollToEnd()
-        {
-            ChangeScrollState(ScrollState.ScrollToEnd, true);
-        }
-
         private void ChangeScrollState(ScrollState newState, bool force = false)
         {
             if (!force && m_ScrollState == newState)
