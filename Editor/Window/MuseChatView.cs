@@ -141,7 +141,7 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             ExperimentalProgram.RegisterProgram<ExperimentalAgentProgram>();
-            ExperimentalProgram.EnableForMode(AgentModel.CurrentMode, true);
+            SessionStatus.RegisterModeWithoutEntitlements(AgentModel.CurrentMode);
 
             var notificationBanner = view.Q<VisualElement>("account-notifications");
             m_ExperimentalSignUp = new ExperimentalProgramSignUpNotificationView(true);

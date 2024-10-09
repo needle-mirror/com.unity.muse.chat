@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Unity.Muse.AppUI.UI;
+using Unity.Muse.Common.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -10,11 +11,13 @@ namespace Unity.Muse.Chat
 {
     internal class ChatElementCodeBlock : ManagedTemplate
     {
-        const string k_OldFailMessage = "This script is not compiling in the current project.";
-        const string k_NewFailMessage = "This script failed to compile.";
+        const string k_OldFailMessage = "Something went wrong.\nThe generated script was not able to compile in your project.";
+        const string k_NewFailMessage = "Something went wrong.\nThe generated script was not able to compile in your project. Try to correct any errors, or generate it again.";
         Text m_Text;
         AppUI.UI.Button m_SaveButton;
         AppUI.UI.Button m_CopyButton;
+        VisualElement m_WarningContainer;
+        Text m_WarningText;
 
         MuseMessage m_ParentMessage;
 
@@ -34,6 +37,12 @@ namespace Unity.Muse.Chat
             m_Text = view.Q<Text>("codeText");
             m_SaveButton = view.SetupButton("saveButton", OnSaveCodeClicked);
             m_CopyButton = view.SetupButton("copyButton", OnCopyCodeClicked);
+
+            m_WarningContainer = view.Q<VisualElement>("warningContainer");
+            m_WarningContainer.SetDisplay(false);
+            m_WarningContainer.style.marginBottom = 10;
+
+            m_WarningText = view.Q<Text>("warningText");
         }
 
         public void SetData(string rawCode, bool validate)
@@ -42,9 +51,8 @@ namespace Unity.Muse.Chat
             if (!validate)
             {
                 m_ValidatedCode = m_rawCode;
-                m_Text.text = CodeSyntaxHighlight.Highlight(m_ValidatedCode);
-                m_SaveButton.SetEnabled(true);
-                m_CopyButton.SetEnabled(true);
+
+                UpdateTextWithValidatedCode();
             }
             else
             {
@@ -55,6 +63,7 @@ namespace Unity.Muse.Chat
                 m_CopyButton.SetEnabled(false);
             }
         }
+
         public void SetMessage(MuseMessage message)
         {
             m_ParentMessage = message;
@@ -79,9 +88,8 @@ namespace Unity.Muse.Chat
             if (m_ValidCode)
             {
                 m_ValidatedCode = localRepairedCode;
-                m_Text.text = CodeSyntaxHighlight.Highlight(localRepairedCode);
-                m_SaveButton.SetEnabled(true);
-                m_CopyButton.SetEnabled(true);
+
+                UpdateTextWithValidatedCode();
             }
             else
             {
@@ -91,40 +99,49 @@ namespace Unity.Muse.Chat
                 {
                     // Fail message (warning, not compatible with current codebase)
                     FailCode(k_OldFailMessage, logs);
-                    return;
+
+                    m_ValidatedCode = localRepairedCode;
                 }
+
                 if (!MuseEditorDriver.instance.IsUnderRepair(m_ParentMessage.Id))
                 {
+                    // TODO replace it with Musing widget like Agent
                     m_Text.text = "Hmm, seems like I had some trouble with this script. Let me try again.".RichColor("#FF85AB");
 
                     var remoteRepairedCode = await MuseEditorDriver.instance.CodeBlockValidator.Repair(m_ParentMessage.Id, m_ParentMessage.MessageIndex, logs, localRepairedCode);
-                    if (remoteRepairedCode == null)
+                    if (remoteRepairedCode != null)
+                    {
+                        m_ValidCode = MuseEditorDriver.instance.CodeBlockValidator.ValidateCode(remoteRepairedCode, out localRepairedCode, out logs);
+                        if (!m_ValidCode)
+                            FailCode(k_NewFailMessage, logs);
+                    }
+                    else
                     {
                         FailCode(k_NewFailMessage, logs);
-                        return;
                     }
 
-                    m_ValidCode = MuseEditorDriver.instance.CodeBlockValidator.ValidateCode(remoteRepairedCode, out localRepairedCode, out logs);
-                    if (!m_ValidCode)
-                    {
-                        FailCode(k_NewFailMessage, logs);
-                        return;
-                    }
                     m_ValidatedCode = localRepairedCode;
-
-                    // Update Code preview text with latest code
-                    m_Text.text = remoteRepairedCode;
-                    m_SaveButton.SetEnabled(true);
-                    m_CopyButton.SetEnabled(true);
                 }
+
+                UpdateTextWithValidatedCode();
             }
         }
 
         void FailCode(string message, string errorLog)
         {
+            m_WarningContainer.SetDisplay(true);
+            m_WarningText.text = message;
+
             Debug.Log($"Unable to compile script: {errorLog}");
-            m_Text.text = message.RichColor("#FF85AB") + errorLog.RichColor("#FFFF00");
-            // We allow copying of failed code but not saving
+        }
+
+        void UpdateTextWithValidatedCode()
+        {
+            // Update Code preview text with latest code
+            string disclaimerHeader = string.Format(MuseChatConstants.DisclaimerText, DateTime.Now.ToShortDateString());
+            m_Text.text = CodeSyntaxHighlight.Highlight(string.Concat(disclaimerHeader, m_ValidatedCode));
+
+            m_SaveButton.SetEnabled(true);
             m_CopyButton.SetEnabled(true);
         }
 

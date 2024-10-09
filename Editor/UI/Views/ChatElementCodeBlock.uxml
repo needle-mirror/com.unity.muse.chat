@@ -1,6 +1,10 @@
 <UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement class="mui-code-block-root">
 
+    <VisualElement name="warningContainer" class="notification-warning-content">
+        <appui:Text name="warningText"/>
+    </VisualElement>
+
+    <VisualElement class="mui-code-block-root">
         <VisualElement name="blockControls" class="mui-code-block-buttons">
             <appui:Button name="saveButton" tooltip="Save Code" leading-icon="mui-icon-save" class="mui-chat-response-code-block-button -muse-chat-button" />
             <appui:Button name="copyButton" tooltip="Copy Code" leading-icon="mui-icon-copy" class="mui-chat-response-code-block-button -muse-chat-button" />
