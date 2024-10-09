@@ -94,8 +94,6 @@ namespace Unity.Muse.Chat
             SmartContextToolbox = new SmartContextToolbox(FunctionCache);
         }
 
-        Tuple<MuseConversationId, string> m_LastContextForConversation = new(default, default);
-
         internal delegate bool DebugConversationRequest(MuseConversationId conversationId, out MuseConversation result);
         internal DebugConversationRequest OnRequestDebugConversation;
 
@@ -419,10 +417,7 @@ namespace Unity.Muse.Chat
                         await WebAPI.DeleteConversationFragment(messageIdToDelete.ConversationId, messageIdToDelete.FragmentId);
                     }
                 }
-
-                // Editing a prompt could delete the message that had the context, ensure context is sent again:
-                m_LastContextForConversation = new Tuple<MuseConversationId, string>(default, default);
-
+                
                 // Now post the given prompt as a new chat:
                 ProcessPrompt(editedPrompt);
             }
@@ -853,12 +848,6 @@ namespace Unity.Muse.Chat
             }
 
             var finalContext = contextBuilder.BuildContext(maxLength);
-
-            if (conversationId == m_LastContextForConversation.Item1 &&
-                m_LastContextForConversation.Item2 == finalContext)
-                return string.Empty;
-
-            m_LastContextForConversation = new Tuple<MuseConversationId, string>(conversationId, finalContext);
 
             InternalLog.Log($"Final Context ({finalContext.Length} character):\n\n {finalContext}");
 
