@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Muse.Common.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Button = Unity.Muse.AppUI.UI.Button;
@@ -15,6 +16,10 @@ namespace Unity.Muse.Chat
         VisualElement m_RunContent;
         VisualElement m_GenerateContent;
 
+        VisualElement m_AskSection;
+        VisualElement m_RunSection;
+        VisualElement m_CodeSection;
+
         private readonly IDictionary<ChatCommandType, IList<MuseChatInspiration>> k_InspirationCache = new Dictionary<ChatCommandType, IList<MuseChatInspiration>>();
 
         public MuseChatInspirationPanel()
@@ -24,12 +29,43 @@ namespace Unity.Muse.Chat
 
         public event Action<MuseChatInspiration> InspirationSelected;
 
+        public void RefreshEntries()
+        {
+            var mode = UserSessionState.instance.SelectedCommandMode;
+
+            RefreshCache();
+
+            HideSections();
+
+            switch (mode)
+            {
+                case ChatCommandType.Ask:
+                    m_AskSection.SetDisplay(true);
+                    RefreshEntriesForCategory(m_AskContent, ChatCommandType.Ask);
+                    break;
+                case ChatCommandType.Run:
+                    m_RunSection.SetDisplay(true);
+                    RefreshEntriesForCategory(m_RunContent, ChatCommandType.Run);
+                    break;
+                case ChatCommandType.Code:
+                    m_CodeSection.SetDisplay(true);
+                    RefreshEntriesForCategory(m_GenerateContent, ChatCommandType.Code);
+                    break;
+            }
+        }
+
         protected override void InitializeView(TemplateContainer view)
         {
             m_RefreshButton = view.SetupButton("refreshButton", _ => RefreshEntries());
             m_AskContent = view.Q<VisualElement>("askInspirationSectionContent");
             m_RunContent = view.Q<VisualElement>("runInspirationSectionContent");
             m_GenerateContent = view.Q<VisualElement>("generateInspirationSectionContent");
+
+            m_AskSection = view.Q<VisualElement>("askSection");
+            m_RunSection = view.Q<VisualElement>("runSection");
+            m_CodeSection = view.Q<VisualElement>("codeSection");
+
+            HideSections();
 
             MuseEditorDriver.instance.OnInspirationsChanged += RefreshEntries;
             BeginRefreshEntries();
@@ -50,7 +86,7 @@ namespace Unity.Muse.Chat
                 entryList.Add(inspiration);
             }
         }
-        private void RefreshEntriesForCategory(VisualElement targetRoot, ChatCommandType mode, int maxEntries = 3)
+        private void RefreshEntriesForCategory(VisualElement targetRoot, ChatCommandType mode, int maxEntries = 4)
         {
             targetRoot.Clear();
 
@@ -74,17 +110,16 @@ namespace Unity.Muse.Chat
             }
         }
 
+        void HideSections()
+        {
+            m_AskSection.SetDisplay(false);
+            m_RunSection.SetDisplay(false);
+            m_CodeSection.SetDisplay(false);
+        }
+
         private void BeginRefreshEntries()
         {
             MuseEditorDriver.instance.StartInspirationRefresh();
-        }
-
-        private void RefreshEntries()
-        {
-            RefreshCache();
-            RefreshEntriesForCategory(m_AskContent, ChatCommandType.Ask, maxEntries: 4);
-            RefreshEntriesForCategory(m_RunContent, ChatCommandType.Run);
-            RefreshEntriesForCategory(m_GenerateContent, ChatCommandType.Code);
         }
 
         private void OnInspirationSelected(MuseChatInspiration value)

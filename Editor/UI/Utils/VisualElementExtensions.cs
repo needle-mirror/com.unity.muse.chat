@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Unity.Muse.AppUI.UI;
+using Unity.Muse.Common;
 using Unity.Muse.Common.Account;
+using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Unity.Muse.Chat
@@ -88,15 +91,15 @@ namespace Unity.Muse.Chat
         /// Helper method to register an element as session tracked, which means it's disable state is based on the muse session status
         /// </summary>
         /// <param name="element">The element to track</param>
-        public static void SetSessionTracked(this VisualElement element)
+        public static void SetSessionTracked(this VisualElement element, Model model)
         {
             if (UserSessionState.instance.DebugUIModeEnabled)
             {
                 // We don't do session tracking in debug to have controls available
                 return;
             }
-
-            element.AddManipulator(new SessionStatusTracker());
+            
+            element.AddManipulator(new SessionStatusTracker(model));
         }
     }
 }

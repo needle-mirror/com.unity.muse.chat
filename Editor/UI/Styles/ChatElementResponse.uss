@@ -161,3 +161,7 @@
     rotate: 0deg;
     transition: rotate var(--appui-animation-easing-ease-out) var(--appui-animation-duration-125);
 }
+
+#queryMode {
+    --unity-image-tint-color: rgba(150, 150, 150, 0.6);
+ }

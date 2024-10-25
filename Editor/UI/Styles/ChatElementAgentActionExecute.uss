@@ -1,0 +1,29 @@
+.mui-agent-undo-button {
+    height: 16px;
+    border-width: 0;
+    display: flex;
+    align-self: center;
+}
+
+.mui-agent-undo-button  .appui-icon{
+   --unity-image:resource("Icons/d_UndoHistory.png");
+   --unity-image-tint-color: white;
+}
+
+.mui-agent-undo-button .unity-text-element {
+    color: var(--muse-agent-action-preview);
+    font-size: 12px;
+}
+
+.mui-agent-undo-button:disabled {
+    background-color: var(--appui-backgrounds-50);
+}
+
+.execution-label {
+    color: var(--muse-agent-action-preview);
+    margin: 1px;
+    -unity-text-align: middle-left;
+    white-space: normal;
+    flex-grow: 1;
+    padding: 7px;
+}

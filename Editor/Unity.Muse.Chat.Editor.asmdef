@@ -9,7 +9,8 @@
         "GUID:1f45b3b2be7df0b4b8d026aa3d7fba7c",
         "GUID:c88be702817089fb57f7000436616938",
         "GUID:2edcef92c5756d2da266000405840bb7",
-        "GUID:5c002a1798dfb4ff2bea5f300e09abd5"
+        "GUID:5c002a1798dfb4ff2bea5f300e09abd5",
+        "GUID:345f029b4460747ac84e21878089c9f2"
     ],
     "includePlatforms": [
         "Editor"
@@ -22,7 +23,8 @@
         "System.Runtime.CompilerServices.Unsafe.dll",
         "Newtonsoft.Json.dll",
         "Microsoft.CodeAnalysis.dll",
-        "Microsoft.CodeAnalysis.CSharp.dll"
+        "Microsoft.CodeAnalysis.CSharp.dll",
+        "System.Collections.Immutable.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [],

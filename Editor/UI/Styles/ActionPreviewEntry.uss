@@ -1,0 +1,36 @@
+.preview-entry-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 20px;
+}
+
+.preview-entry-actionable {
+    background-color: var(--appui-backgrounds-300);
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+
+.preview-entry-action-button {
+    height: 14px;
+    border-width: 0;
+    display: flex;
+    align-self: center;
+    margin-right: 8px;
+}
+
+.preview-label {
+    color: var(--muse-agent-action-preview);
+    margin: 1px;
+    -unity-text-align: middle-left;
+    white-space: normal;
+    flex-grow: 1;
+    padding: 1px;
+}
+
+.preview-field {
+    background-color: var(--appui-backgrounds-100);
+    min-width: 25px;
+    padding: 0px 2px 0px 2px;
+    align-self: flex-end;
+}

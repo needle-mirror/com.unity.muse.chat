@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Muse.AppUI.UI;
 using Unity.Muse.Chat.BackendApi;
 using Unity.Muse.Chat.BackendApi.Model;
+using Unity.Muse.Common.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Avatar = Unity.Muse.AppUI.UI.Avatar;
@@ -31,6 +32,8 @@ namespace Unity.Muse.Chat
         private Button m_CopyButton;
         private Button m_UpVoteButton;
         private Button m_DownVoteButton;
+
+        private Icon m_QueryMode;
 
         private Checkbox m_FeedbackFlagInappropriateCheckbox;
         private Dropdown m_FeedbackTypeDropdown;
@@ -101,6 +104,30 @@ namespace Unity.Muse.Chat
             }
 
             m_MessageId = message.Id;
+
+            switch (message.ChatCommand(ChatCommandType.Ask))
+            {
+                case ChatCommandType.Run:
+                    m_CopyButton.style.display = DisplayStyle.None;
+
+                    m_QueryMode.SetDisplay(true);
+                    m_QueryMode.tooltip = "Running commands is experimental and may not be reliable or consistent. We recommend using it only for testing.";
+                    m_QueryMode.iconName = "mui-icon-cmd-run";
+
+                    if (message.IsComplete)
+                        message.Content = AgentMessageUtils.HandleActionMarkup(message.Content);
+                    break;
+
+                case ChatCommandType.Code:
+                    m_QueryMode.SetDisplay(true);
+                    m_QueryMode.tooltip = "Generating code is experimental and may not be reliable or consistent. We recommend using it only for testing.";
+                    m_QueryMode.iconName = "mui-icon-cmd-code";
+
+                    if (message.IsComplete)
+                        message.Content = ValidatorUtils.HandleValidatorMarkup(message.Content);
+                    break;
+            }
+
 
             base.SetData(message);
 
@@ -201,6 +228,10 @@ namespace Unity.Muse.Chat
             LoadSharedAsset("icons/muse_small.png", ref k_MuseAvatarImage);
             view.Q<Avatar>("museAvatar").src = Background.FromTexture2D(k_MuseAvatarImage);
 
+            m_QueryMode = view.Q<Icon>("queryMode");
+            m_QueryMode.pickingMode = PickingMode.Position;
+            m_QueryMode.SetDisplay(false);
+
             m_TextFieldRoot = view.Q<VisualElement>("textFieldRoot");
 
             m_SourcesFoldout = view.Q<Accordion>("sourcesFoldout");
@@ -216,7 +247,7 @@ namespace Unity.Muse.Chat
             m_FeedbackParamSection = view.Q<VisualElement>("feedbackParamSection");
 
             m_ErrorSection = view.Q<VisualElement>("errorFrame");
-            m_ErrorSection.style.display = DisplayStyle.None;
+            m_ErrorSection.SetDisplay(false);
         }
 
         private void SetupFeedbackParameters()

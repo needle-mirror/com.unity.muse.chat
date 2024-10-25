@@ -33,6 +33,8 @@ namespace Unity.Muse.Chat
         internal const string MuseChatSharedStyleDark = "MuseChatSharedDark";
         internal const string MuseChatSharedStyleLight = "MuseChatSharedLight";
 
+        internal const string WizardsStyle = "Wizards";
+
         internal const string AppUIEditorClass = "unity-editor";
         internal const string AppUIThemeLight = "editor-light";
         internal const string AppUIThemeDark = "editor-dark";
@@ -56,5 +58,7 @@ namespace Unity.Muse.Chat
 
         internal const int SuggestedSelectedContextLimit = 5;
         internal const int PromptContextLimit = 17000;
+
+        internal const string AgentModelPath = "Packages/com.unity.muse.chat/Editor/agentModel.asset";
     }
 }

@@ -67,7 +67,8 @@ namespace Unity.Muse.Chat
             };
 
             config.ApiKey.Add("access_token", MuseChatEnvironment.instance.ApiAccessToken);
-            config.DefaultHeaders.Add("Authorization", $"Bearer {CloudProjectSettings.accessToken}");
+            var bearerToken = CloudProjectSettings.accessToken;
+            config.DefaultHeaders.Add("Authorization", $"Bearer {bearerToken}");
 
             return config;
         }

@@ -13,35 +13,70 @@ namespace Unity.Muse.Chat
 {
     partial class WebAPI
     {
-        public MuseMessageUpdateHandler Chat(string prompt, string conversationID = "", string context = "")
+        public MuseMessageUpdateHandler Chat(string prompt, string conversationID = "", string context = "",
+            ChatCommandType chatCommand = ChatCommandType.Ask, Dictionary<string, string> extraBody = null)
         {
             if (!GetOrganizationID(out string organizationId))
             {
                 throw new Exception("No valid organization found.");
             }
 
-            ChatRequest options = new(
-                prompt: prompt,
-                context: string.IsNullOrWhiteSpace(context) ? null : context,
-                streamResponse: true,
-                conversationId: string.IsNullOrWhiteSpace(conversationID) ? null : conversationID,
-                organizationId: organizationId,
-                dependencyInformation: UnityDataUtils.GetPackageMap(),
-                projectSummary: UnityDataUtils.GetProjectSettingSummary(),
-                unityVersions: k_UnityVersionField.ToList(),
-                tags: new List<string>(new[] { UnityDataUtils.GetProjectId() }),
-                extraBody: new Dictionary<string, object>
-                {
-                    { "enable_plugins", true },
-                    { "muse_guard", true },
-                    {
-                        "mediation_system_prompt", string.IsNullOrWhiteSpace(MuseChatConstants.MediationPrompt)
-                            ? null
-                            : MuseChatConstants.MediationPrompt
-                    },
-                    { "skip_planning", MuseChatConstants.SkipPlanning }
-                }
-            );
+            object options;
+            switch (chatCommand)
+            {
+                case ChatCommandType.Run:
+                    options = new ActionRequest(
+                        prompt: prompt,
+                        context: string.IsNullOrWhiteSpace(context) ? null : context,
+                        streamResponse: false,
+                        conversationId: string.IsNullOrWhiteSpace(conversationID) ? null : conversationID,
+                        organizationId: organizationId,
+                        dependencyInformation: UnityDataUtils.GetPackageMap(),
+                        projectSummary: UnityDataUtils.GetProjectSettingSummary(),
+                        unityVersions: k_UnityVersionField.ToList(),
+                        debug: false,
+                        extraBody: extraBody
+                    );
+                    break;
+                case ChatCommandType.Code:
+                    options = new CodeGenRequest(
+                        prompt: prompt,
+                        context: string.IsNullOrWhiteSpace(context) ? null : context,
+                        streamResponse: true,
+                        organizationId: organizationId,
+                        conversationId: string.IsNullOrWhiteSpace(conversationID) ? null : conversationID,
+                        dependencyInformation: UnityDataUtils.GetPackageMap(),
+                        projectSummary: UnityDataUtils.GetProjectSettingSummary(),
+                        unityVersions: k_UnityVersionField.ToList(), debug: false,
+                        tags: new List<string>(new[] { UnityDataUtils.GetProjectId() })
+                    );
+                    break;
+                default:
+                    options = new ChatRequest(
+                        prompt: prompt,
+                        context: string.IsNullOrWhiteSpace(context) ? null : context,
+                        streamResponse: true,
+                        conversationId: string.IsNullOrWhiteSpace(conversationID) ? null : conversationID,
+                        organizationId: organizationId,
+                        dependencyInformation: UnityDataUtils.GetPackageMap(),
+                        projectSummary: UnityDataUtils.GetProjectSettingSummary(),
+                        unityVersions: k_UnityVersionField.ToList(),
+                        tags: new List<string>(new[] { UnityDataUtils.GetProjectId() }),
+                        extraBody: new Dictionary<string, object>
+                        {
+                            { "enable_plugins", true },
+                            { "muse_guard", true },
+                            {
+                                "mediation_system_prompt", string.IsNullOrWhiteSpace(MuseChatConstants.MediationPrompt)
+                                    ? null
+                                    : MuseChatConstants.MediationPrompt
+                            },
+                            { "skip_planning", MuseChatConstants.SkipPlanning },
+                            { "is_beta_request", true }
+                        }
+                    );
+                    break;
+            }
 
             var updateHandler = new MuseMessageUpdateHandler(this);
             try
@@ -60,7 +95,13 @@ namespace Unity.Muse.Chat
 
                 // Start the request task, this makes the Intercept code
                 // populate the MuseMessageUpdateHandler with the UnityWebRequest
-                Task request = api.PostMuseChatV1Async(options, cancellationTokenSource.Token);
+
+                Task request = chatCommand switch
+                {
+                    ChatCommandType.Run => api.PostMuseAgentActionV1Async(options as ActionRequest, cancellationTokenSource.Token),
+                    ChatCommandType.Code => api.PostMuseAgentCodegenV1Async(options as CodeGenRequest, cancellationTokenSource.Token),
+                    _ => api.PostMuseChatV1Async((ChatRequest)options, cancellationTokenSource.Token),
+                };
 
                 // Add the task too
                 activeChatRequestOperation.Task = request;
@@ -87,6 +128,7 @@ namespace Unity.Muse.Chat
             public string FinalData;
             public bool IsComplete;
             public CancellationTokenSource CancellationTokenSource;
+            public string MessageAuthor;
         }
     }
 }

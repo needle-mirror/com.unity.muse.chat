@@ -1,0 +1,190 @@
+.muse-wizard {
+    background-color: var(--appui-backgrounds-100);
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.mui-wizard-scrollview {
+    flex-grow: 1;
+}
+
+.mui-wizard-scrollview .unity-scroll-view__content-container {
+    flex-grow: 1;
+}
+
+.mui-wizard-page {
+    flex-direction: column;
+    flex-grow: 1;
+    max-width: 400px;
+    min-height: 650px;
+}
+
+.mui-wizard-root {
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+.mui-wizard-page-header-text {
+    font-size: 20px;
+    -unity-font-style: bold;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    white-space: normal;
+}
+
+.mui-wizard-page-content-text {
+    flex-wrap: wrap;
+    white-space: normal;
+    font-size: 12px;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.mui-wizard-page-sample-text {
+    flex-wrap: wrap;
+    white-space: normal;
+    font-size: 12px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: var(--appui-backgrounds-300);
+    padding: 12px;
+    margin: 5px 0 5px 0;
+    flex-direction: row;
+}
+
+.mui-wizard-page-sample-text-with-button {
+    flex-wrap: wrap;
+    white-space: normal;
+    font-size: 12px;
+    padding: 2px;
+    margin: 5px 0 5px 0;
+    flex-direction: row;
+    max-width: 75%;
+}
+
+.mui-wizard-page-sample-button-container {
+    align-self: center;
+    align-content: flex-end;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.mui-wizard-page-sample-button {
+    padding: 5px;
+    margin: 5px 0 5px 0;
+    align-self: stretch;
+    background-color: transparent;
+    border-width: 1px;
+    border-color: var(--appui-backgrounds-300);
+}
+
+.mui-wizard-page-sample-button .mui-mft-input-hovered {
+    background-color: var(--appui-backgrounds-100);
+}
+
+.mui-wizard-page-sample-button.mui-mft-input-hovered {
+    background-color: var(--appui-backgrounds-100);
+}
+
+.mui-wizard-page-sample-button.mui-musing-active {
+    background-color: var(--muse-chat-color-pink);
+}
+
+.mui-wizard-page-sample-button.mui-mft-input-focused {
+    background-color: var(--muse-chat-color-pink);
+}
+
+.mui-wizard-command {
+    font-size: 12px;
+    border-width: 1px;
+    border-radius: 3px;
+    border-color: var(--appui-primary-600);
+    background-color: var(--appui-backgrounds-50);
+    padding: 3px 4px 3px 4px;
+    align-self: flex-start;
+}
+
+.mui-agent-wizard-page-video {
+    width: 400px;
+    height: 225px;
+    background-color: var(--appui-primary-25);
+    background-size: contain;
+    align-self: center;
+    border-radius: 6px;
+    margin: 24px;
+}
+
+.mui-agent-wizard-page-video-icon {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ArrowsOut.png');
+    align-self: flex-end;
+    margin-right: 8px;
+    margin-top: 8px;
+    width: 16px;
+    height: 16px;
+    background-color: var(--appui-backgrounds-300);
+    border-radius: 4px;
+}
+
+.mui-agent-wizard-page-large-video-icon {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ArrowsIn.png');
+    align-self: flex-end;
+    margin-right: 8px;
+    margin-top: 8px;
+    width: 16px;
+    height: 16px;
+    background-color: var(--appui-backgrounds-300);
+    border-radius: 4px;
+}
+
+.mui-agent-wizard-page-video-large {
+    align-self: stretch;
+    background-color: var(--appui-primary-25);
+    background-size: contain;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.mui-wizard-page-footer-container {
+    flex-direction: row;
+    align-items: flex-start;
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.mui-wizard-page-footer {
+    align-self: flex-end;
+    align-items: flex-start;
+    flex-direction: column;
+    flex-grow: 0;
+    margin-bottom: 24px;
+}
+
+.mui-wizard-page-footer-button {
+    padding: 5px 10px 5px 10px;
+    align-self: flex-start;
+    margin-right: 10px;
+}
+
+.mui-wizard-page-footer-button-container {
+    flex-direction: row;
+    align-items: flex-start;
+    flex-grow: 1;
+}
+
+.mui-wizard-page-checkbox-container {
+    flex-direction: row;
+    max-width: 380px;
+}
+
+.mui-wizard-page-checkbox {
+    margin-right: 4px;
+}
+
+.mui-wizard-page-checkbox #appui-checkbox__box {
+    background-color: var(--appui-backgrounds-50);
+}

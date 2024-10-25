@@ -62,19 +62,9 @@ namespace Unity.Muse.Chat
             else
             {
                 string[] stringsForState = k_DefaultStateStrings;
-                switch (commandMode)
-                {
-                    case ChatCommandType.Run:
-                        // TODO: How to check if we're executing a command?
-                        // stringsForState = k_RunExecutingStateStrings;
-                        break;
-                    case ChatCommandType.Code:
-                        // TODO: How to check if we're refining code?
-                        // stringsForState = k_CodeRepairStateStrings;
-                        // TODO: Check if code did not compile and do this:
-                        // message = k_ReattemptingMessage
-                        break;
-                }
+
+                if (MuseEditorDriver.instance.CurrentPromptState == MuseEditorDriver.PromptState.RepairCode)
+                    stringsForState = k_CodeRepairStateStrings;
 
                 var index = Math.Min(stringsForState.Length, (int)(progress / 100f * stringsForState.Length));
                 message = stringsForState[index];

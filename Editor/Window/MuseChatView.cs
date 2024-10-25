@@ -27,6 +27,7 @@ namespace Unity.Muse.Chat
 
         Button m_NewChatButton;
         Button m_HistoryButton;
+        Button m_OpenTutorialButton;
 
         Text m_ConversationName;
 
@@ -62,6 +63,37 @@ namespace Unity.Muse.Chat
         int m_SelectedConsoleMessageNum;
         string m_SelectedConsoleMessageContent;
         string m_SelectedGameObjectName;
+
+        private ExperimentalProgramSignUpNotificationView m_ExperimentalSignUp;
+
+        private static Model m_AgentModel;
+
+        // Using custom model for now to be able to use agent without entitlements:
+        internal static Model AgentModel
+        {
+            get
+            {
+                if (m_AgentModel == null)
+                { 
+                    m_AgentModel = AssetDatabase.LoadAssetAtPath<Common.Model>(MuseChatConstants.AgentModelPath);
+
+                    if (m_AgentModel == null)
+                    {
+                        m_AgentModel = ScriptableObject.CreateInstance<Common.Model>();
+
+                        m_AgentModel.Initialize();
+                        int mode = ModesFactory.GetModeIndexFromKey(ExperimentalAgentProgram.k_ProgramMode);
+                        if (mode < 0)
+                            Debug.LogError($"Mode {ExperimentalAgentProgram.k_ProgramMode} not found");
+                        m_AgentModel.ModeChanged(mode);
+
+                        AssetDatabase.CreateAsset(m_AgentModel, MuseChatConstants.AgentModelPath);
+                    }
+                }
+
+                return m_AgentModel;
+            }
+        }
 
         List<Object> ObjectSelection
         {
@@ -108,10 +140,18 @@ namespace Unity.Muse.Chat
         /// <param name="view">the template container of the current element</param>
         protected override void InitializeView(TemplateContainer view)
         {
+            ExperimentalProgram.RegisterProgram<ExperimentalAgentProgram>();
+            ExperimentalProgram.EnableForMode(AgentModel.CurrentMode, true);
+
+            var notificationBanner = view.Q<VisualElement>("account-notifications");
+            m_ExperimentalSignUp = new ExperimentalProgramSignUpNotificationView(true);
+            notificationBanner.Add(m_ExperimentalSignUp);
+
             LoadStyle(EditorGUIUtility.isProSkin ? MuseChatConstants.MuseChatSharedStyleDark : MuseChatConstants.MuseChatSharedStyleLight);
+            LoadStyle(MuseChatConstants.WizardsStyle);
 
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
-            m_HeaderRoot.SetSessionTracked();
+            m_HeaderRoot.SetSessionTracked(AgentModel);
 
             m_RootMain = view.Q<VisualElement>("root-main");
             m_RootMain.RegisterCallback<MouseEnterEvent>(UpdateSelectedContextWarning);
@@ -120,9 +160,12 @@ namespace Unity.Muse.Chat
             m_RootPanel = view.Q<Panel>("root-panel");
 
             m_NewChatButton = view.SetupButton("newChatButton", OnNewChatClicked);
-            m_NewChatButton.SetSessionTracked();
+            m_NewChatButton.SetSessionTracked(AgentModel);
             m_HistoryButton = view.SetupButton("historyButton", OnHistoryClicked);
-            m_HistoryButton.SetSessionTracked();
+            m_HistoryButton.SetSessionTracked(AgentModel);
+
+            m_OpenTutorialButton = view.SetupButton("tutorialButton", OnOpenTutorialClicked);
+            m_OpenTutorialButton.SetSessionTracked(AgentModel);
 
             m_ConversationName = view.Q<Text>("conversationNameLabel");
             m_ConversationName.enableRichText = false;
@@ -150,7 +193,7 @@ namespace Unity.Muse.Chat
             }
 
             var contentRoot = view.Q<VisualElement>("chatContentRoot");
-            contentRoot.SetSessionTracked();
+            contentRoot.SetSessionTracked(AgentModel);
 
             m_InspirationRoot = view.Q<VisualElement>("inspirationPanelRoot");
             m_InspirationPanel = new MuseChatInspirationPanel();
@@ -160,7 +203,7 @@ namespace Unity.Muse.Chat
 
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
             m_FooterRoot = view.Q<VisualElement>("footerRoot");
-            m_FooterRoot.SetSessionTracked();
+            m_FooterRoot.SetSessionTracked(AgentModel);
 
             m_ChatInputRoot = view.Q<VisualElement>("chatTextFieldRoot");
             m_ChatInput = new MuseTextField();
@@ -174,17 +217,11 @@ namespace Unity.Muse.Chat
             SetupCommandButton(view.Q<ActionButton>("commandRun"), ChatCommandType.Run, 1);
             SetupCommandButton(view.Q<ActionButton>("commandCode"), ChatCommandType.Code, 2);
 
-            // Hide commands until features are ready
-            m_CommandActionGroup.style.display = DisplayStyle.None;
-
             m_AddContextButton = view.Q<Button>("addContextButton");
             m_AddContextButton.clicked += ShowSelectionPopup;
 
             m_ClearContextButton = view.Q<Button>("clearContextButton");
             m_ClearContextButton.clicked += ClearContext;
-
-            var notificationBanner = view.Q<VisualElement>("account-notifications");
-            notificationBanner.Add(new SessionStatusNotifications());
 
             m_BannerRoot = view.Q<VisualElement>("notificationBannerRoot");
             m_Banner = new MuseChatNotificationBanner();
@@ -266,6 +303,31 @@ namespace Unity.Muse.Chat
                         });
                 }
             }
+
+            ExperimentalProgram.Changed += ExperimentalProgramChanged;
+            SessionStatus.OnUsabilityChanged += _ => ExperimentalProgramChanged();
+
+            // Refresh sign up notification:
+            ExperimentalProgramChanged();
+        }
+
+        void ExperimentalProgramChanged()
+        {
+            m_ExperimentalSignUp.SetDisplay(false);
+
+            ExperimentalProgram.IsUserAuthorized(authorized =>
+            {
+                m_ExperimentalSignUp.SetDisplay(!authorized);
+
+                if (authorized)
+                {
+                    ShowRequiredWizard();
+                }
+                else
+                {
+                    CloseWizard();
+                }
+            });
         }
 
         void SetupCommandButton(ActionButton command, ChatCommandType type, int index)
@@ -274,6 +336,7 @@ namespace Unity.Muse.Chat
             {
                 UserSessionState.instance.SelectedCommandMode = type;
                 m_ChatInput.Enable();
+                m_InspirationPanel.RefreshEntries();
             };
 
             if (UserSessionState.instance.SelectedCommandMode == type)
@@ -380,6 +443,11 @@ namespace Unity.Muse.Chat
             SetMusingActive(false);
 
             ShowNotification("New Chat created", PopNotificationIconType.Info);
+        }
+
+        private void OnOpenTutorialClicked(PointerUpEvent evt)
+        {
+            ShowWizard(new AgentWizard());
         }
 
         void OnGameObjectSelectionChanged()

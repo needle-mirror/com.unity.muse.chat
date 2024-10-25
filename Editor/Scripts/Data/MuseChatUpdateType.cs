@@ -8,5 +8,6 @@ namespace Unity.Muse.Chat
         MessageIdChange,
         NewMessage,
         ConversationClear,
+        CodeRepair,
     }
 }

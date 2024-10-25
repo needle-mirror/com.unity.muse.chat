@@ -3,6 +3,8 @@
         <VisualElement class="mui-chat-message-content">
             <VisualElement class="mui-chat-element-avatar-area">
                 <appui:Avatar name="museAvatar" class="mui-chat-avatar" variant="Square"/>
+                <VisualElement class="mui-chat-context-spacer"/>
+                <appui:Icon name="queryMode" icon-name="mui-icon-cmd-ask"/>
             </VisualElement>
             <VisualElement name="textFieldRoot" class="mui-chat-element-text-area">
             </VisualElement>

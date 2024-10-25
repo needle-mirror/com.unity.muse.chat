@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.BackendApi.Client;
 using Unity.Muse.Common;
@@ -29,6 +32,10 @@ namespace Unity.Muse.Chat
         private bool NeedsTopic { get; set; }
 
         public bool IsInProgress => ChatStatus == WebAPI.RequestStatus.InProgress;
+
+        public TaskCompletionSource<bool> MessageTaskCompletionSource;
+
+        public CancellationTokenSource ActiveRequestCancellationTokenSource => m_ChatRequestOperation.CancellationTokenSource;
 
         private WebAPI.RequestStatus ChatStatus
         {
@@ -89,6 +96,7 @@ namespace Unity.Muse.Chat
             m_QueueUpdateCallback = queueUpdateCallback;
             m_UpdateCallback = updateCallback;
             m_CompletedCallback = completedCallback;
+            MessageTaskCompletionSource = new TaskCompletionSource<bool>();
             NeedsTopic = needsTopic;
         }
 
@@ -113,6 +121,7 @@ namespace Unity.Muse.Chat
             EditorApplication.update -= ChatUpdate;
 
             m_CompletedCallback?.Invoke(this);
+            MessageTaskCompletionSource?.SetResult(true);
         }
 
         /// <summary>
@@ -179,10 +188,12 @@ namespace Unity.Muse.Chat
 
             var currentResponse = Conversation.Messages[messageIndex];
             currentResponse.Content =
-                GetChatResponseData(out string assistantFragmentId, out string userFragmentId);
+                GetChatResponseData(out var assistantFragmentId, out var userFragmentId, out var messageAuthor);
             currentResponse.IsComplete =
                 ChatStatus is WebAPI.RequestStatus.Complete
                     or WebAPI.RequestStatus.Error;
+            currentResponse.MessageIndex = messageIndex;
+            currentResponse.Author = messageAuthor;
 
             if (ChatStatus == WebAPI.RequestStatus.Error)
             {
@@ -317,11 +328,14 @@ namespace Unity.Muse.Chat
         /// </summary>
         /// <param name="assistantFragmentId">Set to the assistant's message fragment ID or null if not set.</param>
         /// <param name="userFragmentId">Set to the user's message fragment ID or null if not set.</param>
+        /// <param name="messageAuthor">Set to the returned message author or null if not set. </param>
         /// <returns>The response text that has been streamed in.</returns>
-        private string GetChatResponseData(out string assistantFragmentId, out string userFragmentId)
+        private string GetChatResponseData(out string assistantFragmentId, out string userFragmentId,
+            out string messageAuthor)
         {
             assistantFragmentId = null;
             userFragmentId = null;
+            messageAuthor = null;
 
             if (m_ChatRequestOperation == null)
                 return "Error - no active request";
@@ -338,6 +352,9 @@ namespace Unity.Muse.Chat
             {
                 userFragmentId = m_ChatRequestOperation.UserMessageFragmentId;
             }
+
+            if (!string.IsNullOrEmpty(m_ChatRequestOperation.MessageAuthor))
+                messageAuthor = m_ChatRequestOperation.MessageAuthor;
 
             if (m_ChatRequestOperation.IsComplete)
             {
@@ -381,6 +398,8 @@ namespace Unity.Muse.Chat
                     m_ChatRequestOperation.WebRequest.GetResponseHeader("x-muse-response-conversation-fragment-id");
                 m_ChatRequestOperation.UserMessageFragmentId =
                     m_ChatRequestOperation.WebRequest.GetResponseHeader("x-muse-user-prompt-conversation-fragment-id");
+                m_ChatRequestOperation.MessageAuthor =
+                    m_ChatRequestOperation.WebRequest.GetResponseHeader("x-muse-message-author");
 
                 // If this thread does not yet have an ID, use the one from the header:
                 if (!Conversation.Id.IsValid)

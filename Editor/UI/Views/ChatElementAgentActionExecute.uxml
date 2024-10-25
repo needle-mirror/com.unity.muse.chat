@@ -1,0 +1,9 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement class="mui-code-block-root">
+        <VisualElement class="mui-code-block-buttons">
+            <appui:Text name="actionTitle" class="mui-agent-header-label"/>
+            <appui:Button name="undoButton" title="Undo history" leading-icon="mui-icon-undo" class="mui-agent-undo-button"/>
+        </VisualElement>
+        <appui:Text name="resultText" class="execution-label"/>
+    </VisualElement>
+</UXML>

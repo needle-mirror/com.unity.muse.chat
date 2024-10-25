@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Unity.Muse.Chat.Serialization;
 using Unity.Serialization.Json;
 using UnityEditor;
@@ -160,6 +161,56 @@ namespace Unity.Muse.Chat
 
             var apiCompatibilityLevel = PlayerSettings.GetApiCompatibilityLevel(namedBuildTarget);
             return apiCompatibilityLevel.ToString();
+        }
+
+        /// <summary>
+        /// Return the hierarchy of the current scene.
+        /// </summary>
+        /// <returns> The hierarchy of the current scene. </returns>
+        internal static string GetCurrentSceneHierarchy()
+        {
+            var hierarchy = new StringBuilder();
+            var rootObjects = UnityEngine.SceneManagement.SceneManager.GetActiveScene().GetRootGameObjects();
+            foreach (var obj in rootObjects)
+            {
+                hierarchy.Append(obj.name).Append("\n");
+
+                GetChildGameObjects(obj, ref hierarchy, "  ");
+            }
+
+            return hierarchy.ToString();
+        }
+
+        static void GetChildGameObjects(GameObject obj, ref StringBuilder hierarchy, string indent)
+        {
+            foreach (Transform child in obj.transform)
+            {
+                hierarchy.Append(indent).Append(child.name).Append("\n");
+                GetChildGameObjects(child.gameObject, ref hierarchy, indent + "  ");
+            }
+        }
+
+        /// <summary>
+        /// Return the hierarchy of the Assets folder.
+        /// </summary>
+        /// <returns> The hierarchy of the Assets folder. </returns>
+        public static string GetProjectHierarchy(string path, string indent = "")
+        {
+            StringBuilder hierarchy = new StringBuilder();
+            string[] directories = Directory.GetDirectories(path);
+            foreach (string directory in directories)
+            {
+                hierarchy.AppendLine(indent + Path.GetFileName(directory) + "/");
+                hierarchy.Append(GetProjectHierarchy(directory, indent + "  "));
+            }
+
+            string[] files = Directory.GetFiles(path);
+            foreach (string file in files)
+            {
+                hierarchy.AppendLine(indent + Path.GetFileName(file));
+            }
+
+            return hierarchy.ToString();
         }
 
         /// <summary>

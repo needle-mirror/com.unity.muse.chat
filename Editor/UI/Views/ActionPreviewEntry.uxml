@@ -1,0 +1,6 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement name="previewRoot" class="preview-entry-container">
+        <appui:Text name="previewLabel" class="preview-label"/>
+        <appui:Button title="Save" name="previewAction"  class="preview-entry-action-button"/>
+    </VisualElement>
+</UXML>

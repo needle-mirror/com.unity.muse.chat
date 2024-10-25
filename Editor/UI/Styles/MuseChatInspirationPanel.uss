@@ -78,11 +78,3 @@
     font-size: 14px;
     color: var(--muse-chat-header-text-color);
 }
-
-#runSection {
-    display: none;
-}
-
-#codeSection {
-    display: none;
-}

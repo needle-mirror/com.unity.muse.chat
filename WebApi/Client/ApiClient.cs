@@ -166,7 +166,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
                 }
                 catch
                 {
-                    return request.downloadHandler.text;
+                    if (request.downloadHandler != null)
+                    {
+                        return request.downloadHandler.text;
+                    }
                 }
             }
 

@@ -34,6 +34,10 @@
     align-items: center;
 }
 
+#placeholderText {
+    color: var(--appui-alias-text-disabled);
+}
+
 .mui-mtf-muse-icon {
     width: 16px;
     height: 16px;
