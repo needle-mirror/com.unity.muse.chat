@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp;
 using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
 using UnityEditor;
@@ -11,7 +12,7 @@ using Button = Unity.Muse.AppUI.UI.Button;
 
 namespace Unity.Muse.Chat
 {
-    class ChatElementAgentAction : ManagedTemplate
+    class ChatElementActionBlock : ManagedTemplate
     {
         public static Action<string, string> OnDevToolClicked;
 
@@ -31,7 +32,7 @@ namespace Unity.Muse.Chat
 
         MuseMessage m_ParentMessage;
 
-        public ChatElementAgentAction()
+        public ChatElementActionBlock()
             : base(MuseChatConstants.UIModulePath)
         {
         }
@@ -39,7 +40,7 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             m_Title = view.Q<Text>("actionTitle");
-            m_Title.text = "Command preview";
+            m_Title.text = "New command";
 
             m_WarningContainer = view.Q<VisualElement>("warningContainer");
             m_WarningContainer.SetDisplay(false);
@@ -53,6 +54,9 @@ namespace Unity.Muse.Chat
 
             if (OnDevToolClicked != null)
                 InitializeDevTool(devToolButton);
+
+            var overviewFoldout = view.Q<Accordion>("overviewFoldout");
+            overviewFoldout.RealignFoldoutIcon();
 
             m_CodePreviewFoldout = view.Q<Accordion>("codePreviewFoldout");
             m_CodePreviewFoldout.RealignFoldoutIcon();
@@ -146,7 +150,7 @@ namespace Unity.Muse.Chat
         void DisplayCompilationWarning()
         {
             //Still display the code
-            m_CodePreviewTitle.title = "Show failed command attempt";
+            m_CodePreviewTitle.title = "Failed command attempt";
             m_CodePreviewFoldout.SetDisplay(true);
             m_CodePreview.text = CodeSyntaxHighlight.Highlight(CodeExportUtils.Format(m_Action.Script));
 
@@ -157,7 +161,7 @@ namespace Unity.Muse.Chat
             else
                 m_WarningText.text =  "<b>Can we try that again?</b>\nIt helps to be detailed and add an attachment to add context to your request. If you keep getting this message, try to ask something else.";
 
-            Debug.LogWarning($"Unable to compile the action: {m_Action.CompilationLogs}");
+            m_WarningText.tooltip = $"Unable to compile the action:\n {m_Action.CompilationLogs}";
         }
 
         void DisplayUnsafeWarning()
@@ -171,12 +175,11 @@ namespace Unity.Muse.Chat
             if (m_Action.Unsafe)
                 DisplayUnsafeWarning();
 
+            m_Title.text = m_Action.Description;
+
             // Update Code preview text with latest code
             m_CodePreviewFoldout.SetDisplay(true);
-
-            // Update Code preview with Muse AI disclaimer
-            var actionScriptDisclaimer = string.Format(MuseChatConstants.DisclaimerText, DateTime.Now.ToShortDateString());
-            m_CodePreview.text = CodeSyntaxHighlight.Highlight(actionScriptDisclaimer + m_Action.Script);
+            m_CodePreview.text = FormatDisplayScript();
 
             if (!m_Action.PreviewIsDone)
             {
@@ -187,7 +190,7 @@ namespace Unity.Muse.Chat
                 {
                     foreach (var requiredComponent in m_Action.RequiredMonoBehaviours)
                     {
-                        var actionBlock = new ActionPreviewEntry( $"A new C# component <b>{requiredComponent.ClassName}</b> is required to perform this action.", m_Action);
+                        var actionBlock = new ChatElementActionEntry( $"A new C# component {requiredComponent.ClassName} is required to perform this action.", m_Action);
                         actionBlock.Initialize(false);
                         actionBlock.RegisterAction(() =>
                         {
@@ -208,7 +211,7 @@ namespace Unity.Muse.Chat
 
                 foreach (var previewLine in previewBuilder.Preview)
                 {
-                    var actionBlock = new ActionPreviewEntry(previewLine, m_Action);
+                    var actionBlock = new ChatElementActionEntry(previewLine, m_Action);
                     actionBlock.Initialize(false);
 
                     m_PreviewContainer.Add(actionBlock);
@@ -219,19 +222,31 @@ namespace Unity.Muse.Chat
             }
         }
 
+        string FormatDisplayScript()
+        {
+            // Update Code preview with Muse AI disclaimer
+            var actionScriptDisclaimer = string.Format(MuseChatConstants.DisclaimerText, DateTime.Now.ToShortDateString());
+
+            // Remove namespaces from display
+            var tree = SyntaxFactory.ParseSyntaxTree(actionScriptDisclaimer + m_Action.Script);
+            tree = tree.RemoveNamespaces();
+
+            return CodeSyntaxHighlight.Highlight(tree.GetText().ToString());
+        }
+
         void OnExecuteCodeClicked(PointerUpEvent evt)
         {
             ExecuteAction();
         }
 
-        private void ExecuteAction()
+        void ExecuteAction()
         {
             m_Action.Execute(out var executionResult);
 
             var agent = MuseEditorDriver.instance.Agent;
             agent.StoreExecution(executionResult);
 
-            MuseEditorDriver.instance.AddInternalMessage($"```csx_execute\n{executionResult.Id}\n```", MuseEditorDriver.k_AssistantRole, false);
+            MuseEditorDriver.instance.AddInternalMessage($"```{ChatElementRunExecutionBlock.FencedBlockTag}\n{executionResult.Id}\n```", MuseEditorDriver.k_SystemRole, false);
         }
     }
 }

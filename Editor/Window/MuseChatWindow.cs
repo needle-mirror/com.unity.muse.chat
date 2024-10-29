@@ -41,6 +41,8 @@ namespace Unity.Muse.Chat
             rootVisualElement.Add(m_View);
 
             AccountController.Register(this);
+
+            m_View.InitializeThemeAndStyle();
         }
 
         void OnDestroy()

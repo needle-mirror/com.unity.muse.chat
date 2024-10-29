@@ -134,12 +134,21 @@ namespace Unity.Muse.Chat
             m_Window = window;
         }
 
+        public void InitializeThemeAndStyle()
+        {
+            LoadStyle(m_RootPanel, EditorGUIUtility.isProSkin ? MuseChatConstants.MuseChatSharedStyleDark : MuseChatConstants.MuseChatSharedStyleLight);
+            LoadStyle(m_RootPanel, MuseChatConstants.MuseChatBaseStyle, true);
+        }
+
         /// <summary>
         /// Initialize the view and its component, called by the managed template
         /// </summary>
         /// <param name="view">the template container of the current element</param>
         protected override void InitializeView(TemplateContainer view)
         {
+            this.style.flexGrow = 1;
+            view.style.flexGrow = 1;
+
             ExperimentalProgram.RegisterProgram<ExperimentalAgentProgram>();
             SessionStatus.RegisterModeWithoutEntitlements(AgentModel.CurrentMode);
 

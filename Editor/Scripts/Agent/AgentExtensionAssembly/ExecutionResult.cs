@@ -5,6 +5,18 @@ using UnityEngine;
 
 namespace Unity.Muse.Agent.Dynamic
 {
+    struct ExecutionLog
+    {
+        public string Log;
+        public LogType LogType;
+
+        public ExecutionLog(string formattedLog, LogType logType)
+        {
+            Log = formattedLog;
+            LogType = logType;
+        }
+    }
+
 #if CODE_LIBRARY_INSTALLED
     public
 #else
@@ -18,14 +30,14 @@ namespace Unity.Muse.Agent.Dynamic
 
         static readonly Regex k_PlaceholderRegex = new(@"%(\d+)", RegexOptions.Compiled);
 
-        List<string> m_Result = new();
+        List<ExecutionLog> m_Logs = new();
         string m_ConsoleLogs;
         int UndoGroup;
 
         public readonly int Id;
         public readonly string ActionName;
 
-        public List<string> Result => m_Result;
+        internal List<ExecutionLog> Logs => m_Logs;
         public string ConsoleLogs => m_ConsoleLogs;
         public bool SuccessfullyStarted { get; private set; }
 
@@ -37,12 +49,14 @@ namespace Unity.Muse.Agent.Dynamic
 
         public void RegisterObjectCreation(Object objectCreated)
         {
-            Undo.RegisterCreatedObjectUndo(objectCreated, $"{objectCreated.name} was created");
+            if (objectCreated != null)
+                Undo.RegisterCreatedObjectUndo(objectCreated, $"{objectCreated.name} was created");
         }
 
         public void RegisterObjectCreation(Component component)
         {
-            Undo.RegisterCreatedObjectUndo(component, $"{component} was attached to {component.gameObject.name}");
+            if (component != null)
+                Undo.RegisterCreatedObjectUndo(component, $"{component} was attached to {component.gameObject.name}");
         }
 
         public void RegisterObjectModification(Object objectToRegister, string operationDescription = "")
@@ -82,18 +96,19 @@ namespace Unity.Muse.Agent.Dynamic
         public void Log(string log, params object[] references)
         {
             var formattedLog = RichTextFormat(log, references);
-            m_Result.Add(formattedLog);
+            m_Logs.Add(new ExecutionLog(formattedLog, LogType.Log));
         }
 
         public void LogWarning(string log, params object[] references)
         {
             var formattedLog = RichTextFormat(log, references);
-            m_Result.Add(formattedLog.RichColor(WarningTextColor));
+            m_Logs.Add(new ExecutionLog(formattedLog.RichColor(WarningTextColor), LogType.Warning));
         }
 
         public void LogError(string log, params object[] references)
         {
-            LogWarning(log, references);
+            var formattedLog = RichTextFormat(log, references);
+            m_Logs.Add(new ExecutionLog(formattedLog.RichColor(WarningTextColor), LogType.Error));
         }
 
         private static string RichTextFormat(string log, object[] references)

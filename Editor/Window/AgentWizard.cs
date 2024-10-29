@@ -95,7 +95,7 @@ namespace Unity.Muse.Chat
                 Texts = new[]
                 {
                     new PageData.PageString(
-                        "Transform Components like scripts, lights, meshes, and colliders easily with Muse. Take control your GameObjects’ behavior and adjust how they interact within the game world to quickly craft the perfect experience.",
+                        "Transform Components like scripts, lights, meshes, and colliders easily with Muse. Take control of your GameObjects’ behavior and adjust how they interact within the game world to quickly craft the perfect experience.",
                         k_ContentTextClass),
                     new PageData.PageString(
                         "Disable all AudioSource Components in the scene",
@@ -145,7 +145,7 @@ namespace Unity.Muse.Chat
                 Texts = new[]
                 {
                     new PageData.PageString(
-                        "Transform Components like scripts, lights, meshes, and colliders easily with Muse. Take control your GameObjects’ behavior and adjust how they interact within the game world to quickly craft the perfect experience.",
+                        "Transform Components like scripts, lights, meshes, and colliders easily with Muse. Take control of your GameObjects’ behavior and adjust how they interact within the game world to quickly craft the perfect experience.",
                         k_ContentTextClass),
                     new PageData.PageString(
                         "Disable all AudioSource Components in the scene",

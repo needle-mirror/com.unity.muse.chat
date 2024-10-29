@@ -1,0 +1,23 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement class="mui-code-block-root">
+        <VisualElement class="mui-code-block-buttons">
+            <appui:Text name="actionTitle" class="mui-agent-header-label"/>
+            <appui:Button name="executeButton" title="Run" leading-icon="mui-icon-cmd-run" class="mui-agent-execute-button"/>
+            <appui:Button name="devToolButton" title="" leading-icon="mui-icon-devtool" class="mui-chat-response-code-block-button"/>
+        </VisualElement>
+        <appui:Accordion name="overviewFoldout" class="command-detail-foldout">
+            <appui:AccordionItem name="overviewTitle" title="Tasks" value="true" class="mui-chat-sources-accordion-entry">
+                 <VisualElement name="previewContainer">
+                    <VisualElement name="warningContainer" class="notification-warning-content">
+                        <appui:Text name="warningText"/>
+                    </VisualElement>
+                 </VisualElement>
+            </appui:AccordionItem>
+        </appui:Accordion>
+        <appui:Accordion name="codePreviewFoldout" class="command-detail-foldout top-line-divider">
+            <appui:AccordionItem name="codePreviewTitle" title="Command code" value="false" class="mui-chat-sources-accordion-entry">
+                <appui:Text name="actionCode" multiline="true" class="mui-agent-code-preview--monospaced-text"/>
+            </appui:AccordionItem>
+        </appui:Accordion>
+    </VisualElement>
+</UXML>

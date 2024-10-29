@@ -21,7 +21,7 @@ namespace Unity.Muse.Chat
         internal const string ResourceFolderName = "Resources";
         internal const string PackageName = "com.unity.muse.chat";
         internal const string PackageRoot = "";
-        internal const string BasePath = "packages/" + PackageName + PackageRoot + "/";
+        internal const string BasePath = "Packages/" + PackageName + PackageRoot + "/";
         internal const string UIEditorPath = "Editor/UI/";
 
         internal const string AssetFolder = "Assets/";
@@ -30,6 +30,7 @@ namespace Unity.Muse.Chat
 
         internal const string UIModulePath = BasePath + UIEditorPath;
 
+        internal const string MuseChatBaseStyle = "MuseChat.tss";
         internal const string MuseChatSharedStyleDark = "MuseChatSharedDark";
         internal const string MuseChatSharedStyleLight = "MuseChatSharedLight";
 

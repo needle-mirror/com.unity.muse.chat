@@ -1,0 +1,6 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement name="executionRoot" class="execution-entry-container">
+        <appui:Icon name="executionIcon" icon-name="mui-icon-checkmark" class="execution-entry-icon"/>
+        <appui:Text name="executionLabel" class="execution-label"/>
+    </VisualElement>
+</UXML>

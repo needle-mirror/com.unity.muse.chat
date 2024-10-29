@@ -15,7 +15,7 @@
     --muse-chat-disclaimer-text: rgba(255, 255, 255, 0.4);
     --muse-chat-add-context-button-open: #4c607b;
     --muse-chat-action-button-default: var(--appui-primary-700);
-    --muse-agent-action-preview: #D2D2D2;
+    --muse-agent-action-preview: #858585;
 }
 
 .-muse-chat-panel {
@@ -62,6 +62,14 @@
 
 .appui-icon--mui-icon-cmd-code {
     --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdCode.png');
+}
+
+.appui-icon--mui-icon-checkmark {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/Checkmark.png');
+}
+
+.appui-icon--mui-icon-fail {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/SmallX.png');
 }
 
 .appui-icon--mui-icon-save {

@@ -29,7 +29,7 @@ namespace Unity.Muse.Editor.Markup.Renderers
             {
                 case "csx":
                 {
-                    var actionBlock = new ChatElementAgentAction();
+                    var actionBlock = new ChatElementActionBlock();
                     actionBlock.Initialize();
                     actionBlock.SetData(codeText);
 
@@ -42,9 +42,9 @@ namespace Unity.Muse.Editor.Markup.Renderers
                     }
                 }
                     break;
-                case "csx_execute":
+                case ChatElementRunExecutionBlock.FencedBlockTag:
                 {
-                    var executeBlock = new ChatElementAgentActionExecute();
+                    var executeBlock = new ChatElementRunExecutionBlock();
                     executeBlock.Initialize();
                     executeBlock.SetData(codeText);
                     renderer.m_OutputTextElements.Add(executeBlock);
@@ -76,7 +76,7 @@ namespace Unity.Muse.Editor.Markup.Renderers
             renderer.AppendText("</color>");
         }
 
-        async void SetUpAgentAction(ChatElementAgentAction actionBlock)
+        async void SetUpAgentAction(ChatElementActionBlock actionBlock)
         {
             await actionBlock.SetupAction();
         }

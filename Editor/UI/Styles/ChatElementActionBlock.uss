@@ -55,20 +55,25 @@
     margin-bottom: 8px;
     height: 20px;
     -unity-text-align: middle-left;
+    color: var(--muse-chat-header-text-color);
 }
 
-#codePreviewFoldout {
-    margin: 0px;
-    padding: 4px 0px 4px 0px;
+.top-line-divider {
     border-top-color: var(--appui-backgrounds-100);
     border-top-width: 1px;
 }
 
-#codePreviewFoldout .appui-accordionitem__header {
+.command-detail-foldout {
+    margin: 0px;
+    padding: 4px 0px 4px 0px;
+    color: var(--appui-alias-text-primary);
+}
+
+.command-detail-foldout .appui-accordionitem__header {
    padding-left: 4px;
 }
 
-#codePreviewFoldout .appui-accordionitem__headertext {
+.command-detail-foldout .appui-accordionitem__headertext {
    -unity-font-style: normal;
 }
 

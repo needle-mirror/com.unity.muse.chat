@@ -4,6 +4,12 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.0-exp.5] - 2024-10-29
+
+### Changed
+- Inline parameters in Agent commands
+- New UI presentation for command execution
+
 ## [1.1.0-exp.4] - 2024-10-09
 
 ### Fixed

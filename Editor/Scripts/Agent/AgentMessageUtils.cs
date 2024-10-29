@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Unity.Muse.Chat
 {
-    internal class AgentMessageUtils
+    class AgentMessageUtils
     {
         public static string HandleActionMarkup(string message)
         {
@@ -19,7 +19,7 @@ namespace Unity.Muse.Chat
         {
             var agentActionIndicators = new[] { "IAgentAction", "ActionScript", "ExecutionResult", "PreviewBuilder" };
 
-            return agentActionIndicators.Any(indicator => message.Contains(indicator));
+            return agentActionIndicators.Any(message.Contains);
         }
 
         static string ProcessAgentAction(string message)

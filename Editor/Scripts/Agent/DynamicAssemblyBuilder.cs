@@ -7,12 +7,11 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
-using Unity.Muse.Agent.Dynamic;
 using UnityEngine;
 
 namespace Unity.Muse.Chat
 {
-    internal class DynamicAssemblyBuilder
+    class DynamicAssemblyBuilder
     {
         const string k_CompilationSuccessfulMessage = "Compilation successful";
         static readonly string[] k_CuratedAssemblyPrefixes = { "Assembly-CSharp", "UnityEngine", "UnityEditor", "Unity.", "netstandard" };
@@ -34,8 +33,8 @@ namespace Unity.Muse.Chat
             new FixAmbiguousReference()
         };
 
-        private string m_AssemblyName;
-        private string m_DefaultNamespace;
+        string m_AssemblyName;
+        string m_DefaultNamespace;
 
         public DynamicAssemblyBuilder(string assemblyName, string defaultNamespace = null)
         {
@@ -134,7 +133,7 @@ namespace Unity.Muse.Chat
             return compilation;
         }
 
-        string GetCompilationLogs(EmitResult result)
+        static string GetCompilationLogs(EmitResult result)
         {
             var diagnosticLogs = new StringBuilder();
 

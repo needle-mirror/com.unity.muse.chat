@@ -1,0 +1,7 @@
+<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+    <VisualElement name="entryRoot" class="preview-entry-container">
+            <VisualElement name="description" class="preview-entry-description"/>
+            <VisualElement class="mui-chat-context-spacer"/>
+            <appui:Button name="action" title="Save" class="preview-entry-action-button"/>
+    </VisualElement>
+</UXML>

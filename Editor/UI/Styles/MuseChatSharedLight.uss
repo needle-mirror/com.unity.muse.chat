@@ -70,6 +70,16 @@
     --unity-image-tint-color: var(--muse-chat-light-mode-icon-tint);
 }
 
+.appui-icon--mui-icon-checkmark {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/Checkmark.png');
+    --unity-image-tint-color: var(--muse-chat-light-mode-icon-tint);
+}
+
+.appui-icon--mui-icon-fail {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/SmallX.png');
+    --unity-image-tint-color: var(--muse-chat-light-mode-icon-tint);
+}
+
 .appui-icon--mui-icon-save {
     --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/SaveAs.png');
     --unity-image-tint-color: var(--muse-chat-light-mode-icon-tint);

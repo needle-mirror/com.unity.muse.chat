@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
@@ -24,6 +25,8 @@ namespace Unity.Muse.Chat
 
         public bool Unsafe { get; set; }
 
+        public string Description => m_Description;
+
         public IAgentAction Instance => m_ActionInstance;
 
         public bool CompilationSuccess => m_ActionInstance != null;
@@ -48,7 +51,14 @@ namespace Unity.Muse.Chat
             var chatObjectSelection = MuseEditorDriver.instance.GetValidAttachment(MuseEditorDriver.instance.m_ObjectAttachments);
             var actionAttachment = new ActionAttachment(chatObjectSelection);
 
-            m_ActionInstance.Execute(actionAttachment, executionResult);
+            try
+            {
+                m_ActionInstance.Execute(actionAttachment, executionResult);
+            }
+            catch (Exception e)
+            {
+                executionResult.LogError(e.ToString());
+            }
 
             executionResult.End();
 

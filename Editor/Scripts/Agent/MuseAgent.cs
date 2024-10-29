@@ -72,12 +72,12 @@ namespace Unity.Muse.Chat
                 }
                 else
                 {
-                    Debug.LogWarning($"Unable to find a type ActionScript in the assembly");
+                    InternalLog.LogWarning($"Unable to find a type ActionScript in the assembly");
                 }
             }
             else
             {
-                Debug.LogWarning($"Unable to compile the action:\n{compilationLogs}");
+                InternalLog.LogWarning($"Unable to compile the action:\n{compilationLogs}");
             }
 
             return action;

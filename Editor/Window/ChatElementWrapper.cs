@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
@@ -6,13 +7,12 @@ using UnityEngine.UIElements;
 namespace Unity.Muse.Chat
 {
     [UsedImplicitly]
-    internal class ChatElementWrapper : AdaptiveListViewEntry
+    class ChatElementWrapper : AdaptiveListViewEntry
     {
-        private VisualElement m_Root;
-        private Text m_IndexDebugElement;
+        VisualElement m_Root;
+        Text m_IndexDebugElement;
 
-        private ChatElementBase m_UserChatElement;
-        private ChatElementBase m_ResponseChatElement;
+        ChatElementBase m_ChatElement;
 
         protected override void InitializeView(TemplateContainer view)
         {
@@ -31,15 +31,17 @@ namespace Unity.Muse.Chat
                 m_IndexDebugElement.text = $"Index: {index}";
             }
 
-            if(message.Role == MuseEditorDriver.k_UserRole)
+            switch (message.Role)
             {
-                m_ResponseChatElement?.SetDisplay(false);
-                SetupChatElement(ref m_UserChatElement, message);
-            }
-            else
-            {
-                m_UserChatElement?.SetDisplay(false);
-                SetupChatElement(ref m_ResponseChatElement, message, true);
+                case MuseEditorDriver.k_UserRole:
+                    SetupChatElement(ref m_ChatElement, message);
+                    break;
+                case MuseEditorDriver.k_AssistantRole:
+                    SetupChatElement(ref m_ChatElement, message, true);
+                    break;
+                case MuseEditorDriver.k_SystemRole:
+                    SetupChatElement(ref m_ChatElement, message, true);
+                    break;
             }
         }
 
@@ -47,13 +49,17 @@ namespace Unity.Muse.Chat
         {
             if (element == null)
             {
-                if (message.Role == MuseEditorDriver.k_UserRole)
+                switch (message.Role)
                 {
-                    element = new ChatElementUser { EditEnabled = true };
-                }
-                else
-                {
-                    element = new ChatElementResponse();
+                    case MuseEditorDriver.k_UserRole:
+                        element = new ChatElementUser { EditEnabled = true };
+                        break;
+                    case MuseEditorDriver.k_SystemRole:
+                        element = new ChatElementSystem();
+                        break;
+                    case MuseEditorDriver.k_AssistantRole:
+                        element = new ChatElementResponse();
+                        break;
                 }
 
                 element.Initialize();

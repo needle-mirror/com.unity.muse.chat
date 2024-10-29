@@ -70,6 +70,23 @@ namespace Unity.Muse.Chat
             return syntaxTree;
         }
 
+        internal static SyntaxTree RemoveNamespaces(this SyntaxTree syntaxTree)
+        {
+            var root = syntaxTree.GetRoot() as CompilationUnitSyntax;
+
+            if (root == null)
+                return syntaxTree;
+
+            var newRoot = root.RemoveNodes(root.Members.OfType<NamespaceDeclarationSyntax>(), SyntaxRemoveOptions.KeepNoTrivia);
+
+            var namespaceMembers = root.Members.OfType<NamespaceDeclarationSyntax>()
+                .SelectMany(ns => ns.Members);
+
+            newRoot = newRoot.AddMembers(namespaceMembers.ToArray());
+
+            return CSharpSyntaxTree.Create(newRoot.NormalizeWhitespace());
+        }
+
         internal static SyntaxTree MoveToNamespace(this SyntaxTree syntaxTree, string classNamespace)
         {
             var root = syntaxTree.GetRoot() as CompilationUnitSyntax;
@@ -168,9 +185,9 @@ namespace Unity.Muse.Chat
             return declarations;
         }
 
-        public static bool ContainsNamespaces(this SyntaxTree syntaxtree, string[] namespaces)
+        public static bool ContainsNamespaces(this SyntaxTree syntaxTree, string[] namespaces)
         {
-            var root = syntaxtree.GetCompilationUnitRoot();
+            var root = syntaxTree.GetCompilationUnitRoot();
 
             // Check for using directives
             var usingDirectives = root.Usings;
@@ -194,6 +211,30 @@ namespace Unity.Muse.Chat
                 }
             }
 
+            return false;
+        }
+
+        internal static bool TryGetClassNameInheritingFrom(this SyntaxTree syntaxTree, Type baseType, out string className)
+        {
+            var root = syntaxTree.GetRoot() as CompilationUnitSyntax;
+            if (root == null)
+            {
+                className = string.Empty;
+                return false;
+            }
+
+            var classDeclaration = root.DescendantNodes()
+                .OfType<ClassDeclarationSyntax>()
+                .FirstOrDefault(c => c.BaseList != null &&
+                                     c.BaseList.Types.Any(t => t.Type.ToString() == baseType.Name));
+
+            if (classDeclaration != null)
+            {
+                className = classDeclaration.Identifier.Text;
+                return true;
+            }
+
+            className = string.Empty;
             return false;
         }
     }

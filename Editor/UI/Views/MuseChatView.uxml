@@ -1,5 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" xsi="http://www.w3.org/2001/XMLSchema-instance" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project:/Packages/com.unity.muse.chat/Editor/UI/Styles/MuseChat.uss"/>
     <appui:Panel name="root-panel">
         <ui:VisualElement name="root-main">
             <ui:VisualElement name="headerRoot" class="mui-header -muse-chat-panel">
@@ -57,9 +56,9 @@
 
                 <ui:VisualElement class="mui-chat-input-command-root">
                     <appui:ActionGroup name="commandGroup" quiet="true" selection-type="Single" allow-no-selection="false">
-                        <appui:ActionButton name="commandAsk" class="mui-chat-command-button mui-chat-cmd-ask" quiet="true" label="" icon="mui-icon-cmd-ask" tooltip="/&lt;b&gt;ask&lt;/b&gt;  Ask Muse questions or troubleshoot"/>
-                        <appui:ActionButton name="commandRun" class="mui-chat-command-button mui-chat-cmd-run" quiet="true" label="" icon="mui-icon-cmd-run" tooltip="/&lt;b&gt;run&lt;/b&gt;  Automate tasks by running commands in the Editor"/>
-                        <appui:ActionButton name="commandCode" class="mui-chat-command-button mui-chat-cmd-code" quiet="true" label="" icon="mui-icon-cmd-code" tooltip="/&lt;b&gt;code&lt;/b&gt;  Use a dedicated code generator"/>
+                        <appui:ActionButton name="commandAsk" class="mui-chat-command-button mui-chat-cmd-ask" quiet="true" label="Ask" icon="mui-icon-cmd-ask" tooltip="/&lt;b&gt;ask&lt;/b&gt;  Ask Muse questions or troubleshoot"/>
+                        <appui:ActionButton name="commandRun" class="mui-chat-command-button mui-chat-cmd-run" quiet="true" label="Run" icon="mui-icon-cmd-run" tooltip="/&lt;b&gt;run&lt;/b&gt;  Automate tasks by running commands in the Editor"/>
+                        <appui:ActionButton name="commandCode" class="mui-chat-command-button mui-chat-cmd-code" quiet="true" label="Code" icon="mui-icon-cmd-code" tooltip="/&lt;b&gt;code&lt;/b&gt;  Use a dedicated code generator"/>
                     </appui:ActionGroup>
                 </ui:VisualElement>
             </ui:VisualElement>

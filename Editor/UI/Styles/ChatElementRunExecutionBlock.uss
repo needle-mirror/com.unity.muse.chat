@@ -3,6 +3,7 @@
     border-width: 0;
     display: flex;
     align-self: center;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .mui-agent-undo-button  .appui-icon{
@@ -19,11 +20,29 @@
     background-color: var(--appui-backgrounds-50);
 }
 
+.execution-block-header {
+    flex-direction: row;
+    justify-content: flex-end;
+    padding-right: 6px;
+    height: 33px;
+}
+
 .execution-label {
     color: var(--muse-agent-action-preview);
     margin: 1px;
     -unity-text-align: middle-left;
     white-space: normal;
     flex-grow: 1;
-    padding: 7px;
+}
+
+.execution-header-label {
+    align-self: center;
+    color: var(--muse-agent-action-preview);
+    flex-grow: 1;
+    flex-shrink: 1;
+    font-size: 11px;
+    margin: 8px;
+    height: 16px;
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
 }

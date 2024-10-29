@@ -22,8 +22,9 @@ namespace Unity.Muse.Chat
 {
     internal class MuseEditorDriver : ScriptableSingleton<MuseEditorDriver>
     {
-        internal static readonly string k_UserRole = "user";
-        internal static readonly string k_AssistantRole = "assistant";
+        internal const string k_UserRole = "user";
+        internal const string k_AssistantRole = "assistant";
+        internal const string k_SystemRole = "system";
 
         const int k_MaxInternalConversationTitleLength = 30;
 
@@ -417,7 +418,7 @@ namespace Unity.Muse.Chat
                         await WebAPI.DeleteConversationFragment(messageIdToDelete.ConversationId, messageIdToDelete.FragmentId);
                     }
                 }
-                
+
                 // Now post the given prompt as a new chat:
                 ProcessPrompt(editedPrompt);
             }

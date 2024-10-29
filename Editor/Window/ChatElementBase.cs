@@ -129,7 +129,7 @@ namespace Unity.Muse.Chat
                             codeBlock.SetMessage(Message);
                             codeBlock.SetSelectable(true);
                         }
-                        else if (visualElement is ChatElementAgentAction actionBlock)
+                        else if (visualElement is ChatElementActionBlock actionBlock)
                         {
                             actionBlock.SetMessage(Message);
                         }

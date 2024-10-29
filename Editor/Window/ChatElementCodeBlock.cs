@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.CSharp;
 using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
 using UnityEditor;
@@ -160,7 +161,14 @@ namespace Unity.Muse.Chat
 
         private void OnSaveCodeClicked(PointerUpEvent evt)
         {
-            string file = EditorUtility.SaveFilePanel("Save Code", Application.dataPath, "code", "cs");
+            string defaultFileName = "code";
+
+            // Extract class name
+            var tree = SyntaxFactory.ParseSyntaxTree(m_ValidatedCode);
+            if (tree.TryGetClassNameInheritingFrom(typeof(MonoBehaviour), out var className))
+                defaultFileName = className;
+
+            string file = EditorUtility.SaveFilePanel("Save Code", Application.dataPath, defaultFileName, "cs");
             if (string.IsNullOrEmpty(file))
             {
                 return;
