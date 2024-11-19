@@ -102,13 +102,20 @@ namespace Unity.Muse.Chat
             m_Window = window;
         }
 
+        public void InitializeThemeAndStyle()
+        {
+            LoadStyle(m_RootPanel, EditorGUIUtility.isProSkin ? MuseChatConstants.MuseChatSharedStyleDark : MuseChatConstants.MuseChatSharedStyleLight);
+            LoadStyle(m_RootPanel, MuseChatConstants.MuseChatBaseStyle, true);
+        }
+
         /// <summary>
         /// Initialize the view and its component, called by the managed template
         /// </summary>
         /// <param name="view">the template container of the current element</param>
         protected override void InitializeView(TemplateContainer view)
         {
-            LoadStyle(EditorGUIUtility.isProSkin ? MuseChatConstants.MuseChatSharedStyleDark : MuseChatConstants.MuseChatSharedStyleLight);
+            this.style.flexGrow = 1;
+            view.style.flexGrow = 1;
 
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
             m_HeaderRoot.SetSessionTracked();

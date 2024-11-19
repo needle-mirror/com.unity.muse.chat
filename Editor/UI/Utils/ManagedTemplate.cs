@@ -200,12 +200,15 @@ namespace Unity.Muse.Chat
             m_ResourceSuffix = value;
         }
 
-        protected bool LoadStyle(string styleName)
+        protected bool LoadStyle(VisualElement target, string styleName, bool fullFileName = false)
         {
             string styleFile = $"{m_ResourcePrefix}{styleName}{m_ResourceSuffix}";
 
 #if UNITY_EDITOR
-            styleFile = string.Concat(styleFile, MuseChatConstants.StyleExtension);
+            if (!fullFileName)
+            {
+                styleFile = string.Concat(styleFile, MuseChatConstants.StyleExtension);
+            }
 #endif
 
             var styleSheet = m_StyleCache.Load(styleFile);
@@ -214,8 +217,13 @@ namespace Unity.Muse.Chat
                 return false;
             }
 
-            styleSheets.Add(styleSheet);
+            target.styleSheets.Add(styleSheet);
             return true;
+        }
+
+        protected bool LoadStyle(string styleName, bool fullFileName = false)
+        {
+            return LoadStyle(this, styleName, fullFileName);
         }
 
         protected bool LoadView<T>(out VisualTreeAsset view)

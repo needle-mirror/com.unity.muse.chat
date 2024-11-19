@@ -1,0 +1,10 @@
+{
+  "ErrorExceptions":
+  [
+    {
+      "ValidationTest": "API Validation",
+      "ExceptionMessage": "Assembly \"Unity.Muse.Agent.Dynamic.Extension\" no longer exists or is no longer included in build. This change requires a new major version.",
+      "PackageVersion": "1.1.1-pre.2"
+    }
+  ]
+}

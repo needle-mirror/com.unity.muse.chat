@@ -23,7 +23,7 @@ namespace Unity.Muse.Chat
 
         internal Action OnLostWindowFocus;
 
-        [MenuItem("Muse/Chat")]
+        [UnityEditor.MenuItem("Muse/Chat")]
         public static void ShowWindow()
         {
             var editor = GetWindow<MuseChatWindow>();
@@ -41,6 +41,8 @@ namespace Unity.Muse.Chat
             rootVisualElement.Add(m_View);
 
             AccountController.Register(this);
+
+            m_View.InitializeThemeAndStyle();
         }
 
         void OnDestroy()
