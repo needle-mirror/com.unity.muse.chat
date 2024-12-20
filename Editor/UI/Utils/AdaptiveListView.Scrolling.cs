@@ -1,21 +1,18 @@
 using UnityEditor;
-using UnityEngine;
-using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal partial class AdaptiveListView<TD, TV> : VisualElement
-        where TV: AdaptiveListViewEntry
+    partial class AdaptiveListView<TD, TV>
     {
-        private const int k_DelayedScrollActions = 2;
-        private const int k_ScrollEndThreshold = 5;
+        const int k_DelayedScrollActions = 2;
+        const int k_ScrollEndThreshold = 5;
 
-        private ScrollState m_ScrollState = ScrollState.None;
-        private bool m_CheckForScrollLock;
-        private bool m_EnforcementQueued;
-        private int m_DelayedScrollActions;
+        ScrollState m_ScrollState = ScrollState.None;
+        bool m_CheckForScrollLock;
+        bool m_EnforcementQueued;
+        int m_DelayedScrollActions;
 
-        private enum ScrollState
+        enum ScrollState
         {
             None,
             ScrollToEnd,
@@ -43,7 +40,12 @@ namespace Unity.Muse.Chat
             ChangeScrollState(ScrollState.ScrollToEnd, true);
         }
 
-        private void ChangeScrollState(ScrollState newState, bool force = false)
+        public void ScrollToEnd()
+        {
+            ChangeScrollState(ScrollState.ScrollToEnd, true);
+        }
+
+        void ChangeScrollState(ScrollState newState, bool force = false)
         {
             if (!force && m_ScrollState == newState)
             {
@@ -55,7 +57,7 @@ namespace Unity.Muse.Chat
             QueueEnforceScrollState();
         }
 
-        private void QueueEnforceScrollState()
+        void QueueEnforceScrollState()
         {
             if (m_EnforcementQueued)
             {
@@ -66,7 +68,7 @@ namespace Unity.Muse.Chat
             EditorApplication.delayCall += EnforceScrollState;
         }
 
-        private void EnforceScrollState()
+        void EnforceScrollState()
         {
             if (k_Data.Count == 0)
             {
@@ -135,7 +137,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnVerticallyScrolled(float newValue)
+        void OnVerticallyScrolled(float newValue)
         {
             if (!EnableScrollLock || !m_CheckForScrollLock)
             {

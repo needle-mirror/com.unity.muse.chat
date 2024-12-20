@@ -78,7 +78,7 @@ namespace Unity.Muse.Chat
             List<SourceOrFootnote> sourceOrFootnotes = new();
 
             messageContent = message.Content;
-            if (message.Role != MuseEditorDriver.k_AssistantRole)
+            if (message.Role == Assistant.k_UserRole)
             {
                 var contextBlock = k_ContextRegex.Match(messageContent);
                 if (contextBlock.Success)
@@ -88,29 +88,35 @@ namespace Unity.Muse.Chat
 
                 return;
             }
-
-            s_StringBuilder.Clear();
-
-            var chunks = Regex.Split(message.Content, k_BoundaryRegexComplete);
-
-            for (var i = 0; i < chunks.Length; i += 2)
+            else if (message.Role == Assistant.k_AssistantRole)
             {
-                // Even chunk - text
-                // If this is the last chunk, we chop off the last word unless the message is complete
-                // If the starting block regex is here, we don't use any of that text
-                var lastBlock = (i == chunks.Length - 1);
-                string text;
-                if (lastBlock && !message.IsComplete)
+                s_StringBuilder.Clear();
+
+                var chunks = Regex.Split(message.Content, k_BoundaryRegexComplete);
+
+                for (var i = 0; i < chunks.Length; i += 2)
                 {
-                    var subChunks = Regex.Split(chunks[i], k_BoundaryRegexBegin);
-
-                    if (subChunks.Length < 2)
+                    // Even chunk - text
+                    // If this is the last chunk, we chop off the last word unless the message is complete
+                    // If the starting block regex is here, we don't use any of that text
+                    var lastBlock = (i == chunks.Length - 1);
+                    string text;
+                    if (lastBlock && !message.IsComplete)
                     {
-                        int lastSpace = subChunks[0].LastIndexOf(' ');
+                        var subChunks = Regex.Split(chunks[i], k_BoundaryRegexBegin);
 
-                        if (lastSpace > 0)
+                        if (subChunks.Length < 2)
                         {
-                            text = ProcessChunk(subChunks[0].Substring(0, lastSpace));
+                            int lastSpace = subChunks[0].LastIndexOf(' ');
+
+                            if (lastSpace > 0)
+                            {
+                                text = ProcessChunk(subChunks[0].Substring(0, lastSpace));
+                            }
+                            else
+                            {
+                                text = ProcessChunk(subChunks[0]);
+                            }
                         }
                         else
                         {
@@ -119,204 +125,200 @@ namespace Unity.Muse.Chat
                     }
                     else
                     {
-                        text = ProcessChunk(subChunks[0]);
+                        text = ProcessChunk(chunks[i]);
                     }
-                }
-                else
-                {
-                    text = ProcessChunk(chunks[i]);
-                }
 
-                if (message.IsComplete)
-                {
-                    // Replace inline footnotes with placeholders
-                    text = k_FootnoteInlineRegex.Replace(text, match =>
-                    {
-                        int index = int.Parse(match.Groups[1].Value);
-                        sourceOrFootnotes.Add(new SourceOrFootnote() { IsSource = false, FootnoteIndex = index });
-
-                        return $"{{{{source:{sourceOrFootnotes.Count}}}}}";
-                    });
-                }
-
-                s_StringBuilder.Append(text);
-
-                // If this is not the last chunk placeholder source index
-                if (!lastBlock)
-                {
                     if (message.IsComplete)
                     {
-                        // Replace source (boundary tag) with placeholders
-                        sourceOrFootnotes.Add(new SourceOrFootnote() { IsSource = true, FootnoteIndex = 0, SourceIndex = i / 2 });
-
-                        s_StringBuilder.Append($"{{{{source:{sourceOrFootnotes.Count}}}}}");
-                    }
-                    else
-                    {
-                        s_StringBuilder.Append(GetReferenceString(i / 2 + 1));
-                    }
-                }
-            }
-
-            // If the message is complete, store all sources from odd chunks
-            if (message.IsComplete)
-            {
-                for (var i = 1; i < chunks.Length; i += 2)
-                {
-                    try
-                    {
-                        WebAPI.SourceBlock sourceBlock = JsonUtility.FromJson<WebAPI.SourceBlock>(chunks[i]);
-
-                        var sourceEntryIndex = sourceOrFootnotes.FindIndex(e => e.IsSource && e.SourceIndex == i/2);
-                        if (sourceEntryIndex != -1)
+                        // Replace inline footnotes with placeholders
+                        text = k_FootnoteInlineRegex.Replace(text, match =>
                         {
-                            var sourceEntry = sourceOrFootnotes[sourceEntryIndex];
-                            sourceEntry.Title = sourceBlock.reason;
-                            sourceEntry.URL = sourceBlock.source;
-                            sourceOrFootnotes[sourceEntryIndex] = sourceEntry;
-                        }
+                            int index = int.Parse(match.Groups[1].Value);
+                            sourceOrFootnotes.Add(new SourceOrFootnote() { IsSource = false, FootnoteIndex = index });
+
+                            return $"{{{{source:{sourceOrFootnotes.Count}}}}}";
+                        });
                     }
-                    catch (Exception e)
+
+                    s_StringBuilder.Append(text);
+
+                    // If this is not the last chunk placeholder source index
+                    if (!lastBlock)
                     {
-                        Debug.LogError($"Failed to parse source block: {e}");
-                    }
-                }
-            }
-
-            // Parse sources and footnotes, if any, and consolidate them as SourceBlocks
-            if (sourceOrFootnotes.Count > 0)
-            {
-                if (sourceBlocks == null)
-                {
-                    sourceBlocks = new List<WebAPI.SourceBlock>();
-                }
-
-                messageContent = s_StringBuilder.ToString();
-
-                // Fill in footnote title/URL found at end of text
-                messageContent = k_FootnoteURLsRegex.Replace(messageContent, match =>
-                {
-                    AddFootnoteAsSource(match, sourceOrFootnotes);
-                    return "";
-                });
-                messageContent = k_FootnoteURLsOldFormatRegex.Replace(messageContent, match =>
-                {
-                    AddFootnoteAsSource(match, sourceOrFootnotes);
-                    return "";
-                });
-                messageContent = k_FootnoteURLsNoTitleRegex.Replace(messageContent, match =>
-                {
-                    AddFootnoteAsSource(match, sourceOrFootnotes, true);
-                    return "";
-                });
-
-                // Create SourceBlocks from all source and footnote information
-                for (int i = 0; i < sourceOrFootnotes.Count; i++)
-                {
-                    var footnoteInfo = sourceOrFootnotes[i];
-                    if (!string.IsNullOrEmpty(footnoteInfo.URL))
-                    {
-                        var duplicateURLIndex = sourceOrFootnotes.FindIndex(e =>
-                            !string.IsNullOrEmpty(e.URL) && e.URL.Equals(footnoteInfo.URL));
-
-                        if (duplicateURLIndex != -1 && duplicateURLIndex < i)
+                        if (message.IsComplete)
                         {
-                            footnoteInfo.FinalSourceIndex = sourceOrFootnotes[duplicateURLIndex].FinalSourceIndex;
+                            // Replace source (boundary tag) with placeholders
+                            sourceOrFootnotes.Add(new SourceOrFootnote() { IsSource = true, FootnoteIndex = 0, SourceIndex = i / 2 });
+
+                            s_StringBuilder.Append($"{{{{source:{sourceOrFootnotes.Count}}}}}");
                         }
                         else
                         {
-                            sourceBlocks.Add(new WebAPI.SourceBlock()
-                            {
-                                reason = footnoteInfo.Title,
-                                source = footnoteInfo.URL
-                            });
+                            s_StringBuilder.Append(GetReferenceString(i / 2 + 1));
+                        }
+                    }
+                }
 
-                            footnoteInfo.FinalSourceIndex = sourceBlocks.Count;
+                // If the message is complete, store all sources from odd chunks
+                if (message.IsComplete)
+                {
+                    for (var i = 1; i < chunks.Length; i += 2)
+                    {
+                        try
+                        {
+                            WebAPI.SourceBlock sourceBlock = JsonUtility.FromJson<WebAPI.SourceBlock>(chunks[i]);
+
+                            var sourceEntryIndex = sourceOrFootnotes.FindIndex(e => e.IsSource && e.SourceIndex == i/2);
+                            if (sourceEntryIndex != -1)
+                            {
+                                var sourceEntry = sourceOrFootnotes[sourceEntryIndex];
+                                sourceEntry.Title = sourceBlock.reason;
+                                sourceEntry.URL = sourceBlock.source;
+                                sourceOrFootnotes[sourceEntryIndex] = sourceEntry;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError($"Failed to parse source block: {e}");
+                        }
+                    }
+                }
+
+                // Parse sources and footnotes, if any, and consolidate them as SourceBlocks
+                if (sourceOrFootnotes.Count > 0)
+                {
+                    if (sourceBlocks == null)
+                    {
+                        sourceBlocks = new List<WebAPI.SourceBlock>();
+                    }
+
+                    messageContent = s_StringBuilder.ToString();
+
+                    // Fill in footnote title/URL found at end of text
+                    messageContent = k_FootnoteURLsRegex.Replace(messageContent, match =>
+                    {
+                        AddFootnoteAsSource(match, sourceOrFootnotes);
+                        return "";
+                    });
+                    messageContent = k_FootnoteURLsOldFormatRegex.Replace(messageContent, match =>
+                    {
+                        AddFootnoteAsSource(match, sourceOrFootnotes);
+                        return "";
+                    });
+                    messageContent = k_FootnoteURLsNoTitleRegex.Replace(messageContent, match =>
+                    {
+                        AddFootnoteAsSource(match, sourceOrFootnotes, true);
+                        return "";
+                    });
+
+                    // Create SourceBlocks from all source and footnote information
+                    for (int i = 0; i < sourceOrFootnotes.Count; i++)
+                    {
+                        var footnoteInfo = sourceOrFootnotes[i];
+                        if (!string.IsNullOrEmpty(footnoteInfo.URL))
+                        {
+                            var duplicateURLIndex = sourceOrFootnotes.FindIndex(e =>
+                                !string.IsNullOrEmpty(e.URL) && e.URL.Equals(footnoteInfo.URL));
+
+                            if (duplicateURLIndex != -1 && duplicateURLIndex < i)
+                            {
+                                footnoteInfo.FinalSourceIndex = sourceOrFootnotes[duplicateURLIndex].FinalSourceIndex;
+                            }
+                            else
+                            {
+                                sourceBlocks.Add(new WebAPI.SourceBlock()
+                                {
+                                    reason = footnoteInfo.Title,
+                                    source = footnoteInfo.URL
+                                });
+
+                                footnoteInfo.FinalSourceIndex = sourceBlocks.Count;
+                            }
+
+                            sourceOrFootnotes[i] = footnoteInfo;
+                        }
+                    }
+
+                    // Reorder placeholders by final source index; remove duplicates and unresolved references (index 0)
+                    messageContent = k_SourceMarkersSequenceRegEx.Replace(messageContent, m =>
+                    {
+                        List<int> validFootnoteIndices = new List<int>();
+
+                        var matches = k_SourceMarkerRegex.Matches(m.Value);
+                        foreach (Match match in matches)
+                        {
+                            int index = int.Parse(match.Groups[1].Value);
+                            var footnoteInfo = sourceOrFootnotes[index-1];
+
+                            if (footnoteInfo.FinalSourceIndex == 0)
+                                continue;
+
+                            validFootnoteIndices.Add(index);
                         }
 
-                        sourceOrFootnotes[i] = footnoteInfo;
+                        validFootnoteIndices.Sort((i, j) =>
+                        {
+                            if (sourceOrFootnotes[i - 1].FinalSourceIndex == sourceOrFootnotes[j - 1].FinalSourceIndex)
+                                return 0;
+                            return sourceOrFootnotes[i - 1].FinalSourceIndex < sourceOrFootnotes[j - 1].FinalSourceIndex ? -1 : 1;
+                        });
+
+                        if (validFootnoteIndices.Count == 0)
+                            return "";
+
+                        StringBuilder sb = new StringBuilder();
+                        int lastSourceIndex = -1;
+                        foreach (var index in validFootnoteIndices)
+                        {
+                            if (sourceOrFootnotes[index - 1].FinalSourceIndex == lastSourceIndex)
+                                continue;
+
+                            sb.Append($"{{{{source:{index}}}}}");
+
+                            lastSourceIndex = sourceOrFootnotes[index - 1].FinalSourceIndex;
+                        }
+
+                        return sb.ToString();
+                    });
+
+                    // For clipboard string add a space for readability before source marker (which becomes a footnote, e.g. " [1]")
+                    if (mode == FootnoteFormat.SimpleIndexForClipboard)
+                    {
+                        messageContent = k_FirstSourceMarkerRegEx.Replace(messageContent, m =>
+                        {
+                            return $" {m.Value}";
+                        });
                     }
-                }
 
-                // Reorder placeholders by final source index; remove duplicates and unresolved references (index 0)
-                messageContent = k_SourceMarkersSequenceRegEx.Replace(messageContent, m =>
-                {
-                    List<int> validFootnoteIndices = new List<int>();
+                    // Replace invalid non-footnote markers
+                    messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
 
-                    var matches = k_SourceMarkerRegex.Matches(m.Value);
-                    foreach (Match match in matches)
+                    // Replace all placeholders with final footnotes
+                    messageContent = k_SourceMarkerRegex.Replace(messageContent, match =>
                     {
                         int index = int.Parse(match.Groups[1].Value);
-                        var footnoteInfo = sourceOrFootnotes[index-1];
+                        var footnoteInfo = sourceOrFootnotes[index - 1];
 
                         if (footnoteInfo.FinalSourceIndex == 0)
-                            continue;
+                        {
+                            return "";
+                        }
 
-                        validFootnoteIndices.Add(index);
-                    }
+                        // Sprites with indices for text field output
+                        if (mode == FootnoteFormat.SpritesForText)
+                            return GetReferenceString(footnoteInfo.FinalSourceIndex);
 
-                    validFootnoteIndices.Sort((i, j) =>
-                    {
-                        if (sourceOrFootnotes[i - 1].FinalSourceIndex == sourceOrFootnotes[j - 1].FinalSourceIndex)
-                            return 0;
-                        return sourceOrFootnotes[i - 1].FinalSourceIndex < sourceOrFootnotes[j - 1].FinalSourceIndex ? -1 : 1;
-                    });
-
-                    if (validFootnoteIndices.Count == 0)
-                        return "";
-
-                    StringBuilder sb = new StringBuilder();
-                    int lastSourceIndex = -1;
-                    foreach (var index in validFootnoteIndices)
-                    {
-                        if (sourceOrFootnotes[index - 1].FinalSourceIndex == lastSourceIndex)
-                            continue;
-
-                        sb.Append($"{{{{source:{index}}}}}");
-
-                        lastSourceIndex = sourceOrFootnotes[index - 1].FinalSourceIndex;
-                    }
-
-                    return sb.ToString();
-                });
-
-                // For clipboard string add a space for readability before source marker (which becomes a footnote, e.g. " [1]")
-                if (mode == FootnoteFormat.SimpleIndexForClipboard)
-                {
-                    messageContent = k_FirstSourceMarkerRegEx.Replace(messageContent, m =>
-                    {
-                        return $" {m.Value}";
+                        // Simple indices for clipboard output
+                        return $"[{footnoteInfo.FinalSourceIndex}]";
                     });
                 }
-
-                // Replace invalid non-footnote markers
-                messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
-
-                // Replace all placeholders with final footnotes
-                messageContent = k_SourceMarkerRegex.Replace(messageContent, match =>
+                else
                 {
-                    int index = int.Parse(match.Groups[1].Value);
-                    var footnoteInfo = sourceOrFootnotes[index - 1];
+                    messageContent = s_StringBuilder.ToString();
 
-                    if (footnoteInfo.FinalSourceIndex == 0)
-                    {
-                        return "";
-                    }
-
-                    // Sprites with indices for text field output
-                    if (mode == FootnoteFormat.SpritesForText)
-                        return GetReferenceString(footnoteInfo.FinalSourceIndex);
-
-                    // Simple indices for clipboard output
-                    return $"[{footnoteInfo.FinalSourceIndex}]";
-                });
-            }
-            else
-            {
-                messageContent = s_StringBuilder.ToString();
-
-                // Replace invalid non-footnote markers
-                messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
+                    // Replace invalid non-footnote markers
+                    messageContent = k_FootnoteInvalidInlineRegex.Replace(messageContent, "");
+                }
             }
         }
 
@@ -354,7 +356,7 @@ namespace Unity.Muse.Chat
 
         public static string GetReferenceString(int index)
         {
-            return $"<size=11><b><color=#{MuseChatConstants.SourcesReferenceColor}> [ {index} ]</color></b></size>";
+            return $"<link=\"{MuseChatConstants.SourceReferencePrefix}{index - 1}\"><size=11><b><color=#{MuseChatConstants.SourceReferenceColor}> [ {index} ]</color></b></size></link>";
         }
 
         public static string GetAssetLink<T>(string guid, string title)
@@ -448,47 +450,6 @@ namespace Unity.Muse.Chat
 
             string yearMonthKey = $"{5000 - timeStamp.Year}{50 - timeStamp.Month}";
             return $"{yearMonthKey}#{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(timeStamp.Month)} {timeStamp.Year}";
-        }
-
-        public static Texture2D GetTextureForObject(Object obj)
-        {
-            if (obj is MonoScript && AssetDatabase.Contains(obj))
-                return AssetDatabase.GetCachedIcon(AssetDatabase.GetAssetPath(obj)) as Texture2D;
-
-            return EditorGUIUtility.ObjectContent(null, obj.GetType()).image as Texture2D;
-        }
-
-        public static string GetLogIconClassName(LogReference.ConsoleMessageMode logMessageMode)
-        {
-            switch (logMessageMode)
-            {
-                case LogReference.ConsoleMessageMode.Warning:
-                    return "mui-icon-warn";
-                case LogReference.ConsoleMessageMode.Error:
-                    return "mui-icon-error";
-                default:
-                    return "mui-icon-info";
-            }
-        }
-
-        public static bool IsPrefabType(Object obj)
-        {
-            var isAsset = AssetDatabase.Contains(obj);
-            if (!isAsset)
-                return obj is GameObject && IsPrefabInScene(obj);
-
-            return PrefabUtility.IsPartOfAnyPrefab(obj);
-        }
-
-        public static bool IsPrefabInScene(Object obj)
-        {
-            if (obj is not GameObject)
-                return false;
-
-            if (AssetDatabase.Contains(obj))
-                return false;
-
-            return PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj) != null;
         }
     }
 }

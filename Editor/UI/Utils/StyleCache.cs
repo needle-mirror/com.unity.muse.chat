@@ -1,18 +1,19 @@
 using System.Collections.Generic;
+using Unity.Muse.Chat.UI.Utils;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
     /// <summary>
     /// Cache for style files loaded dynamically
     /// </summary>
-    internal class StyleCache
+    class StyleCache
     {
-        private static readonly StyleCache k_DefaultCache = new();
-        private static readonly IDictionary<string, StyleCache> k_SpecializedCaches;
+        static readonly StyleCache k_DefaultCache = new();
+        static readonly IDictionary<string, StyleCache> k_SpecializedCaches;
 
-        private readonly IDictionary<string, StyleSheet> m_Cache;
-        private readonly string m_StylePath;
+        readonly IDictionary<string, StyleSheet> m_Cache;
+        readonly string m_StylePath;
 
         /// <summary>
         /// Static constructor for specialized caches

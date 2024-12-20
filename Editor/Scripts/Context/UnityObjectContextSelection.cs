@@ -12,7 +12,18 @@ namespace Unity.Muse.Chat
     {
         Object m_Target;
 
-        static readonly List<string> k_ExtensionsToExtract = new() { ".cs", ".json",  ".shader" };
+        static readonly List<string> k_ExtensionsToExtract = new() { ".cs", ".json", ".shader", ".uxml" };
+
+        public bool IncludeObjectName = true;
+
+        public GameObject GameObject => m_Target as GameObject;
+        public Object Target => m_Target;
+
+        public int MaxObjectDepth = 1;
+        public bool IncludeFileContents = true;
+
+        // The serialized json string will be limited to this length:
+        public int SerializationLimit = MuseChatConstants.PromptContextLimit;
 
         public void SetTarget(Object target)
         {
@@ -51,23 +62,31 @@ namespace Unity.Muse.Chat
 
                 string path = AssetDatabase.GetAssetPath(m_Target);
                 string fileContents = null;
-                if (k_ExtensionsToExtract.Contains(Path.GetExtension(path)))
+                if (IncludeFileContents)
                 {
-                    fileContents = File.ReadAllText(path);
+                    if (k_ExtensionsToExtract.Contains(Path.GetExtension(path)))
+                    {
+                        fileContents = File.ReadAllText(path);
+                    }
+                    else if (m_Target is MonoBehaviour mono)
+                    {
+                        var monoScript = MonoScript.FromMonoBehaviour(mono);
+                        fileContents = monoScript.text;
+                    }
                 }
-                else if (m_Target is MonoBehaviour mono)
-                {
-                    var monoScript = MonoScript.FromMonoBehaviour(mono);
-                    fileContents = monoScript.text;
-                }
+
+                var json = UnityDataUtils.OutputUnityObject(m_Target, false, false, MaxObjectDepth,
+                    outputDirectory: true, includeObjectName: IncludeObjectName,
+                    jsonLengthLimit: SerializationLimit);
 
                 if (fileContents != null)
                 {
-                    return $"\n{UnityDataUtils.OutputUnityObject(m_Target, true, false, 1, outputDirectory: true)}" +
-                           $"\n\nFile contents:\"\n{fileContents}\"";
+                    return
+                        $"\n{json}" +
+                        $"\n\nFile contents:\"\n{fileContents}\"";
                 }
 
-                return $"\n{UnityDataUtils.OutputUnityObject(m_Target, true, false, 1, outputDirectory: true)}";
+                return $"\n{json}";
             }
         }
 
@@ -78,7 +97,7 @@ namespace Unity.Muse.Chat
                 if (m_Target == null)
                     return null;
 
-                return $"\n{UnityDataUtils.OutputUnityObject(m_Target, true, false, 0)}";
+                return $"\n{UnityDataUtils.OutputUnityObject(m_Target, false, false, 0, includeObjectName: IncludeObjectName, jsonLengthLimit: SerializationLimit)}";
             }
         }
 
@@ -92,33 +111,27 @@ namespace Unity.Muse.Chat
                 string path = AssetDatabase.GetAssetPath(m_Target);
                 if (path.EndsWith(".cs"))
                 {
-                    return "source code of c# script and its serialization data in json format";
+                    return "monoscript";
                 }
 
                 if (path.EndsWith(".json"))
                 {
-                    return "content of json file and its serialization data in json format";
+                    return "json";
                 }
-                return $"{m_Target.GetType()} object serialization data in json format";
+                return m_Target.GetType().Name;
             }
         }
 
         string IContextSelection.TargetName => $"{m_Target.name}";
 
+        bool? IContextSelection.Truncated => null;
+
         bool System.IEquatable<IContextSelection>.Equals(IContextSelection other)
         {
-            if (ReferenceEquals(this, other))
-                return true;
-
-            if (this == null || other == null)
-                return false;
-
             if (other is not UnityObjectContextSelection otherSelection)
                 return false;
 
-            var asObjectContext = other as UnityObjectContextSelection;
-
-            return asObjectContext.m_Target == m_Target;
+            return otherSelection.m_Target == m_Target;
         }
     }
 }

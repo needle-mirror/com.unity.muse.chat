@@ -20,38 +20,24 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "SmartContextRequest")]
     internal partial class SmartContextRequest
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SmartContextRequest" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected SmartContextRequest() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SmartContextRequest" /> class.
-        /// </summary>
-        /// <param name="prompt">User message to Smart Context. (required)</param>
-        /// <param name="conversationId">conversationId</param>
-        /// <param name="jsonCatalog">jsonCatalog</param>
-        /// <param name="organizationId">The ID of the Unity organization. (required)</param>
-        /// <param name="editorContext">Editor context from user input.</param>
-        public SmartContextRequest(string prompt = default(string), string conversationId = default(string), List<FunctionDefinition> jsonCatalog = default(List<FunctionDefinition>), string organizationId = default(string), string editorContext = "")
+        public SmartContextRequest(string organizationId, string prompt)
         {
-            // to ensure "prompt" is required (not null)
-            if (prompt == null)
-            {
-                throw new ArgumentNullException("prompt is a required property for SmartContextRequest and cannot be null");
-            }
-            this.Prompt = prompt;
-            // to ensure "organizationId" is required (not null)
-            if (organizationId == null)
-            {
-                throw new ArgumentNullException("organizationId is a required property for SmartContextRequest and cannot be null");
-            }
-            this.OrganizationId = organizationId;
-            this.ConversationId = conversationId;
-            this.JsonCatalog = jsonCatalog;
-            // use default value if no "editorContext" provided
-            this.EditorContext = editorContext ?? "";
+            OrganizationId = organizationId;
+            Prompt = prompt;
         }
+
+        /// <summary>
+        /// The ID of the Unity organization.
+        /// </summary>
+        /// <value>The ID of the Unity organization.</value>
+        [DataMember(Name = "organization_id", IsRequired = true, EmitDefaultValue = true)]
+        public string OrganizationId { get; set; }
 
         /// <summary>
         /// User message to Smart Context.
@@ -67,24 +53,16 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public string ConversationId { get; set; }
 
         /// <summary>
+        /// Gets or Sets EditorContext
+        /// </summary>
+        [DataMember(Name = "editor_context", EmitDefaultValue = true)]
+        public EditorContext EditorContext { get; set; }
+
+        /// <summary>
         /// Gets or Sets JsonCatalog
         /// </summary>
         [DataMember(Name = "json_catalog", EmitDefaultValue = true)]
         public List<FunctionDefinition> JsonCatalog { get; set; }
-
-        /// <summary>
-        /// The ID of the Unity organization.
-        /// </summary>
-        /// <value>The ID of the Unity organization.</value>
-        [DataMember(Name = "organization_id", IsRequired = true, EmitDefaultValue = true)]
-        public string OrganizationId { get; set; }
-
-        /// <summary>
-        /// Editor context from user input.
-        /// </summary>
-        /// <value>Editor context from user input.</value>
-        [DataMember(Name = "editor_context", EmitDefaultValue = false)]
-        public string EditorContext { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -94,11 +72,11 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class SmartContextRequest {\n");
+            sb.Append("  OrganizationId: ").Append(OrganizationId).Append("\n");
             sb.Append("  Prompt: ").Append(Prompt).Append("\n");
             sb.Append("  ConversationId: ").Append(ConversationId).Append("\n");
-            sb.Append("  JsonCatalog: ").Append(JsonCatalog).Append("\n");
-            sb.Append("  OrganizationId: ").Append(OrganizationId).Append("\n");
             sb.Append("  EditorContext: ").Append(EditorContext).Append("\n");
+            sb.Append("  JsonCatalog: ").Append(JsonCatalog).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -111,7 +89,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

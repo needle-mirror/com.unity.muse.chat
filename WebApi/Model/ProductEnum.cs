@@ -21,10 +21,16 @@ namespace Unity.Muse.Chat.BackendApi.Model
     internal enum ProductEnum
     {
         /// <summary>
+        /// Enum AiAssistant for value: ai-assistant
+        /// </summary>
+        [EnumMember(Value = "ai-assistant")]
+        AiAssistant = 1,
+
+        /// <summary>
         /// Enum MuseBehavior for value: muse-behavior
         /// </summary>
         [EnumMember(Value = "muse-behavior")]
-        MuseBehavior = 1,
+        MuseBehavior = 2
     }
 
 }

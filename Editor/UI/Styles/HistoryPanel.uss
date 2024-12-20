@@ -1,7 +1,7 @@
 .historypanel__element {
     flex-grow: 1;
     border-right-width: 1px;
-    border-right-color: var(--appui-backgrounds-50);
+    border-right-color: var(--muse-chat-backgrounds-50);
     min-width: 230px;
 }
 
@@ -15,6 +15,7 @@
 
 .mui-history-panel {
     flex-grow: 1;
+    width: 240px;
 }
 
 .mui-history-panel-root {
@@ -22,10 +23,10 @@
 }
 
 .unity-list-view__empty-label {
-    color: var(--appui-alias-text-callout);
+    color: var(--muse-chat-foregrounds-200);
 }
 
-#historySearchBar {
+.mui-history-panel-search-bar {
     margin-top: 6px;
     margin-left: 6px;
     margin-bottom: 6px;

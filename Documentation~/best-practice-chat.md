@@ -74,5 +74,5 @@ Follow these best practices to enhance your productivity and efficiency when usi
 
 ## Additional resources
 
-* [Muse Chat web version](web-chat.md)
 * [Muse Chat Editor](editor-chat.md)
+* [Install Muse Chat with the Package Manager](install-chat.md)

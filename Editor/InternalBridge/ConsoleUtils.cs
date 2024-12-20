@@ -12,7 +12,7 @@ namespace Unity.Muse.Chat
         static FieldInfo s_ConsoleListViewField;
         static ConsoleWindow s_ConsoleWindow;
         static ListViewState s_ConsoleWindowListViewState;
-        private static readonly LogEntry s_Entry = new();
+        static readonly LogEntry s_Entry = new();
 
         /// <summary>
         /// Returns the console window's ListViewState field info.
@@ -36,7 +36,7 @@ namespace Unity.Muse.Chat
             return null;
         }
 
-        internal static void GetSelectedConsoleLogs(List<LogReference> results)
+        internal static void GetSelectedConsoleLogs(List<LogData> results)
         {
             results.Clear();
             var currentConsoleWindow = GetOpenWindow<ConsoleWindow>();
@@ -72,28 +72,33 @@ namespace Unity.Muse.Chat
                 if (!selectedRows[i])
                     continue;
                 if (LogEntries.GetEntryInternal(i, s_Entry))
-                    results.Add(LogEntryToReference(s_Entry));
+                    results.Add(LogEntryToInternal(s_Entry));
             }
         }
 
-        internal static bool HasEqualLogReference(List<LogReference> logs, LogReference logRef)
+        internal static bool HasEqualLogEntry(List<LogData> entries, LogData entry)
         {
-            foreach (var l in logs)
+            foreach (var l in entries)
             {
-                if (l.Equals(logRef))
+                if (l.Equals(entry))
+                {
                     return true;
+                }
             }
 
             return false;
         }
 
-        static LogReference LogEntryToReference(LogEntry entry)
+        static LogData LogEntryToInternal(LogEntry entry)
         {
-            var logRef = new LogReference();
-            logRef.Message = entry.message;
-            logRef.File = entry.file;
-            logRef.Line = entry.line;
-            logRef.Column = entry.column;
+            var internalEntry = new LogData
+            {
+                Message = entry.message,
+                File = entry.file,
+                Line = entry.line,
+                Column = entry.column
+            };
+
             var mode = (ConsoleWindow.Mode) entry.mode;
             if ((mode & (ConsoleWindow.Mode.Error | ConsoleWindow.Mode.Assert |
                                                    ConsoleWindow.Mode.Fatal | ConsoleWindow.Mode.AssetImportError |
@@ -107,19 +112,20 @@ namespace Unity.Muse.Chat
                                                    ConsoleWindow.Mode.VisualScriptingError
                                                    )) != 0)
             {
-                logRef.Mode = LogReference.ConsoleMessageMode.Error;
+                internalEntry.Type = LogDataType.Error;
             }
             else if ((mode & (ConsoleWindow.Mode.AssetImportWarning |
                               ConsoleWindow.Mode.ScriptingWarning |
                               ConsoleWindow.Mode.ScriptCompileWarning)) != 0)
             {
-                logRef.Mode = LogReference.ConsoleMessageMode.Warning;
+                internalEntry.Type = LogDataType.Warning;
             }
             else
             {
-                logRef.Mode = LogReference.ConsoleMessageMode.Log;
+                internalEntry.Type = LogDataType.Info;
             }
-            return logRef;
+
+            return internalEntry;
         }
 
         [MenuItem("internal:Muse/Internals/Log Random messages")]
@@ -146,7 +152,7 @@ namespace Unity.Muse.Chat
         [MenuItem("internal:Muse/Internals/Log Console Selection")]
         static void LogSelection()
         {
-            List<LogReference> logs = new();
+            List<LogData> logs = new();
             GetSelectedConsoleLogs(logs);
             Debug.Log($"{logs.Count} entries:\n{string.Join("\n", logs.Select(l => l.Message))}");
         }

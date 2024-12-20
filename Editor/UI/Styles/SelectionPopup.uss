@@ -1,14 +1,22 @@
+.selectionpopup__element {
+    position: absolute;
+    bottom: 90px;
+    left: 16px;
+    right: 16px;
+    min-width: 380px;
+    max-width: 500px;
+    height: 300px;
+}
+
 .mui-selection-popup-root {
-    min-width: 200px;
-    min-height: 200px;
-    max-height: 500px;
+    background-color: var(--muse-chat-backgrounds-200);
     flex-direction: column;
     flex-shrink: 1;
 }
 
 .mui-selection-popup-title-row {
     flex-direction: row;
-    background-color: var(--appui-backgrounds-300);
+    background-color: var(--muse-chat-backgrounds-300);
 }
 
 .mui-selection-popup-history-title {
@@ -16,26 +24,39 @@
     padding-left: 10px;
     padding-top: 6px;
     padding-bottom: 6px;
-    -unity-font-style: bold;
 }
 
 .mui-selection-popup-empty-list-hint-text {
-    padding: 10px;
-    color: var(--appui-color-gray-800)
+    padding: 8px;
+    color: var(--muse-agent-selection-empty);
 }
 
 .mui-selection-popup-history-button {
-    background-color: var(--appui-backgrounds-300);
+    background-color: rgba(0, 0, 0, 0);
     color: var(--muse-chat-color-blue);
     border-width: 0;
     padding-right: 8px;
 }
 
-.mui-selection-popup-history-button:hover {
-    color: var(--appui-color-blue-1400);
+#addSelectionButton:hover {
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .mui-selection-popup-listview {
     flex-grow: 1;
     background-color: black;
+}
+
+.mui-selection-search-bar {
+    flex-grow: 1;
+    flex-shrink: 0;
+    width: auto;
+}
+
+.mui-selection-search-bar-row {
+    padding: 8px;
+}
+
+.mui-selection-popup-adaptive-list-view-container {
+    max-height: 200px;
 }

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Button = Unity.Muse.AppUI.UI.Button;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class MuseChatInspirationPanel : ManagedTemplate
+    class MuseChatInspirationPanel : ManagedTemplate
     {
         Button m_RefreshButton;
 
@@ -15,7 +14,7 @@ namespace Unity.Muse.Chat
         VisualElement m_RunContent;
         VisualElement m_GenerateContent;
 
-        private readonly IDictionary<ChatCommandType, IList<MuseChatInspiration>> k_InspirationCache = new Dictionary<ChatCommandType, IList<MuseChatInspiration>>();
+        readonly IDictionary<ChatCommandType, IList<MuseChatInspiration>> k_InspirationCache = new Dictionary<ChatCommandType, IList<MuseChatInspiration>>();
 
         public MuseChatInspirationPanel()
             : base(MuseChatConstants.UIModulePath)
@@ -31,14 +30,24 @@ namespace Unity.Muse.Chat
             m_RunContent = view.Q<VisualElement>("runInspirationSectionContent");
             m_GenerateContent = view.Q<VisualElement>("generateInspirationSectionContent");
 
-            MuseEditorDriver.instance.OnInspirationsChanged += RefreshEntries;
+            Assistant.instance.OnInspirationsChanged += RefreshEntries;
             BeginRefreshEntries();
         }
 
-        private void RefreshCache()
+        public void RefreshEntries()
+        {
+            RefreshCache();
+            RefreshEntriesForCategory(m_AskContent, ChatCommandType.Ask, maxEntries: 4);
+#if ENABLE_ASSISTANT_BETA_FEATURES
+            RefreshEntriesForCategory(m_RunContent, ChatCommandType.Run);
+            RefreshEntriesForCategory(m_GenerateContent, ChatCommandType.Code);
+#endif
+        }
+
+        void RefreshCache()
         {
             k_InspirationCache.Clear();
-            var entries = MuseEditorDriver.instance.Inspirations;
+            var entries = Assistant.instance.Inspirations;
             foreach (MuseChatInspiration inspiration in entries)
             {
                 if (!k_InspirationCache.TryGetValue(inspiration.Mode, out var entryList))
@@ -50,7 +59,8 @@ namespace Unity.Muse.Chat
                 entryList.Add(inspiration);
             }
         }
-        private void RefreshEntriesForCategory(VisualElement targetRoot, ChatCommandType mode, int maxEntries = 3)
+
+        void RefreshEntriesForCategory(VisualElement targetRoot, ChatCommandType mode, int maxEntries = 3)
         {
             targetRoot.Clear();
 
@@ -74,20 +84,12 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void BeginRefreshEntries()
+        void BeginRefreshEntries()
         {
-            MuseEditorDriver.instance.StartInspirationRefresh();
+            Assistant.instance.RefreshInspirations();
         }
 
-        private void RefreshEntries()
-        {
-            RefreshCache();
-            RefreshEntriesForCategory(m_AskContent, ChatCommandType.Ask, maxEntries: 4);
-            RefreshEntriesForCategory(m_RunContent, ChatCommandType.Run);
-            RefreshEntriesForCategory(m_GenerateContent, ChatCommandType.Code);
-        }
-
-        private void OnInspirationSelected(MuseChatInspiration value)
+        void OnInspirationSelected(MuseChatInspiration value)
         {
             InspirationSelected?.Invoke(value);
         }

@@ -1,8 +1,5 @@
 * [About Muse Chat](index.md)
 * [Muse Chat features](features-chat.md)
-* [Muse Chat web version](web-chat.md)
-   * [Muse Chat web version interface](web-chat-interface.md)
-   * [Use web version of Muse Chat](use-web-chat.md)
 * [Muse Chat Editor](editor-chat.md)
    * [Install Muse Chat with the Package Manager](install-chat.md)
    * [Muse Chat Editor interface](editor-chat-interface.md)

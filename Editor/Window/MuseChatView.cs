@@ -1,34 +1,25 @@
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using Unity.AppUI.Core;
-using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common;
 using Unity.Muse.Common.Account;
 using Unity.Muse.Common.Utils;
 using UnityEditor;
-using UnityEngine;
+using UnityEditor.Search;
 using UnityEngine.UIElements;
-using Debug = UnityEngine.Debug;
-using Button = Unity.Muse.AppUI.UI.Button;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
     partial class MuseChatView : ManagedTemplate
     {
-        static double s_LastConsoleCheckTime;
-
-        static Texture2D s_NewChatButtonImage;
-        static Texture2D s_HistoryButtonImage;
+        static readonly char[] k_MessageTrimChars = { ' ', '\n', '\r', '\t' };
 
         VisualElement m_RootMain;
-        Panel m_RootPanel;
+        VisualElement m_RootPanel;
         VisualElement m_NotificationContainer;
 
         Button m_NewChatButton;
         Button m_HistoryButton;
 
-        Text m_ConversationName;
+        Label m_ConversationName;
 
         MuseConversationPanel m_ConversationPanel;
 
@@ -50,7 +41,11 @@ namespace Unity.Muse.Chat
 
         VisualElement m_ChatInputRoot;
         MuseTextField m_ChatInput;
-        ActionGroup m_CommandActionGroup;
+        VisualElement m_CommandActionGroup;
+
+        VisualElement m_PopupRoot;
+        SelectionPopup m_SelectionPopup;
+        PopupTracker m_SelectionPopupTracker;
 
         Button m_AddContextButton;
         Button m_ClearContextButton;
@@ -63,43 +58,23 @@ namespace Unity.Muse.Chat
         string m_SelectedConsoleMessageContent;
         string m_SelectedGameObjectName;
 
-        List<Object> ObjectSelection
-        {
-            set
-            {
-                if (m_Window != null) m_Window.m_ObjectSelection = value;
-            }
-            get => m_Window != null ? m_Window.m_ObjectSelection : null;
-        }
-        List<LogReference> ConsoleSelection
-        {
-            set
-            {
-                if (m_Window != null) m_Window.m_ConsoleSelection = value;
-            }
-            get => m_Window != null ? m_Window.m_ConsoleSelection : null;
-        }
-
         bool m_MusingInProgress;
-        MuseChatWindow m_Window;
-
-        internal static MuseChatView m_Instance;
-        bool m_DelayedUpdateSelectionElements;
-
-        private SelectionPopup m_CurrentSelectionPopup;
+        IMuseChatHost m_Host;
 
         /// <summary>
         /// Constructor for the MuseChatView.
         /// </summary>
         public MuseChatView()
-            : base(MuseChatConstants.UIModulePath)
+            : this(null)
         {
         }
 
-        public MuseChatView(MuseChatWindow window)
+        public MuseChatView(IMuseChatHost host)
             : base(MuseChatConstants.UIModulePath)
         {
-            m_Window = window;
+            m_Host = host;
+
+            RegisterAttachEvents(OnAttachToPanel, OnDetachFromPanel);
         }
 
         public void InitializeThemeAndStyle()
@@ -118,20 +93,20 @@ namespace Unity.Muse.Chat
             view.style.flexGrow = 1;
 
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
-            m_HeaderRoot.SetSessionTracked();
+            m_HeaderRoot.AddSessionAndCompatibilityStatusManipulators();
 
             m_RootMain = view.Q<VisualElement>("root-main");
             m_RootMain.RegisterCallback<MouseEnterEvent>(UpdateSelectedContextWarning);
             m_NotificationContainer = view.Q<VisualElement>("notificationContainer");
 
-            m_RootPanel = view.Q<Panel>("root-panel");
+            m_RootPanel = view.Q<VisualElement>("root-panel");
 
             m_NewChatButton = view.SetupButton("newChatButton", OnNewChatClicked);
-            m_NewChatButton.SetSessionTracked();
+            m_NewChatButton.AddSessionAndCompatibilityStatusManipulators();
             m_HistoryButton = view.SetupButton("historyButton", OnHistoryClicked);
-            m_HistoryButton.SetSessionTracked();
+            m_HistoryButton.AddSessionAndCompatibilityStatusManipulators();
 
-            m_ConversationName = view.Q<Text>("conversationNameLabel");
+            m_ConversationName = view.Q<Label>("conversationNameLabel");
             m_ConversationName.enableRichText = false;
 
             var panelRoot = view.Q<VisualElement>("chatPanelRoot");
@@ -151,13 +126,8 @@ namespace Unity.Muse.Chat
             m_MusingElement.Initialize();
             m_MusingElementRoot.Add(m_MusingElement);
 
-            if (UserSessionState.instance.DebugUIModeEnabled)
-            {
-                ShowMusingElement();
-            }
-
             var contentRoot = view.Q<VisualElement>("chatContentRoot");
-            contentRoot.SetSessionTracked();
+            contentRoot.AddSessionAndCompatibilityStatusManipulators();
 
             m_InspirationRoot = view.Q<VisualElement>("inspirationPanelRoot");
             m_InspirationPanel = new MuseChatInspirationPanel();
@@ -167,7 +137,7 @@ namespace Unity.Muse.Chat
 
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
             m_FooterRoot = view.Q<VisualElement>("footerRoot");
-            m_FooterRoot.SetSessionTracked();
+            m_FooterRoot.AddSessionAndCompatibilityStatusManipulators();
 
             m_ChatInputRoot = view.Q<VisualElement>("chatTextFieldRoot");
             m_ChatInput = new MuseTextField();
@@ -175,11 +145,16 @@ namespace Unity.Muse.Chat
             m_ChatInput.OnSubmit += OnMuseRequestSubmit;
             m_ChatInputRoot.Add(m_ChatInput);
 
-            m_CommandActionGroup = view.Q<ActionGroup>("commandGroup");
+            m_PopupRoot = view.Q<VisualElement>("chatModalPopupRoot");
+            InitializeSelectionPopup();
 
-            SetupCommandButton(view.Q<ActionButton>("commandAsk"), ChatCommandType.Ask, 0);
-            SetupCommandButton(view.Q<ActionButton>("commandRun"), ChatCommandType.Run, 1);
-            SetupCommandButton(view.Q<ActionButton>("commandCode"), ChatCommandType.Code, 2);
+            m_CommandActionGroup = view.Q<VisualElement>("commandGroup");
+
+            view.SetupButton("commandAsk", x => OnToggleMode(ChatCommandType.Ask, 0));
+#if ENABLE_ASSISTANT_BETA_FEATURES
+            view.SetupButton("commandRun", x => OnToggleMode(ChatCommandType.Run, 1));
+            view.SetupButton("commandCode", x => OnToggleMode(ChatCommandType.Code, 2));
+#endif
 
             // Hide commands until features are ready
             m_CommandActionGroup.style.display = DisplayStyle.None;
@@ -190,8 +165,12 @@ namespace Unity.Muse.Chat
             m_ClearContextButton = view.Q<Button>("clearContextButton");
             m_ClearContextButton.clicked += ClearContext;
 
+            var sessionNotifications = new SessionStatusNotifications { pickingMode = PickingMode.Ignore };
+            var serverCompatibilityNotifications = new ServerCompatibilityNotifications { pickingMode = PickingMode.Ignore };
+
             var notificationBanner = view.Q<VisualElement>("account-notifications");
-            notificationBanner.Add(new SessionStatusNotifications());
+            notificationBanner.Add(serverCompatibilityNotifications);
+            notificationBanner.Add(sessionNotifications);
 
             m_BannerRoot = view.Q<VisualElement>("notificationBannerRoot");
             m_Banner = new MuseChatNotificationBanner();
@@ -206,34 +185,29 @@ namespace Unity.Muse.Chat
 
             m_ExceedingSelectedConsoleMessageLimitRoot = view.Q<VisualElement>("userSelectedContextWarningRoot");
 
-            UpdateMuseEditorDriverSelection();
+            UpdateMuseEditorDriverContext();
             UpdateSelectedContextWarning();
 
             EditorApplication.hierarchyChanged += OnHierarchChanged;
 
             ClearChat();
+            SearchService.Refresh();
+            m_DropZoneRoot = view.Q<VisualElement>("chatDropZone");
+            m_DropZone = new ChatDropZone();
+            m_DropZone.Initialize();
+            m_DropZoneRoot.Add(m_DropZone);
+            m_DropZone.SetupDragDrop(m_DropZoneRoot, OnDropped);
+            m_DropZone.SetupDragDrop(m_RootMain, OnDropped);
 
-
-            m_DropZone = view.Q<DropZone>("chatDropZone");
-            m_DropZone.controller.acceptDrag += OnAcceptDrag;
-            m_DropZone.controller.dropped += OnDropped;
-            m_DropZone.controller.dragEnded += OnDragEnded;
-
-            m_DropZoneContent = view.Q<VisualElement>("chatDropZoneContent");
-
-            SetDropZoneActive(false);
-
-            m_RootMain.RegisterCallback<DragEnterEvent>(DragEnter);
-            m_RootMain.RegisterCallback<DragLeaveEvent>(DragLeave);
-            m_RootMain.RegisterCallback<DragUpdatedEvent>(DragUpdate);
+            m_DropZone.SetDropZoneActive(false);
 
             view.RegisterCallback<GeometryChangedEvent>(OnViewGeometryChanged);
 
-            MuseEditorDriver.instance.OnDataChanged += OnDataChanged;
-            MuseEditorDriver.instance.OnConnectionChanged += OnConnectionChanged;
+            Assistant.instance.OnDataChanged += OnDataChanged;
+            Assistant.instance.OnConnectionChanged += OnConnectionChanged;
 
-            MuseEditorDriver.instance.OnConversationHistoryChanged += OnConversationHistoryChanged;
-            MuseEditorDriver.instance.OnConversationTitleChanged += OnConversationTitleChanged;
+            Assistant.instance.OnConversationHistoryChanged += OnConversationHistoryChanged;
+            Assistant.instance.OnConversationTitleChanged += OnConversationTitleChanged;
             SetMusingActive(false);
 
             ClientStatus.Instance.OnClientStatusChanged += CheckClientStatus;
@@ -241,11 +215,9 @@ namespace Unity.Muse.Chat
 
             s_ShowNotificationEvent += OnShowNotification;
 
-            Selection.selectionChanged += OnGameObjectSelectionChanged;
+            UpdateContextSelectionElements();
 
-            OnGameObjectSelectionChanged();
-
-            MuseEditorDriver.instance.ViewInitialized();
+            Assistant.instance.ViewInitialized();
 
             AssemblyReloadEvents.beforeAssemblyReload += OnBeforeAssemblyReload;
 
@@ -275,24 +247,18 @@ namespace Unity.Muse.Chat
             }
         }
 
-        void SetupCommandButton(ActionButton command, ChatCommandType type, int index)
+        void OnToggleMode(ChatCommandType type, int index)
         {
-            command.clicked += () =>
-            {
-                UserSessionState.instance.SelectedCommandMode = type;
-                m_ChatInput.Enable();
-            };
-
-            if (UserSessionState.instance.SelectedCommandMode == type)
-                m_CommandActionGroup.SetSelectionWithoutNotify(new []{ index });
+            UserSessionState.instance.SelectedCommandMode = type;
+            m_ChatInput.Enable();
         }
 
-        private void OnConversationPanelClicked(MouseUpEvent evt)
+        void OnConversationPanelClicked(MouseUpEvent evt)
         {
             SetHistoryDisplay(false);
         }
 
-        private void OnSuggestionRootClicked(MouseUpEvent evt)
+        void OnSuggestionRootClicked(MouseUpEvent evt)
         {
             SetHistoryDisplay(false);
         }
@@ -301,12 +267,11 @@ namespace Unity.Muse.Chat
         {
             AssemblyReloadEvents.beforeAssemblyReload -= OnBeforeAssemblyReload;
 
-            MuseEditorDriver.instance.OnDataChanged -= OnDataChanged;
-            MuseEditorDriver.instance.OnConversationTitleChanged -= OnConversationTitleChanged;
-            MuseEditorDriver.instance.OnConnectionChanged -= OnConnectionChanged;
-            MuseEditorDriver.instance.OnConversationHistoryChanged -= OnConversationHistoryChanged;
-            Selection.selectionChanged -= OnGameObjectSelectionChanged;
-            MuseEditorDriver.instance.ClearForNewConversation();
+            Assistant.instance.OnDataChanged -= OnDataChanged;
+            Assistant.instance.OnConversationTitleChanged -= OnConversationTitleChanged;
+            Assistant.instance.OnConnectionChanged -= OnConnectionChanged;
+            Assistant.instance.OnConversationHistoryChanged -= OnConversationHistoryChanged;
+            Assistant.instance.ClearForNewConversation();
 
             ClientStatus.Instance.OnClientStatusChanged -= CheckClientStatus;
 
@@ -346,32 +311,27 @@ namespace Unity.Muse.Chat
             SetSuggestionVisible(true);
         }
 
-        private void ShowMusingElement()
+        void ShowMusingElement()
         {
             m_MusingElementRoot.SetDisplay(true);
             m_MusingElement.Start();
         }
 
-        private void HideMusingElement()
+        void HideMusingElement()
         {
-            if (UserSessionState.instance.DebugUIModeEnabled)
-            {
-                return;
-            }
-
             m_MusingElementRoot.SetDisplay(false);
             m_MusingElement.Stop();
         }
 
-        private void OnHistoryClicked(PointerUpEvent evt)
+        void OnHistoryClicked(PointerUpEvent evt)
         {
-            MuseEditorDriver.instance.StartConversationRefresh();
+            Assistant.instance.RefreshConversations();
 
             bool status = !(m_HistoryPanelRoot.style.display == DisplayStyle.Flex);
             SetHistoryDisplay(status);
         }
 
-        private void SetHistoryDisplay(bool isVisible)
+        void SetHistoryDisplay(bool isVisible)
         {
             m_HistoryPanelRoot.style.display = isVisible
                 ? DisplayStyle.Flex
@@ -382,138 +342,36 @@ namespace Unity.Muse.Chat
 
         void OnNewChatClicked(PointerUpEvent evt)
         {
-            MuseEditorDriver.instance.ClearForNewConversation();
+            Assistant.instance.ClearForNewConversation();
             ClearChat();
             SetMusingActive(false);
 
             ShowNotification("New Chat created", PopNotificationIconType.Info);
         }
 
-        void OnGameObjectSelectionChanged()
+        void OnHierarchChanged()
         {
             UpdateContextSelectionElements();
         }
 
-        void OnHierarchChanged()
+        void OnAssetDeletes(string[] paths)
         {
-            if (MuseEditorDriver.instance.HasNullAttachments(ObjectSelection))
-                UpdateContextSelectionElements();
+            CheckContextForDeletedAssets(paths);
         }
 
-        void OnDeleteAsset(string path)
-        {
-            if (m_DelayedUpdateSelectionElements)
-                return;
-
-            foreach (var obj in ObjectSelection)
-            {
-                if (AssetDatabase.Contains(obj))
-                {
-                    var assetPath = AssetDatabase.GetAssetPath(obj);
-
-                    if (path == assetPath)
-                    {
-                        m_DelayedUpdateSelectionElements = true;
-                        EditorApplication.delayCall += () => UpdateContextSelectionElements(true);
-                    }
-                }
-            }
-        }
-
-        void UpdateContextSelectionElements(bool updatePopup = false)
-        {
-            if (updatePopup && m_CurrentSelectionPopup != null)
-            {
-                m_CurrentSelectionPopup.SetSelection(ObjectSelection, ConsoleSelection, false);
-                m_CurrentSelectionPopup.PopulateListView();
-            }
-
-            ObjectSelection = MuseEditorDriver.instance.GetValidAttachment(ObjectSelection);
-
-            m_SelectedContextScrollView.Clear();
-
-            if (ObjectSelection != null)
-            {
-                foreach (var obj in ObjectSelection)
-                {
-                    var newElement = new ContextViewElement();
-                    newElement.Initialize();
-                    newElement.SetData(obj);
-
-                    m_SelectedContextScrollView.Add(newElement);
-
-                    newElement.OnRemoveButtonClicked += () =>
-                    {
-                        ObjectSelection.Remove(obj);
-                        UpdateContextSelectionElements();
-                    };
-                }
-            }
-            if (ConsoleSelection != null)
-            {
-                foreach (var logRef in ConsoleSelection)
-                {
-                    var newElement = new ContextViewElement();
-                    newElement.Initialize();
-                    newElement.SetData(logRef);
-
-                    m_SelectedContextScrollView.Add(newElement);
-
-                    newElement.OnRemoveButtonClicked += () =>
-                    {
-                        ConsoleSelection.Remove(logRef);
-                        UpdateContextSelectionElements();
-                    };
-                }
-            }
-
-            m_SelectedContextScrollView.MarkDirtyRepaint();
-
-            UpdateSelectedContextWarning();
-            UpdateMuseEditorDriverSelection();
-            UpdateClearContextButton();
-        }
-
-        void UpdateSelectedContextWarning(MouseEnterEvent evt = null)
-        {
-            var contextBuilder = new ContextBuilder();
-            MuseEditorDriver.instance.GetAttachedContextString(ref contextBuilder);
-            if (contextBuilder.BuildContext(int.MaxValue).Length > MuseChatConstants.PromptContextLimit)
-            {
-                m_ExceedingSelectedConsoleMessageLimitRoot.style.display = DisplayStyle.Flex;
-            }
-            else
-            {
-                m_ExceedingSelectedConsoleMessageLimitRoot.style.display = DisplayStyle.None;
-            }
-        }
-
-        void UpdateClearContextButton()
-        {
-            if (ObjectSelection != null && ObjectSelection.Count > 0
-                || ConsoleSelection != null && ConsoleSelection.Count > 0)
-            {
-                m_ClearContextButton.style.display = DisplayStyle.Flex;
-            }
-            else
-            {
-                m_ClearContextButton.style.display = DisplayStyle.None;
-            }
-        }
-
-        private void OnInspirationSelected(MuseChatInspiration inspiration)
+        void OnInspirationSelected(MuseChatInspiration inspiration)
         {
             m_ChatInput.SetText(inspiration.Value);
         }
 
-        private void OnDataChanged(MuseChatUpdateData data)
+        void OnDataChanged(MuseChatUpdateData data)
         {
             switch (data.Type)
             {
                 case MuseChatUpdateType.ConversationChange:
                 {
                     // Clear the dynamic content and regen based on the conversation
-                    ChangeConversation(MuseEditorDriver.instance.GetActiveConversation());
+                    ChangeConversation(Assistant.instance.GetActiveConversation());
                     break;
                 }
 
@@ -534,12 +392,12 @@ namespace Unity.Muse.Chat
             SetMusingActive(data.IsMusing);
         }
 
-        private void SetMusingActive(bool state)
+        void SetMusingActive(bool state)
         {
             m_ChatInput.SetMusingState(state);
 
             m_MusingInProgress = state;
-            if (state && MuseEditorDriver.instance.CurrentPromptState != MuseEditorDriver.PromptState.Streaming)
+            if (state && Assistant.instance.CurrentPromptState != Assistant.PromptState.Streaming)
             {
                 ShowMusingElement();
             }
@@ -549,7 +407,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnConnectionChanged(string message, bool connected)
+        void OnConnectionChanged(string message, bool connected)
         {
             if (!connected)
             {
@@ -561,18 +419,20 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnMuseRequestSubmit(string message)
+        void OnMuseRequestSubmit(string message)
         {
+            message = message.Trim(k_MessageTrimChars);
             // If musing is in progress and the submit button is pressed, stop the current request:
             if (m_MusingInProgress || string.IsNullOrEmpty(message))
             {
                 if (m_MusingInProgress)
                 {
-                    MuseEditorDriver.instance.AbortPrompt();
+                    Assistant.instance.AbortPrompt();
                     SetMusingActive(false);
-                    MuseEditorDriver.instance.StartConversationReload();
+                    Assistant.instance.ConversationReload();
                 }
 
+                m_ChatInput.ClearText();
                 return;
             }
 
@@ -583,18 +443,18 @@ namespace Unity.Muse.Chat
             }
 
             m_ChatInput.ClearText();
-            MuseEditorDriver.instance.ProcessPrompt(message);
+            Assistant.instance.ProcessPrompt(message);
             SetMusingActive(true);
         }
 
-        private void ToggleEnabled(bool enabled)
+        void ToggleEnabled(bool enabled)
         {
             m_HeaderRoot.SetEnabled(enabled);
             m_InspirationPanel.SetEnabled(enabled);
             m_FooterRoot.SetDisplay(enabled);
         }
 
-        private void CheckClientStatus(ClientStatusResponse clientStatus)
+        void CheckClientStatus(ClientStatusResponse clientStatus)
         {
             if (clientStatus.IsDeprecated)
             {
@@ -635,7 +495,7 @@ namespace Unity.Muse.Chat
 
         void OnBeforeAssemblyReload()
         {
-            var activeConversation = MuseEditorDriver.instance.GetActiveConversation();
+            var activeConversation = Assistant.instance.GetActiveConversation();
             UserSessionState.instance.LastActiveConversationId = activeConversation == null
                 ? null
                 : activeConversation.Id.Value;
@@ -643,71 +503,65 @@ namespace Unity.Muse.Chat
 
         void ShowSelectionPopup()
         {
-            Popover modal = null;
-
-            var popup = new SelectionPopup();
-
             // Restore previous context selection
-            popup.SetSelection(ObjectSelection, ConsoleSelection);
+            m_SelectionPopup.SetSelectionFromContext(k_SelectedContext);
 
-            popup.Initialize();
+            m_AddContextButton.EnableInClassList("mui-selected-context-button-open", true);
+            m_AddContextButton.EnableInClassList("mui-selected-context-button-default-behavior", false);
 
-            popup.SetAdjustToPanel(m_RootPanel);
+            m_SelectionPopup.Show();
 
-            modal = Popover.Build(m_RootPanel, popup);
-            modal.SetAnchor(m_AddContextButton);
-            modal.SetPlacement(PopoverPlacement.BottomLeft);
+            m_SelectionPopupTracker = new PopupTracker(m_SelectionPopup, m_AddContextButton);
+            m_SelectionPopupTracker.Dismiss += HideSelectionPopup;
+        }
 
-            m_AddContextButton.AddToClassList("mui-selected-context-button-open");
-            m_AddContextButton.RemoveFromClassList("mui-selected-context-button-default-behavior");
-
-            modal.Show();
-
-            modal.dismissed += (Popover _, DismissType t) =>
+        void HideSelectionPopup()
+        {
+            if (m_SelectionPopupTracker == null)
             {
-                m_AddContextButton.RemoveFromClassList("mui-selected-context-button-open");
-                m_AddContextButton.AddToClassList("mui-selected-context-button-default-behavior");
-            };
+                // Popup is not active
+                return;
+            }
 
-            popup.OnSelectionChanged += () =>
+            m_SelectionPopupTracker.Dismiss -= HideSelectionPopup;
+            m_SelectionPopupTracker.Dispose();
+            m_SelectionPopupTracker = null;
+
+            m_SelectionPopup.Hide();
+
+            m_AddContextButton.EnableInClassList("mui-selected-context-button-open", false);
+            m_AddContextButton.EnableInClassList("mui-selected-context-button-default-behavior", true);
+        }
+
+        void InitializeSelectionPopup()
+        {
+            m_SelectionPopup = new SelectionPopup();
+            m_SelectionPopup.Initialize();
+            m_SelectionPopup.Hide();
+            m_SelectionPopup.OnSelectionChanged += () =>
             {
                 // Memorize current context selection
-                ObjectSelection = popup.ObjectSelection.ToList();
-                ConsoleSelection = popup.ConsoleSelection.ToList();
+                SyncContextSelection(m_SelectionPopup.ObjectSelection, m_SelectionPopup.ConsoleSelection);
 
                 UpdateContextSelectionElements();
             };
 
-            m_CurrentSelectionPopup = popup;
+            m_PopupRoot.Add(m_SelectionPopup);
 
-            if (m_Window != null)
-                m_Window.OnLostWindowFocus += () => modal.Dismiss();
-        }
-
-        void ClearContext()
-        {
-            ObjectSelection.Clear();
-            ConsoleSelection.Clear();
-
-            UpdateMuseEditorDriverSelection();
-
-            UpdateContextSelectionElements();
-        }
-
-        void UpdateMuseEditorDriverSelection()
-        {
-            MuseEditorDriver.instance.m_ObjectAttachments = ObjectSelection;
-            MuseEditorDriver.instance.m_ConsoleAttachments = ConsoleSelection;
-        }
-
-        public class TrackDeletedSelectedAssetsProcessor : AssetModificationProcessor
-        {
-            static AssetDeleteResult OnWillDeleteAsset(string path, RemoveAssetOptions opt)
+            if (m_Host != null)
             {
-                m_Instance?.OnDeleteAsset(path);
-
-                return AssetDeleteResult.DidNotDelete;
+                m_Host.FocusLost += HideSelectionPopup;
             }
+        }
+
+        void OnDetachFromPanel(DetachFromPanelEvent evt)
+        {
+            MuseChatAssetsModificationProcessors.AssetDeletes -= OnAssetDeletes;
+        }
+
+        void OnAttachToPanel(AttachToPanelEvent evt)
+        {
+            MuseChatAssetsModificationProcessors.AssetDeletes += OnAssetDeletes;
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "UpdateInspirationRequest")]
     internal partial class UpdateInspirationRequest
     {
+
         /// <summary>
         /// Defines Mode
         /// </summary>
@@ -46,35 +47,27 @@ namespace Unity.Muse.Chat.BackendApi.Model
         }
 
 
+        public UpdateInspirationRequest()
+        {
+        }
+
         /// <summary>
         /// Gets or Sets Mode
         /// </summary>
         [DataMember(Name = "mode", EmitDefaultValue = true)]
         public ModeEnum? Mode { get; set; }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateInspirationRequest" /> class.
-        /// </summary>
-        /// <param name="mode">mode</param>
-        /// <param name="value">value</param>
-        /// <param name="description">description</param>
-        public UpdateInspirationRequest(ModeEnum? mode = default(ModeEnum?), string value = default(string), string description = default(string))
-        {
-            this.Mode = mode;
-            this.Value = value;
-            this.Description = description;
-        }
-
-        /// <summary>
-        /// Gets or Sets Value
-        /// </summary>
-        [DataMember(Name = "value", EmitDefaultValue = true)]
-        public string Value { get; set; }
 
         /// <summary>
         /// Gets or Sets Description
         /// </summary>
         [DataMember(Name = "description", EmitDefaultValue = true)]
         public string Description { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Value
+        /// </summary>
+        [DataMember(Name = "value", EmitDefaultValue = true)]
+        public string Value { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -84,9 +77,9 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class UpdateInspirationRequest {\n");
+            sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  Mode: ").Append(Mode).Append("\n");
             sb.Append("  Value: ").Append(Value).Append("\n");
-            sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -99,7 +92,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

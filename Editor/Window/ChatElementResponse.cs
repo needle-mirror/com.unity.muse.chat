@@ -1,53 +1,53 @@
 using System;
 using System.Collections.Generic;
-using Unity.Muse.AppUI.UI;
-using Unity.Muse.Chat.BackendApi;
 using Unity.Muse.Chat.BackendApi.Model;
+using Unity.Muse.Chat.UI.Utils;
+using Unity.Muse.Common.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Avatar = Unity.Muse.AppUI.UI.Avatar;
-using Button = Unity.Muse.AppUI.UI.Button;
 using TextField = UnityEngine.UIElements.TextField;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class ChatElementResponse : ChatElementBase
+    class ChatElementResponse : ChatElementBase
     {
-        private const string k_FeedbackButtonActiveClass = "mui-feedback-button-active";
+        const string k_FeedbackButtonActiveClass = "mui-feedback-button-active";
 
-        private readonly IList<VisualElement> m_TextFields = new List<VisualElement>();
+        readonly IList<VisualElement> m_TextFields = new List<VisualElement>();
 
-        private static Texture2D k_MuseAvatarImage;
+        static Texture2D k_MuseAvatarImage;
 
-        private Accordion m_SourcesFoldout;
-        private VisualElement m_SourcesContent;
+        Foldout m_SourcesFoldout;
+        VisualElement m_SourcesContent;
 
-        private VisualElement m_TextFieldRoot;
+        VisualElement m_TextFieldRoot;
 
-        private VisualElement m_OptionsSection;
-        private VisualElement m_FeedbackParamSection;
-        private VisualElement m_ErrorSection;
+        VisualElement m_OptionsSection;
+        VisualElement m_FeedbackParamSection;
+        VisualElement m_ErrorSection;
 
-        private Button m_CopyButton;
-        private Button m_UpVoteButton;
-        private Button m_DownVoteButton;
+        Button m_CopyButton;
+        Button m_UpVoteButton;
+        Button m_DownVoteButton;
 
-        private Checkbox m_FeedbackFlagInappropriateCheckbox;
-        private Dropdown m_FeedbackTypeDropdown;
-        private TextField m_FeedbackText;
-        private Button m_FeedbackSendButton;
+        MuseChatImage m_QueryMode;
 
-        private FeedbackEditMode m_FeedbackMode = FeedbackEditMode.None;
+        Toggle m_FeedbackFlagInappropriateCheckbox;
+        DropdownField m_FeedbackTypeDropdown;
+        TextField m_FeedbackText;
+        Button m_FeedbackSendButton;
 
-        private MuseMessageId m_MessageId;
+        FeedbackEditMode m_FeedbackMode = FeedbackEditMode.None;
+
+        MuseMessageId m_MessageId;
         static readonly int k_TextAnimationDelay = 500; // in ms
-        private IVisualElementScheduledItem m_ScheduledAnim;
+        IVisualElementScheduledItem m_ScheduledAnim;
 
-        private bool m_FeedbackParametersSetup = false;
+        bool m_FeedbackParametersSetup = false;
 
-        private static readonly Dictionary<MuseMessageId, int> k_AnimationIndices = new();
+        static readonly Dictionary<MuseMessageId, int> k_AnimationIndices = new();
 
-        private int AnimationIndex
+        int AnimationIndex
         {
             get
             {
@@ -70,7 +70,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private enum FeedbackEditMode
+        enum FeedbackEditMode
         {
             None,
             UpVote,
@@ -101,6 +101,36 @@ namespace Unity.Muse.Chat
             }
 
             m_MessageId = message.Id;
+
+            switch (message.ChatCommand(ChatCommandType.Ask))
+            {
+                case ChatCommandType.Ask:
+                    m_QueryMode.SetDisplay(true);
+                    m_QueryMode.SetIconClassName("cmd-ask");
+                    break;
+#if ENABLE_ASSISTANT_BETA_FEATURES
+                case ChatCommandType.Run:
+                    m_CopyButton.style.display = DisplayStyle.None;
+
+                    m_QueryMode.SetDisplay(true);
+                    m_QueryMode.SetTooltip("Running commands is experimental and may not be reliable or consistent. We recommend using it only for testing.");
+                    m_QueryMode.SetIconClassName("cmd-run");
+
+                    if (message.IsComplete)
+                        message.Content = AgentMessageUtils.HandleActionMarkup(message.Content);
+                    break;
+
+                case ChatCommandType.Code:
+                    m_QueryMode.SetDisplay(true);
+                    m_QueryMode.SetTooltip("Generating code is experimental and may not be reliable or consistent. We recommend using it only for testing.");
+                    m_QueryMode.SetIconClassName("cmd-code");
+
+                    if (message.IsComplete)
+                        message.Content = ValidatorUtils.HandleValidatorMarkup(message.Content);
+                    break;
+#endif
+            }
+
 
             base.SetData(message);
 
@@ -145,7 +175,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void RemoveCompleteMessageFromAnimationDictionary()
+        void RemoveCompleteMessageFromAnimationDictionary()
         {
             // No need to keep complete messages in animation data dictionary:
             if (Message.IsComplete && k_AnimationIndices.ContainsKey(m_MessageId))
@@ -199,12 +229,15 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             LoadSharedAsset("icons/muse_small.png", ref k_MuseAvatarImage);
-            view.Q<Avatar>("museAvatar").src = Background.FromTexture2D(k_MuseAvatarImage);
+            view.SetupImage("museAvatar").SetTexture(k_MuseAvatarImage);
+
+            m_QueryMode = view.SetupImage("queryMode");
+            m_QueryMode.SetPickingMode(PickingMode.Position);
+            m_QueryMode.SetDisplay(false);
 
             m_TextFieldRoot = view.Q<VisualElement>("textFieldRoot");
 
-            m_SourcesFoldout = view.Q<Accordion>("sourcesFoldout");
-            m_SourcesFoldout.RealignFoldoutIcon();
+            m_SourcesFoldout = view.Q<Foldout>("sourcesFoldout");
 
             m_SourcesContent = view.Q<VisualElement>("sourcesContent");
 
@@ -216,10 +249,10 @@ namespace Unity.Muse.Chat
             m_FeedbackParamSection = view.Q<VisualElement>("feedbackParamSection");
 
             m_ErrorSection = view.Q<VisualElement>("errorFrame");
-            m_ErrorSection.style.display = DisplayStyle.None;
+            m_ErrorSection.SetDisplay(false);
         }
 
-        private void SetupFeedbackParameters()
+        void SetupFeedbackParameters()
         {
             if (m_FeedbackParametersSetup)
             {
@@ -227,8 +260,8 @@ namespace Unity.Muse.Chat
             }
 
             m_FeedbackParametersSetup = true;
-            m_FeedbackFlagInappropriateCheckbox = m_FeedbackParamSection.Q<Checkbox>("feedbackFlagCheckbox");
-            m_FeedbackTypeDropdown = m_FeedbackParamSection.SetupEnumDropdown<Category>("feedbackType", GetFeedbackTypeDisplayString);
+            m_FeedbackFlagInappropriateCheckbox = m_FeedbackParamSection.Q<Toggle>("feedbackFlagCheckbox");
+            m_FeedbackTypeDropdown = m_FeedbackParamSection.SetupEnumDropdown("feedbackType", GetFeedbackTypeDisplayString, Category.ResponseQuality);
             m_FeedbackTypeDropdown.RegisterValueChangedCallback(_ => CheckFeedbackState());
 
             m_FeedbackText = m_FeedbackParamSection.Q<TextField>("feedbackValueText");
@@ -238,7 +271,7 @@ namespace Unity.Muse.Chat
             m_FeedbackSendButton = m_FeedbackParamSection.SetupButton("feedbackSendButton", OnSendFeedback);
         }
 
-        private string GetFeedbackTypeDisplayString(Category type)
+        string GetFeedbackTypeDisplayString(Category type)
         {
             switch (type)
             {
@@ -251,7 +284,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void CheckFeedbackState()
+        void CheckFeedbackState()
         {
             if (string.IsNullOrEmpty(m_FeedbackText.value))
             {
@@ -263,20 +296,13 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private bool GetSelectedFeedbackType(out Category type)
+        bool GetSelectedFeedbackType(out Category type)
         {
-            if (m_FeedbackTypeDropdown.selectedIndex < 0 ||
-                m_FeedbackTypeDropdown.selectedIndex >= EnumDef<Category>.Count)
-            {
-                type = default;
-                return false;
-            }
-
-            type = EnumDef<Category>.Values[m_FeedbackTypeDropdown.selectedIndex];
+            type = (Category)m_FeedbackTypeDropdown.index;
             return true;
         }
 
-        private void OnSendFeedback(PointerUpEvent evt)
+        void OnSendFeedback(PointerUpEvent evt)
         {
             if (string.IsNullOrEmpty(m_FeedbackText.value))
             {
@@ -297,7 +323,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            if (m_FeedbackFlagInappropriateCheckbox.value == CheckboxState.Checked)
+            if (m_FeedbackFlagInappropriateCheckbox.value)
             {
                 message += " (Message was flagged as inappropriate.)";
             }
@@ -305,7 +331,7 @@ namespace Unity.Muse.Chat
             var feedback = new MessageFeedback
             {
                 MessageId = Id,
-                FlagInappropriate = m_FeedbackFlagInappropriateCheckbox.value == CheckboxState.Checked,
+                FlagInappropriate = m_FeedbackFlagInappropriateCheckbox.value,
                 Type = type,
                 Message = message,
                 Sentiment = m_FeedbackMode == FeedbackEditMode.UpVote
@@ -313,26 +339,23 @@ namespace Unity.Muse.Chat
                     : Sentiment.Negative
             };
 
-            MuseEditorDriver.instance.SendFeedback(feedback);
+            Assistant.instance.SendFeedback(feedback);
             m_FeedbackMode = FeedbackEditMode.None;
             ClearFeedbackParameters();
 
             MuseChatView.ShowNotification("Feedback sent", PopNotificationIconType.Info);
         }
 
-        private void ClearFeedbackParameters()
+        void ClearFeedbackParameters()
         {
             m_FeedbackTypeDropdown.value = default;
 
-            m_FeedbackTypeDropdown.Q<LocalizedTextElement>("appui-dropdown-item__label")
-                .text = "Select";
-
-            m_FeedbackFlagInappropriateCheckbox.value = CheckboxState.Unchecked;
+            m_FeedbackFlagInappropriateCheckbox.value = false;
             m_FeedbackText.value = string.Empty;
             RefreshFeedbackParameters();
         }
 
-        private void OnDownvoteClicked(PointerUpEvent evt)
+        void OnDownvoteClicked(PointerUpEvent evt)
         {
             if (m_FeedbackMode == FeedbackEditMode.DownVote)
             {
@@ -345,7 +368,7 @@ namespace Unity.Muse.Chat
             RefreshFeedbackParameters();
         }
 
-        private void OnUpvoteClicked(PointerUpEvent evt)
+        void OnUpvoteClicked(PointerUpEvent evt)
         {
             if (m_FeedbackMode == FeedbackEditMode.UpVote)
             {
@@ -356,18 +379,11 @@ namespace Unity.Muse.Chat
 
             m_FeedbackMode = FeedbackEditMode.UpVote;
             RefreshFeedbackParameters();
-            m_FeedbackFlagInappropriateCheckbox.value = CheckboxState.Unchecked;
+            m_FeedbackFlagInappropriateCheckbox.value = false;
         }
 
-        private void OnCopyClicked(PointerUpEvent evt)
+        void OnCopyClicked(PointerUpEvent evt)
         {
-            if (UserSessionState.instance.DebugUIModeEnabled)
-            {
-                GUIUtility.systemCopyBuffer = Message.Content;
-                MuseChatView.ShowNotification("!DEBUG! Copied Raw Message to clipboard", PopNotificationIconType.Info);
-                return;
-            }
-
             string disclaimerHeader = string.Format(MuseChatConstants.DisclaimerText, DateTime.Now.ToShortDateString());
 
             // Format message with footnotes (indices to sources)
@@ -384,7 +400,29 @@ namespace Unity.Muse.Chat
             MuseChatView.ShowNotification("Copied to clipboard", PopNotificationIconType.Info);
         }
 
-        private void RefreshSourceBlocks()
+        protected override void HandleLinkClick(LinkType type, string id)
+        {
+            switch (type)
+            {
+                case LinkType.Reference:
+                {
+                    if (!int.TryParse(id, out var sourceId) || SourceBlocks.Count <= sourceId || sourceId < 0)
+                    {
+                        Debug.LogError("Invalid Source ID: " + sourceId);
+                        return;
+                    }
+
+                    var sourceBlock = SourceBlocks[sourceId];
+                    Application.OpenURL(sourceBlock.source);
+
+                    return;
+                }
+            }
+
+            base.HandleLinkClick(type, id);
+        }
+
+        void RefreshSourceBlocks()
         {
             if (Message.IsError || !Message.IsComplete || SourceBlocks == null || SourceBlocks.Count == 0)
             {
@@ -405,7 +443,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void RefreshFeedbackParameters()
+        void RefreshFeedbackParameters()
         {
             if (Message.IsError || !Message.IsComplete)
             {

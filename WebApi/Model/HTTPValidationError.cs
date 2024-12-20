@@ -20,13 +20,9 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "HTTPValidationError")]
     internal partial class HTTPValidationError
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="HTTPValidationError" /> class.
-        /// </summary>
-        /// <param name="detail">detail</param>
-        public HTTPValidationError(List<ValidationError> detail = default(List<ValidationError>))
+
+        public HTTPValidationError()
         {
-            this.Detail = detail;
         }
 
         /// <summary>
@@ -56,7 +52,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

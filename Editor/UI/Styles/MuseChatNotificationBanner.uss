@@ -3,6 +3,8 @@
     flex-direction: row;
     flex-wrap: wrap;
     margin: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
     margin-bottom: 0;
     max-width: 716px;
     flex-shrink: 0;
@@ -13,7 +15,7 @@
 .mui-notification-banner-content {
     align-self: center;
     margin: 2px;
-    background-color: var(--appui-backgrounds-50);
+    background-color: var(--muse-chat-backgrounds-50);
     border-width: 1px;
     border-color: #cd9f14;
     border-radius: 8px;
@@ -62,14 +64,15 @@
     flex-grow: 0;
     background-color: rgba(0, 0, 0, 0);
     border-color: rgba(0, 0, 0, 0);
+    flex-direction: row;
 }
 
-#notificationBannerActionButton .appui-button__titlecontainer {
-    margin-left: 0px;
+#notificationBannerActionButton:hover {
+    background-color: var(--muse-chat-backgrounds-200);
 }
 
 #notificationBannerDismissButton:hover {
-    background-color: var(--appui-backgrounds-200);
+    background-color: var(--muse-chat-backgrounds-200);
 }
 
 .mui-notification-banner-warning-icon {

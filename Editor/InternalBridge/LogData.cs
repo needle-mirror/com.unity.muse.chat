@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Unity.Muse.Chat
 {
@@ -6,30 +7,36 @@ namespace Unity.Muse.Chat
     /// Stores relevant data from console logs
     /// </summary>
     [Serializable]
-    internal class LogReference
+    internal struct LogData : IEquatable<LogData>
     {
-        string m_Message;
-        string m_File;
-        int m_Line;
-        int m_Column;
-        ConsoleMessageMode m_Mode;
-        internal enum ConsoleMessageMode
+        [SerializeField]
+        public string Message;
+
+        [SerializeField]
+        public string File;
+
+        [SerializeField]
+        public int Line;
+
+        [SerializeField]
+        public int Column;
+
+        [SerializeField]
+        public LogDataType Type;
+
+        public bool Equals(LogData other)
         {
-            Log,
-            Warning,
-            Error
+            return Message == other.Message && File == other.File && Line == other.Line && Column == other.Column && Type == other.Type;
         }
 
-        internal bool Equals(LogReference other)
+        public override bool Equals(object obj)
         {
-            return m_Line == other.m_Line && m_Column == other.m_Column && m_Mode == other.m_Mode &&
-                   m_Message == other.m_Message && m_File == other.m_File;
+            return obj is LogData other && Equals(other);
         }
 
-        internal string Message { get => m_Message; set => m_Message = value; }
-        internal string File { get => m_File; set => m_File = value; }
-        internal int Line { get => m_Line; set => m_Line = value; }
-        internal int Column { get => m_Column; set => m_Column = value; }
-        internal ConsoleMessageMode Mode { get => m_Mode; set => m_Mode = value; }
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Message, File, Line, Column, (int)Type);
+        }
     }
 }

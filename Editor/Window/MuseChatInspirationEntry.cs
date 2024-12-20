@@ -1,13 +1,12 @@
 using System;
 using UnityEngine.UIElements;
-using Button = Unity.Muse.AppUI.UI.Button;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class MuseChatInspirationEntry : ManagedTemplate
+    class MuseChatInspirationEntry : ManagedTemplate
     {
-        private MuseChatInspiration m_Value;
-        private Button m_Button;
+        MuseChatInspiration m_Value;
+        Button m_Button;
 
         public MuseChatInspirationEntry()
             : base(MuseChatConstants.UIModulePath)
@@ -23,7 +22,7 @@ namespace Unity.Muse.Chat
             set
             {
                 m_Value = value;
-                m_Button.title = value.Value;
+                m_Button.text = value.Value;
             }
         }
 
@@ -32,7 +31,7 @@ namespace Unity.Muse.Chat
             m_Button = view.SetupButton("inspirationEntryButton", OnEntryClicked);
         }
 
-        private void OnEntryClicked(PointerUpEvent evt)
+        void OnEntryClicked(PointerUpEvent evt)
         {
             Clicked?.Invoke(m_Value);
         }

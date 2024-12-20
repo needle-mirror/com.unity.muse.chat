@@ -24,6 +24,7 @@ namespace Unity.Muse.Editor.Markup
             SourceBoundaryEnd,
         }
 
+        internal VisualElement m_PreviousLastElement;
         internal readonly IList<VisualElement> m_OutputTextElements;
         internal VisitingState m_VisitingState;
         private StringBuilder m_Builder = new();
@@ -75,10 +76,11 @@ namespace Unity.Muse.Editor.Markup
             //AppendText($" <sprite=\"{MuseEditorUI.k_ReferenceSprite}\" index={m_SourceBlocks.Count}>");
         }
 
-        public ChatMarkdownRenderer(IList<WebAPI.SourceBlock> sourceBlocks, IList<VisualElement> outTextElements)
+        public ChatMarkdownRenderer(IList<WebAPI.SourceBlock> sourceBlocks, IList<VisualElement> outTextElements, VisualElement previousLastElement)
         {
             m_SourceBlocks = sourceBlocks;
             m_OutputTextElements = outTextElements;
+            m_PreviousLastElement = previousLastElement;
 
             // TODO-boris.bauer: Design good dark and light colors
             m_CodeColor = EditorGUIUtility.isProSkin ? k_CodeColorDarkMode : k_CodeColorLightMode;

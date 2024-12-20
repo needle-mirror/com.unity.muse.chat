@@ -20,6 +20,7 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "Inspiration")]
     internal partial class Inspiration
     {
+
         /// <summary>
         /// Inspiration mode
         /// </summary>
@@ -48,42 +49,22 @@ namespace Unity.Muse.Chat.BackendApi.Model
 
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="Inspiration" /> class.
+        /// </summary>
+        [JsonConstructorAttribute]
+        protected Inspiration() { }
+        public Inspiration(Inspiration.ModeEnum mode, string value)
+        {
+            Mode = mode;
+            Value = value;
+        }
+
+        /// <summary>
         /// Inspiration mode
         /// </summary>
         /// <value>Inspiration mode</value>
         [DataMember(Name = "mode", IsRequired = true, EmitDefaultValue = true)]
         public ModeEnum Mode { get; set; }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Inspiration" /> class.
-        /// </summary>
-        [JsonConstructorAttribute]
-        protected Inspiration() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Inspiration" /> class.
-        /// </summary>
-        /// <param name="id">Uniform inspiration Id</param>
-        /// <param name="mode">Inspiration mode (required)</param>
-        /// <param name="value">Inspiration value (required)</param>
-        /// <param name="description">description</param>
-        public Inspiration(string id = default(string), ModeEnum mode = default(ModeEnum), string value = default(string), string description = default(string))
-        {
-            this.Mode = mode;
-            // to ensure "value" is required (not null)
-            if (value == null)
-            {
-                throw new ArgumentNullException("value is a required property for Inspiration and cannot be null");
-            }
-            this.Value = value;
-            this.Id = id;
-            this.Description = description;
-        }
-
-        /// <summary>
-        /// Uniform inspiration Id
-        /// </summary>
-        /// <value>Uniform inspiration Id</value>
-        [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; }
 
         /// <summary>
         /// Inspiration value
@@ -99,6 +80,13 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public string Description { get; set; }
 
         /// <summary>
+        /// Uniform inspiration Id
+        /// </summary>
+        /// <value>Uniform inspiration Id</value>
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public string Id { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -106,10 +94,10 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class Inspiration {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Mode: ").Append(Mode).Append("\n");
             sb.Append("  Value: ").Append(Value).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -122,7 +110,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

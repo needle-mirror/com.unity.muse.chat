@@ -2,9 +2,9 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI.Utils
 {
-    internal static class UXLoader
+    static class UXLoader
     {
         /// <summary>
         /// Load a custom asset from the editor if the asset is not already loaded as provided by the target.

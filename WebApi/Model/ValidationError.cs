@@ -20,37 +20,17 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "ValidationError")]
     internal partial class ValidationError
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationError" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected ValidationError() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationError" /> class.
-        /// </summary>
-        /// <param name="loc">loc (required)</param>
-        /// <param name="msg">msg (required)</param>
-        /// <param name="type">type (required)</param>
-        public ValidationError(List<LocationInner> loc = default(List<LocationInner>), string msg = default(string), string type = default(string))
+        public ValidationError(List<LocationInner> loc, string msg, string type)
         {
-            // to ensure "loc" is required (not null)
-            if (loc == null)
-            {
-                throw new ArgumentNullException("loc is a required property for ValidationError and cannot be null");
-            }
-            this.Loc = loc;
-            // to ensure "msg" is required (not null)
-            if (msg == null)
-            {
-                throw new ArgumentNullException("msg is a required property for ValidationError and cannot be null");
-            }
-            this.Msg = msg;
-            // to ensure "type" is required (not null)
-            if (type == null)
-            {
-                throw new ArgumentNullException("type is a required property for ValidationError and cannot be null");
-            }
-            this.Type = type;
+            Loc = loc;
+            Msg = msg;
+            Type = type;
         }
 
         /// <summary>
@@ -94,7 +74,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

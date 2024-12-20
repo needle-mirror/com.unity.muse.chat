@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
     partial class MuseChatView
     {
@@ -15,8 +14,8 @@ namespace Unity.Muse.Chat
 
         static readonly Dictionary<PopNotificationIconType, string> k_IconTypeToName = new()
         {
-            { PopNotificationIconType.Info, "mui-icon-tick"},
-            { PopNotificationIconType.Error, "mui-icon-error" }
+            { PopNotificationIconType.Info, "tick"},
+            { PopNotificationIconType.Error, "error" }
         };
 
         public static void ShowNotification(

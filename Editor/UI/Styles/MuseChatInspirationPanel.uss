@@ -21,7 +21,7 @@
 }
 
 .mui-chat-inspiration-text {
-    color: var(--appui-color-dark-gray-800);
+    color: var(--muse-chat-color-dark-gray-800);
     align-self: center;
     -unity-text-align: middle-center;
     -unity-font-style: bold;
@@ -42,12 +42,17 @@
     color: var(--muse-chat-disclaimer-text);
 }
 
+.mui-chat-inspiration-refresh-btn-label {
+    margin-left: 4px;
+}
+
 #refreshButton {
-    flex-grow: 0;
+    flex-grow: 1;
     align-self: center;
     padding: 8px;
     background-color: rgba(0, 0, 0, 0);
     border-width: 0;
+    flex-direction: row;
 }
 
 .mui-chat-inspiration-main-content {

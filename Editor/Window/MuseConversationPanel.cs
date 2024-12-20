@@ -1,9 +1,8 @@
-using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class MuseConversationPanel : ManagedTemplate
+    class MuseConversationPanel : ManagedTemplate
     {
         VisualElement m_ConversationRoot;
         AdaptiveListView<MuseMessage, ChatElementWrapper> m_ConversationList;
@@ -34,12 +33,7 @@ namespace Unity.Muse.Chat
                 m_ConversationList.AddData(conversation.Messages[i]);
             }
 
-            m_ConversationList.EndUpdate(true);
-
-            if (UserSessionState.instance.DebugUIModeEnabled)
-            {
-                MuseEditorDriver.instance.OnDebugTrackMetricsRequest?.Invoke(m_ConversationRoot);
-            }
+            m_ConversationList.EndUpdate();
         }
 
         public void ClearConversation()
@@ -64,6 +58,12 @@ namespace Unity.Muse.Chat
                 }
 
                 case MuseChatUpdateType.NewMessage:
+                {
+                    UpdateOrChangeChatMessage(data.Message);
+                    m_ConversationList.ScrollToEnd();
+                    break;
+                }
+
                 case MuseChatUpdateType.MessageUpdate:
                 {
                     bool messageHasContentUpdate = IsContentDifferent(data.Message);
@@ -78,7 +78,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private bool IsContentDifferent(MuseMessage message)
+        bool IsContentDifferent(MuseMessage message)
         {
             if (TryGetChatMessageIndex(message.Id, out int existingMessageIndex))
             {
@@ -91,7 +91,7 @@ namespace Unity.Muse.Chat
             return false;
         }
 
-        private bool TryGetChatMessageIndex(MuseMessageId id, out int index)
+        bool TryGetChatMessageIndex(MuseMessageId id, out int index)
         {
             for (var i = 0; i < m_ConversationList.Data.Count; i++)
             {
@@ -106,15 +106,10 @@ namespace Unity.Muse.Chat
             return false;
         }
 
-        private void UpdateOrChangeChatMessage(MuseMessage message)
+        void UpdateOrChangeChatMessage(MuseMessage message)
         {
             if (TryGetChatMessageIndex(message.Id, out int existingMessageIndex))
             {
-                if (UserSessionState.instance.DebugUIModeEnabled && message.Content != m_ConversationList.Data[existingMessageIndex].Content)
-                {
-                    Debug.Log($"MSG_UPD: {message.Id} - {message.Content?.Length}");
-                }
-
                 m_ConversationList.UpdateData(existingMessageIndex, message);
                 return;
             }
@@ -124,7 +119,7 @@ namespace Unity.Muse.Chat
             m_ConversationList.AddData(message);
         }
 
-        private void DeleteChatMessage(MuseMessageId messageId)
+        void DeleteChatMessage(MuseMessageId messageId)
         {
             if (TryGetChatMessageIndex(messageId, out var messageIndex))
             {
@@ -134,7 +129,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void UpdateChatElementId(MuseMessageId currentId, MuseMessageId newId)
+        void UpdateChatElementId(MuseMessageId currentId, MuseMessageId newId)
         {
             if (currentId == newId)
             {

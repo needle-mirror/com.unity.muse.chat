@@ -1,11 +1,10 @@
 using System;
 using System.IO;
-using Unity.Muse.AppUI.UI;
-using UnityEditor;
+using Unity.Muse.Chat.UI.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
     /// <summary>
     /// Provides a base class to manage the lifecycle of a VisualElement template including helper functions for templates and other assets.
@@ -14,7 +13,7 @@ namespace Unity.Muse.Chat
     ///
     /// Templates will also get a shared stylesheet loaded from the shared asset path if it is set.
     /// </summary>
-    internal abstract class ManagedTemplate : TemplateContainer
+    abstract class ManagedTemplate : TemplateContainer
     {
         readonly StyleCache m_StyleCache;
         readonly ViewCache m_ViewCache;
@@ -90,9 +89,6 @@ namespace Unity.Muse.Chat
 
             DoInitView();
             DoInitStyle();
-            DoInitAppUITheme();
-
-            AddToClassList(MuseChatConstants.AppUIEditorClass);
 
             if (autoShowControl)
             {
@@ -316,6 +312,12 @@ namespace Unity.Muse.Chat
             m_SharedAssetPath = newSharedPath;
         }
 
+        protected void RegisterAttachEvents(EventCallback<AttachToPanelEvent> attachEvent, EventCallback<DetachFromPanelEvent> detachEvent)
+        {
+            RegisterCallback(attachEvent);
+            RegisterCallback(detachEvent);
+        }
+
         void DoInitView()
         {
             if (this.IsVirtualControl)
@@ -340,17 +342,6 @@ namespace Unity.Muse.Chat
         void DoInitStyle()
         {
             AddPrefixedClass("element");
-        }
-
-        void DoInitAppUITheme()
-        {
-            var queryBuilder = new UQueryBuilder<Panel>(this).OfType<Panel>();
-
-            queryBuilder.ForEach(x =>
-            {
-                x.theme = EditorGUIUtility.isProSkin ? MuseChatConstants.AppUIThemeDark : MuseChatConstants.AppUIThemeLight;
-                x.scale = MuseChatConstants.AppUIScale;
-            });
         }
     }
 }

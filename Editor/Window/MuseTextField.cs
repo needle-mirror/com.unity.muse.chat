@@ -1,12 +1,12 @@
 using System;
-using Unity.Muse.AppUI.UI;
+using Unity.Muse.Chat.UI.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
 using TextField = UnityEngine.UIElements.TextField;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class MuseTextField : ManagedTemplate
+    class MuseTextField : ManagedTemplate
     {
         const string k_ChatFocusClass = "mui-mft-input-focused";
         const string k_ChatHoverClass = "mui-mft-input-hovered";
@@ -20,14 +20,14 @@ namespace Unity.Muse.Chat
 
         VisualElement m_Root;
 
-        Icon m_ChatInputIconDefault;
-        Icon m_ChatInputIconMusing;
+        MuseChatImage m_ChatInputIconDefault;
+        MuseChatImage m_ChatInputIconMusing;
         VisualElement m_SubmitButton;
 
         ScrollView m_InputScrollView;
         TextField m_ChatInput;
-        Text m_ChatCharCount;
-        Text m_Placeholder;
+        Label m_ChatCharCount;
+        Label m_Placeholder;
         VisualElement m_PlaceholderContent;
 
         bool m_TextHasFocus;
@@ -85,6 +85,11 @@ namespace Unity.Muse.Chat
             m_ChatInput.Focus();
         }
 
+        public void SelectAllText()
+        {
+            m_ChatInput.SelectAll();
+        }
+
         public void SetMusingState(bool isMusing)
         {
             m_IsMusing = isMusing;
@@ -98,12 +103,14 @@ namespace Unity.Muse.Chat
                 case ChatCommandType.Ask:
                     m_Placeholder.text = k_DefaultAskPlaceholderText;
                     break;
+#if ENABLE_ASSISTANT_BETA_FEATURES
                 case ChatCommandType.Run:
                     m_Placeholder.text = k_DefaultRunPlaceholderText;
                     break;
                 case ChatCommandType.Code:
                     m_Placeholder.text = k_DefaultCodePlaceholderText;
                     break;
+#endif
             }
             m_ChatInput.SetEnabled(true);
         }
@@ -116,7 +123,7 @@ namespace Unity.Muse.Chat
 
         protected override void InitializeView(TemplateContainer view)
         {
-            m_Root = view.Q<VisualElement>("textFieldRoot");
+            m_Root = view.Q<VisualElement>("museTextFieldRoot");
             m_Root.RegisterCallback<PointerUpEvent>(_ =>
             {
                 if(!m_TextHasFocus) { m_ChatInput.Focus(); }
@@ -125,8 +132,8 @@ namespace Unity.Muse.Chat
             m_SubmitButton = view.Q<VisualElement>("submitButton");
             m_SubmitButton.RegisterCallback<PointerUpEvent>(_ => OnSubmit?.Invoke(m_ChatInput.value));
 
-            m_ChatInputIconDefault = view.Q<Icon>("submitIconDefault");
-            m_ChatInputIconMusing = view.Q<Icon>("submitIconMusing");
+            m_ChatInputIconDefault = view.SetupImage("submitIconDefault");
+            m_ChatInputIconMusing = view.SetupImage("submitIconMusing");
 
             m_InputScrollView = view.Q<ScrollView>("inputScrollView");
 
@@ -144,9 +151,9 @@ namespace Unity.Muse.Chat
             m_ChatInput.RegisterCallback<GeometryChangedEvent>(OnInputGeometryChanged);
 
             m_PlaceholderContent = view.Q<VisualElement>("placeholderContent");
-            m_Placeholder = view.Q<Text>("placeholderText");
+            m_Placeholder = view.Q<Label>("placeholderText");
 
-            m_ChatCharCount = view.Q<Text>("characterCount");
+            m_ChatCharCount = view.Q<Label>("characterCount");
 
             RefreshChatCharCount();
             ShowPlaceholder = true;
@@ -154,18 +161,18 @@ namespace Unity.Muse.Chat
             SetMusingState(false);
         }
 
-        private void OnInputGeometryChanged(GeometryChangedEvent evt)
+        void OnInputGeometryChanged(GeometryChangedEvent evt)
         {
             m_SubmitButton.EnableInClassList(k_ScrollVisibleClass, m_InputScrollView.verticalScroller.style.display != DisplayStyle.None);
         }
 
-        private void SetTextFocused(bool state)
+        void SetTextFocused(bool state)
         {
             m_TextHasFocus = state;
             RefreshUI();
         }
 
-        private void RefreshUI()
+        void RefreshUI()
         {
             if (!ShowPlaceholder || m_TextHasFocus || !string.IsNullOrEmpty(m_ChatInput.value))
             {
@@ -177,33 +184,24 @@ namespace Unity.Muse.Chat
             }
 
             m_Root.EnableInClassList(k_ChatFocusClass, m_TextHasFocus && m_HighlightFocus);
+
             m_SubmitButton.EnableInClassList(k_ChatFocusClass, m_TextHasFocus);
-            m_ChatInputIconDefault.EnableInClassList(k_ChatFocusClass, m_TextHasFocus);
-            m_ChatInputIconMusing.EnableInClassList(k_ChatFocusClass, m_TextHasFocus);
-
             m_SubmitButton.EnableInClassList(k_MusingActiveStyle, m_IsMusing);
-            m_ChatInputIconDefault.EnableInClassList(k_MusingActiveStyle, m_IsMusing);
-            m_ChatInputIconMusing.EnableInClassList(k_MusingActiveStyle, m_IsMusing);
 
-            if (m_IsMusing)
-            {
-                m_ChatInputIconDefault.style.display = DisplayStyle.None;
-                m_ChatInputIconMusing.style.display = DisplayStyle.Flex;
-            }
-            else
-            {
-                m_ChatInputIconDefault.style.display = DisplayStyle.Flex;
-                m_ChatInputIconMusing.style.display = DisplayStyle.None;
-            }
+            m_ChatInputIconDefault.SetIconClassName(m_IsMusing ? k_MusingActiveStyle : k_ChatFocusClass);
+            m_ChatInputIconMusing.SetIconClassName(m_IsMusing ? k_MusingActiveStyle : k_ChatFocusClass);
+
+            m_ChatInputIconDefault.SetDisplay(!m_IsMusing);
+            m_ChatInputIconMusing.SetDisplay(m_IsMusing);
         }
 
-        private void OnChatValueChanged(ChangeEvent<string> evt)
+        void OnChatValueChanged(ChangeEvent<string> evt)
         {
             RefreshChatCharCount();
             m_SubmitButton.EnableInClassList(k_ChatSubmitEnabledClass, string.IsNullOrEmpty(m_ChatInput.value));
         }
 
-        private void RefreshChatCharCount()
+        void RefreshChatCharCount()
         {
             m_ChatCharCount.text = $"{m_ChatInput.value.Length.ToString()}/{MuseChatConstants.MaxMuseMessageLength}";
         }
@@ -249,7 +247,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnChatKeyEvent(KeyUpEvent evt)
+        void OnChatKeyEvent(KeyUpEvent evt)
         {
             RefreshChatCharCount();
 

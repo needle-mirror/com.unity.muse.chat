@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
     class HistoryPanel : ManagedTemplate
     {
         static readonly List<MuseConversationInfo> k_ConversationCache = new();
         static readonly IDictionary<string, List<MuseConversationInfo>> k_GroupCache = new Dictionary<string, List<MuseConversationInfo>>();
 
-        private readonly IList<object> k_TempList = new List<object>();
+        readonly IList<object> k_TempList = new List<object>();
 
-        SearchBar m_SearchBar;
+        ToolbarSearchField m_SearchBar;
         VisualElement m_ContentRoot;
         AdaptiveListView<object, HistoryPanelEntry> m_ContentList;
 
@@ -38,18 +38,20 @@ namespace Unity.Muse.Chat
             m_ContentList.SelectionChanged += SelectionChanged;
             m_ContentRoot.Add(m_ContentList);
 
-            m_SearchBar = view.Q<SearchBar>("historySearchBar");
+            m_SearchBar = new ToolbarSearchField();
+            m_SearchBar.AddToClassList("mui-history-panel-search-bar");
+            view.Q<VisualElement>("historySearchBarRoot").Add(m_SearchBar);
             m_SearchBar.RegisterCallback<KeyUpEvent>(OnSearchTextChanged);
             m_SearchBar.RegisterValueChangedCallback(OnSearchValueChanged);
 
             // Schedule a history update every 5 minutes
-            schedule.Execute(MuseEditorDriver.instance.StartConversationRefresh).Every(1000 * 60 * 5);
+            schedule.Execute(Assistant.instance.RefreshConversations).Every(1000 * 60 * 5);
 
             MuseChatHistoryBlackboard.HistoryPanelRefreshRequired += OnRefreshRequired;
             MuseChatHistoryBlackboard.HistoryPanelReloadRequired += OnReloadRequired;
         }
 
-        private static void LoadData(IList<object> result, long nowRaw, string searchFilter = null)
+        static void LoadData(IList<object> result, long nowRaw, string searchFilter = null)
         {
             bool searchActive = !string.IsNullOrEmpty(searchFilter);
             k_GroupCache.Clear();
@@ -95,13 +97,13 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void Reload(bool fullReload = true, bool resetScrollPosition = false)
+        void Reload(bool fullReload = true, bool resetScrollPosition = false)
         {
             if (fullReload)
             {
                 // Full reload let's get a fresh list of conversations from the driver
                 k_ConversationCache.Clear();
-                k_ConversationCache.AddRange(MuseEditorDriver.instance.History);
+                k_ConversationCache.AddRange(Assistant.instance.History);
 
                 // Update the cache
                 foreach (var conversationInfo in k_ConversationCache)
@@ -111,7 +113,7 @@ namespace Unity.Muse.Chat
             }
 
             var nowRaw = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var activeConversation = MuseEditorDriver.instance.GetActiveConversation();
+            var activeConversation = Assistant.instance.GetActiveConversation();
 
             m_ContentList.ClearData();
             m_ContentList.ClearSelection();
@@ -148,22 +150,22 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnRefreshRequired()
+        void OnRefreshRequired()
         {
             Reload(fullReload: false);
         }
 
-        private void OnReloadRequired()
+        void OnReloadRequired()
         {
             Reload(fullReload: true);
         }
 
-        private void OnSearchTextChanged(KeyUpEvent evt)
+        void OnSearchTextChanged(KeyUpEvent evt)
         {
             SetSearchFilter(m_SearchBar.value);
         }
 
-        private void SelectionChanged(int index, object data)
+        void SelectionChanged(int index, object data)
         {
             if (index == -1 || data is string)
             {
@@ -173,15 +175,15 @@ namespace Unity.Muse.Chat
             var conversationInfo = (MuseConversationInfo)data;
             m_SelectedConversation = conversationInfo.Id;
 
-            MuseEditorDriver.instance.StartConversationLoad(m_SelectedConversation);
+            Assistant.instance.ConversationLoad(m_SelectedConversation);
         }
 
-        private void OnSearchValueChanged(ChangeEvent<string> evt)
+        void OnSearchValueChanged(ChangeEvent<string> evt)
         {
             SetSearchFilter(evt.newValue);
         }
 
-        private void SetSearchFilter(string filter)
+        void SetSearchFilter(string filter)
         {
             if (m_SearchFilter == filter)
             {

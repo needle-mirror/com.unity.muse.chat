@@ -1,29 +1,21 @@
 using System;
-using System.Collections.Generic;
 using Unity.Muse.Common.Account;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class MuseChatWindow : EditorWindow
+    class MuseChatWindow : EditorWindow, IMuseChatHost
     {
         const string k_WindowName = "Muse Chat";
 
         static Vector2 k_MinSize = new(400, 400);
 
-        MuseChatView m_View;
+        internal MuseChatView m_View;
 
-        [SerializeField]
-        internal List<Object> m_ObjectSelection = new();
+        public Action FocusLost { get; set; }
 
-        [SerializeField]
-        internal List<LogReference> m_ConsoleSelection = new();
-
-        internal Action OnLostWindowFocus;
-
-        [UnityEditor.MenuItem("Muse/Chat")]
+        [MenuItem("Muse/Chat")]
         public static void ShowWindow()
         {
             var editor = GetWindow<MuseChatWindow>();
@@ -40,7 +32,14 @@ namespace Unity.Muse.Chat
             m_View.style.minWidth = 400;
             rootVisualElement.Add(m_View);
 
-            AccountController.Register(this);
+            try
+            {
+                AccountController.Register(this);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
 
             m_View.InitializeThemeAndStyle();
         }
@@ -50,9 +49,9 @@ namespace Unity.Muse.Chat
             m_View?.Deinit();
         }
 
-        private void OnLostFocus()
+        void OnLostFocus()
         {
-            OnLostWindowFocus?.Invoke();
+            FocusLost?.Invoke();
         }
     }
 }

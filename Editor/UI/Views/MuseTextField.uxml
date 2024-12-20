@@ -1,22 +1,24 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement name="textFieldRoot" class="mui-mtf-root">
-        <VisualElement name="placeholderContent" class="mui-mtf-placeholder-root">
-            <appui:Icon icon-name="mui-icon-muse" size="L" class="mui-mtf-muse-icon"/>
-            <appui:Text text="Ask Muse" name="placeholderText"/>
-        </VisualElement>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="museTextFieldRoot" class="mui-mtf-root">
 
-        <appui:Text name="characterCount" text="0/1000"/>
 
-        <ScrollView name="inputScrollView" class="mui-mtf-scroll-view">
-            <VisualElement class="mui-mtf-input-root">
-                <TextField name="input"/>
-            </VisualElement>
-        </ScrollView>
+        <ui:Label name="characterCount" text="0/1000" class="mui-chat-label"/>
 
-        <VisualElement name="submitButton" class="mui-action-cursor">
-            <appui:Icon name="submitIconDefault" icon-name="mui-icon-submit" size="L" class="mui-mtf-submit-button-icon"/>
-            <appui:Icon name="submitIconMusing" icon-name="mui-icon-stop" size="L" class="mui-mtf-submit-button-icon"/>
-        </VisualElement>
+        <ui:ScrollView name="inputScrollView" class="mui-mtf-scroll-view">
+            <ui:VisualElement class="mui-mtf-input-root">
+                <ui:TextField name="input"/>
+            </ui:VisualElement>
+        </ui:ScrollView>
 
-    </VisualElement>
-</UXML>
+        <ui:VisualElement name="submitButton" class="mui-action-cursor">
+            <ui:Image name="submitIconDefault" class="mui-icon-submit mui-mtf-submit-button-icon"/>
+            <ui:Image name="submitIconMusing" class="mui-icon-stop mui-mtf-submit-button-icon"/>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="placeholderContent" class="mui-mtf-placeholder-root">
+            <ui:Image class="mui-icon-muse mui-mtf-muse-icon"/>
+            <ui:Label text="Ask Muse" name="placeholderText" class="mui-chat-label"/>
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

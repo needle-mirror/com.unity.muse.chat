@@ -11,14 +11,14 @@
     min-height: 42px;
     border-width: 1px;
     border-radius: 8px;
-    border-color: var(--appui-backgrounds-50);
-    background-color: var(--appui-backgrounds-100);
+    border-color: var(--muse-chat-backgrounds-50);
+    background-color: var(--muse-chat-backgrounds-100);
     cursor: text;
     justify-content: center;
 }
 
 .mui-mtf-root:hover {
-    border-color: var(--appui-primary-500);
+    border-color: var(--muse-chat-primary-500);
 }
 
 .mui-mtf-root.mui-mft-input-focused {
@@ -32,6 +32,10 @@
     top: 0;
     bottom: 0;
     align-items: center;
+}
+
+#placeholderText {
+    color: var(--muse-chat-foregrounds-25);
 }
 
 .mui-mtf-muse-icon {
@@ -57,7 +61,7 @@
 }
 
 #placeholderText {
-    color: var(--appui-alias-text-disabled);
+    color: var(--muse-chat-text-disabled);
 }
 
 #inputScrollView {
@@ -78,7 +82,7 @@
     width: 28px;
     height: 28px;
     border-radius: 4px;
-    background-color: var(--appui-backgrounds-200);
+    background-color: var(--muse-chat-backgrounds-200);
     justify-content: center;
 }
 
@@ -87,7 +91,7 @@
 }
 
 #submitButton.mui-mft-input-hovered {
-    background-color: var(--appui-backgrounds-100);
+    background-color: var(--muse-chat-backgrounds-100);
 }
 
 #submitButton.mui-musing-active {
@@ -106,4 +110,12 @@
     width: 24px;
     height: 24px;
     align-self: center;
+}
+
+#unity-text-input {
+    border-width: 0;
+}
+
+.mui-mtf-input-root .unity-base-text-field__input {
+    background-color: var(--muse-chat-backgrounds-100);
 }

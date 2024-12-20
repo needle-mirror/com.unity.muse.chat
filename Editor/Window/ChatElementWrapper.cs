@@ -1,23 +1,21 @@
 using JetBrains.Annotations;
-using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
     [UsedImplicitly]
-    internal class ChatElementWrapper : AdaptiveListViewEntry
+    class ChatElementWrapper : AdaptiveListViewEntry
     {
-        private VisualElement m_Root;
-        private Text m_IndexDebugElement;
+        VisualElement m_Root;
+        Label m_IndexDebugElement;
 
-        private ChatElementBase m_UserChatElement;
-        private ChatElementBase m_ResponseChatElement;
+        ChatElementBase m_ChatElement;
 
         protected override void InitializeView(TemplateContainer view)
         {
             m_Root = view.Q<VisualElement>("wrapperRoot");
-            m_IndexDebugElement = view.Q<Text>("indexDebugText");
+            m_IndexDebugElement = view.Q<Label>("indexDebugText");
         }
 
         public override void SetData(int index, object data, bool isSelected = false)
@@ -25,35 +23,28 @@ namespace Unity.Muse.Chat
             base.SetData(index, data);
 
             var message = (MuseMessage)data;
-            if (UserSessionState.instance.DebugUIModeEnabled)
-            {
-                m_IndexDebugElement.style.display = DisplayStyle.Flex;
-                m_IndexDebugElement.text = $"Index: {index}";
-            }
-
-            if(message.Role == MuseEditorDriver.k_UserRole)
-            {
-                m_ResponseChatElement?.SetDisplay(false);
-                SetupChatElement(ref m_UserChatElement, message);
-            }
-            else
-            {
-                m_UserChatElement?.SetDisplay(false);
-                SetupChatElement(ref m_ResponseChatElement, message, true);
-            }
+            SetupChatElement(ref m_ChatElement, message);
         }
 
-        void SetupChatElement(ref ChatElementBase element, MuseMessage message, bool hideIfEmpty = false)
+        void SetupChatElement(ref ChatElementBase element, MuseMessage message)
         {
+            bool hideIfEmpty = false;
+
             if (element == null)
             {
-                if (message.Role == MuseEditorDriver.k_UserRole)
+                switch (message.Role)
                 {
-                    element = new ChatElementUser { EditEnabled = true };
-                }
-                else
-                {
-                    element = new ChatElementResponse();
+                    case Assistant.k_UserRole:
+                        element = new ChatElementUser { EditEnabled = true };
+                        break;
+                    case Assistant.k_SystemRole:
+                        element = new ChatElementSystem();
+                        hideIfEmpty = true;
+                        break;
+                    case Assistant.k_AssistantRole:
+                        element = new ChatElementResponse();
+                        hideIfEmpty = true;
+                        break;
                 }
 
                 element.Initialize();
@@ -74,6 +65,7 @@ namespace Unity.Muse.Chat
             }
 
             if (element.Message.Content == message.Content &&
+                ArrayUtils.ArrayEquals(element.Message.Context, message.Context) &&
                 element.Message.IsComplete == message.IsComplete)   // complete flag removes last word when false.
             {
                 // No change to content, no need to update

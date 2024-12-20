@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal static class MuseChatHistoryBlackboard
+    static class MuseChatHistoryBlackboard
     {
-        private static readonly IDictionary<MuseConversationId, bool> k_FavoriteCache = new Dictionary<MuseConversationId, bool>();
+        static readonly IDictionary<MuseConversationId, bool> k_FavoriteCache = new Dictionary<MuseConversationId, bool>();
 
         public static Action HistoryPanelReloadRequired;
         public static Action HistoryPanelRefreshRequired;

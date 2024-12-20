@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using UnityEditor;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI.Utils
 {
-    internal static class CodeSyntaxHighlight
+    static class CodeSyntaxHighlight
     {
         internal static readonly string k_ColorAzure = EditorGUIUtility.isProSkin ? "#7893e5" : "#1d2c98";
         internal static readonly string k_ColorLavender = EditorGUIUtility.isProSkin ? "#bc92f9" : "#653ba3";

@@ -20,30 +20,16 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "FunctionCall")]
     internal partial class FunctionCall
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FunctionCall" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected FunctionCall() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionCall" /> class.
-        /// </summary>
-        /// <param name="function">function (required)</param>
-        /// <param name="parameters">parameters (required)</param>
-        public FunctionCall(string function = default(string), List<string> parameters = default(List<string>))
+        public FunctionCall(string function, List<string> parameters)
         {
-            // to ensure "function" is required (not null)
-            if (function == null)
-            {
-                throw new ArgumentNullException("function is a required property for FunctionCall and cannot be null");
-            }
-            this.Function = function;
-            // to ensure "parameters" is required (not null)
-            if (parameters == null)
-            {
-                throw new ArgumentNullException("parameters is a required property for FunctionCall and cannot be null");
-            }
-            this.Parameters = parameters;
+            Function = function;
+            Parameters = parameters;
         }
 
         /// <summary>
@@ -80,7 +66,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

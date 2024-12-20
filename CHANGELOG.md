@@ -4,10 +4,31 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.1-pre.3] - 2024-12-20
+
+### Changed
+- Various UI improvements and fixes
+- Optimization of smart context extractors
+- Added subscene extraction to smart context
+- Added delete option to inspirations
+- Updated documentation
+- Removed AppUI dependency
+- Move to authentication without API Key
+- Updated Muse Common to 2.0.10
+
 ## [1.1.1-pre.2] - 2024-11-19
-- Updated Muse Common to version 2.0.9
+
+### Changed
+- Fixed bug causing crashes on some systems
+- Added UI fixes and tweeks
+
+## [1.1.1-pre.2] - 2024-11-19
+
+### Changed
+- Updated Muse Common to 2.0.9
 
 ## [1.1.1-pre.1] - 2024-10-01
+
 ### Changed
 - Version Only
 

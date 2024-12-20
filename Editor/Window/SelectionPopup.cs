@@ -1,75 +1,158 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Muse.AppUI.UI;
 using UnityEditor;
+using UnityEditor.Search;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using Button = Unity.Muse.AppUI.UI.Button;
 using Object = UnityEngine.Object;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class SelectionPopup : ManagedTemplate
+    class SelectionPopup : ManagedTemplate
     {
         internal class ListEntry
         {
             public Object Object;
-            public LogReference LogReference;
-            public Action<SelectionElement> OnAddRemoveButtonClicked;
+            public Action<SelectionElement> OnRowClick;
+            public Action<SelectionElement> OnFindButtonClick;
+            public LogData? LogData;
             public bool IsSelected;
         }
 
         VisualElement m_Root;
         VisualElement m_AdaptiveListViewContainer;
+        ToolbarSearchField m_SearchField;
         AdaptiveListView<ListEntry, SelectionElement> m_ListView;
         Button m_AddEditorSelectionButton;
-        Text m_EmptyListHintText;
+        Label m_EmptyListHintText;
 
         double m_LastConsoleCheckTime;
         readonly float k_ConsoleCheckInterval = 0.2f;
 
-        List<LogReference> m_LastUpdatedLogReferences = new ();
+        List<LogData> m_LastUpdatedLogReferences = new ();
 
-        public List<Object> ObjectSelection = new();
-        public List<LogReference> ConsoleSelection = new();
+        public readonly List<Object> ObjectSelection = new();
+        public readonly List<Object> CombinedSelection = new();
+        public readonly List<LogData> ConsoleSelection = new();
 
         public Action OnSelectionChanged;
         public Action<Object> OnContextObjectAdded;
-        public Action<LogReference> OnContextLogAdded;
+        public Action<LogData> OnContextLogAdded;
 
         const float k_MaxWidth = 500;
         const float k_RightMargin = 60;
+
+        readonly IList<Object> k_SearchResults = new List<Object>();
+        bool m_RefreshPending;
+        bool m_SearchActive;
+
+        string m_ActiveSearchFilter = string.Empty;
 
         public SelectionPopup()
             : base(MuseChatConstants.UIModulePath)
         {
         }
 
-        public void SetSelection(List<Object> selection, List<LogReference> consoleSelection, bool notify = true)
+        public void SetSelectionFromContext(List<MuseChatContextEntry> context, bool notify = true)
         {
             ObjectSelection.Clear();
             ConsoleSelection.Clear();
 
-            if (selection != null)
+            for (var i = 0; i < context.Count; i++)
             {
-                foreach (var obj in selection)
+                var entry = context[i];
+                switch (entry.EntryType)
                 {
-                    if (obj != null)
-                        ObjectSelection.Add(obj);
-                }
-            }
+                    case MuseChatContextType.HierarchyObject:
+                    case MuseChatContextType.SceneObject:
+                    {
+                        var target = entry.GetTargetObject();
+                        if (target != null)
+                        {
+                            ObjectSelection.Add(target);
+                        }
 
-            if (consoleSelection != null)
-            {
-                foreach (var logRef in consoleSelection)
-                {
-                    if (logRef != null)
-                        ConsoleSelection.Add(logRef);
+                        break;
+                    }
+
+                    case MuseChatContextType.ConsoleMessage:
+                    {
+                        var logEntry = new LogData
+                        {
+                            Message = entry.Value,
+                            Type = Enum.Parse<LogDataType>(entry.ValueType)
+                        };
+
+                        ConsoleSelection.Add(logEntry);
+                        break;
+                    }
                 }
             }
 
             if (notify)
+            {
                 OnSelectionChanged?.Invoke();
+            }
+        }
+
+        void CheckAndRefilterSearchResults(bool force = false)
+        {
+            string newFilterValue = m_SearchField.value.Trim();
+            if (newFilterValue == m_ActiveSearchFilter && !force)
+            {
+                return;
+            }
+
+            m_ActiveSearchFilter = newFilterValue;
+            if (string.IsNullOrEmpty(m_ActiveSearchFilter))
+            {
+                PopulateListView();
+
+                m_SearchActive = false;
+                k_SearchResults.Clear();
+                ScheduleRefresh();
+                return;
+            }
+
+            m_SearchActive = true;
+            SearchService.Request(m_ActiveSearchFilter, OnIncomingResults);
+        }
+
+        void OnIncomingResults(SearchContext context, IEnumerable<SearchItem> items)
+        {
+            k_SearchResults.Clear();
+
+            foreach(var item in items)
+            {
+                var obj = item.ToObject();
+
+                if (obj== null)
+                {
+                    continue;
+                }
+
+                k_SearchResults.Add(obj);
+            }
+
+            ScheduleRefresh();
+        }
+
+        void ScheduleRefresh()
+        {
+            if (m_RefreshPending)
+            {
+                return;
+            }
+
+            m_RefreshPending = true;
+            EditorApplication.delayCall += OnRefresh;
+        }
+
+        void OnRefresh()
+        {
+            m_RefreshPending = false;
+            PopulateListView();
         }
 
         protected override void InitializeView(TemplateContainer view)
@@ -77,9 +160,17 @@ namespace Unity.Muse.Chat
             m_Root = view.Q<VisualElement>("popupRoot");
 
             m_AdaptiveListViewContainer = view.Q<VisualElement>("adaptiveListViewContainer");
+
+            var searchFieldRoot = view.Q<VisualElement>("attachItemSearchFieldRoot");
+            m_SearchField = new ToolbarSearchField();
+            m_SearchField.AddToClassList("mui-selection-search-bar");
+            m_SearchField.RegisterCallback<KeyUpEvent>(_ => CheckAndRefilterSearchResults());
+            m_SearchField.RegisterCallback<InputEvent>(_ => CheckAndRefilterSearchResults());
+            searchFieldRoot.Add(m_SearchField);
+
             m_ListView = new()
             {
-                EnableDelayedElements = false,
+                EnableDelayedElements = true,
                 EnableVirtualization = false,
                 EnableScrollLock = true,
                 EnableHorizontalScroll = false
@@ -91,12 +182,13 @@ namespace Unity.Muse.Chat
             m_ListView.style.minWidth = 200;
 
             m_AddEditorSelectionButton = view.Q<Button>("addSelectionButton");
+            m_AddEditorSelectionButton.focusable = false;
             m_AddEditorSelectionButton.clickable.clicked += () =>
             {
                 PopulateListView(true);
             };
 
-            m_EmptyListHintText = view.Q<Text>("emptyListHint");
+            m_EmptyListHintText = view.Q<Label>("emptyListHint");
 
             Selection.selectionChanged += () => PopulateListView();
 
@@ -106,33 +198,77 @@ namespace Unity.Muse.Chat
             EditorApplication.update += DetectLogChanges;
         }
 
+        public override void Show(bool sendVisibilityChanged = true)
+        {
+            base.Show(sendVisibilityChanged);
+
+            PopulateListView();
+        }
+
+        void AddObjectToListView(Object obj, bool addSelection = false)
+        {
+            if (IsSupportedAsset(obj))
+            {
+                m_ListView?.AddData(
+                    new ListEntry
+                    {
+                        Object = obj,
+                        OnRowClick = (e) => SelectedObject(obj, e),
+                        OnFindButtonClick = (e) => PingObject(obj, e),
+                        IsSelected = ObjectSelection.Contains(obj) || addSelection
+                    }
+                );
+            }
+        }
+
+        void AddObjectsToListView(IList<Object> objs, bool addSelection = false)
+        {
+            m_ListView.BeginUpdate();
+            for (int i = 0; i < objs.Count; i++)
+            {
+                var obj = objs[i];
+
+                AddObjectToListView(obj, addSelection);
+
+                if (addSelection && !ObjectSelection.Contains(obj))
+                    AddObjectToSelection(obj, true);
+            }
+
+            m_ListView.EndUpdate();
+        }
+
+        void CombinedListPopulate(List<Object> allSelectedObjects, bool addSelection)
+        {
+            AddObjectsToListView(allSelectedObjects, addSelection);
+        }
+
         public void PopulateListView(bool addSelection = false)
         {
             m_ListView.ClearData();
 
+            if (m_SearchActive || k_SearchResults.Count > 0)
+            {
+                AddObjectsToListView(k_SearchResults);
+                return;
+            }
+
             ConsoleUtils.GetSelectedConsoleLogs(m_LastUpdatedLogReferences);
 
             // Add selected objects
-            if (Selection.objects.Length > 0)
+            ValidateObjectSelection();
+            if (Selection.objects.Length > 0 || ObjectSelection.Count > 0)
             {
-                for (int i = 0; i < Selection.objects.Length; i++)
+                // Add combined list of objects currently selected in editor and objects previously selected for context
+                if (Selection.objects.Length == 0)
                 {
-                    var obj = Selection.objects[i];
-
-                    if (!IsSupportedAsset(obj))
-                        continue;
-
-                    var entry = new ListEntry()
-                    {
-                        Object = obj,
-                        OnAddRemoveButtonClicked = (SelectionElement e) => SelectedObject(obj, e),
-                        IsSelected = addSelection || ObjectSelection.Contains(obj)
-                    };
-
-                    m_ListView.AddData(entry);
-
-                    if (addSelection && !ObjectSelection.Contains(obj))
-                        AddObjectToSelection(obj, true);
+                    CombinedListPopulate(ObjectSelection, addSelection);
+                } else if (ObjectSelection.Count == 0)
+                {
+                    CombinedListPopulate(Selection.objects.ToList(), addSelection);
+                } else {
+                    CombinedSelection.Clear();
+                    CombinedSelection.AddRange(Selection.objects.ToList().Union(ObjectSelection).ToList());
+                    CombinedListPopulate(CombinedSelection, addSelection);
                 }
             }
 
@@ -142,12 +278,12 @@ namespace Unity.Muse.Chat
                 var entry = new ListEntry()
                 {
                     Object = null,
-                    LogReference = logRef,
-                    OnAddRemoveButtonClicked = (SelectionElement e) => SelectedLogReference(logRef, e),
-                    IsSelected = addSelection || ConsoleUtils.HasEqualLogReference(ConsoleSelection, logRef)
+                    OnRowClick = (SelectionElement e) => SelectedLogReference(logRef, e),
+                    LogData = logRef,
+                    IsSelected = addSelection || ConsoleUtils.HasEqualLogEntry(ConsoleSelection, logRef)
                 };
 
-                if (addSelection && !ConsoleUtils.HasEqualLogReference(ConsoleSelection, logRef))
+                if (addSelection && !ConsoleUtils.HasEqualLogEntry(ConsoleSelection, logRef))
                     AddLogReferenceToSelection(logRef, true);
 
                 m_ListView.AddData(entry);
@@ -166,7 +302,7 @@ namespace Unity.Muse.Chat
             RefreshSelectionCount();
         }
 
-        private bool IsSupportedAsset(Object obj)
+        bool IsSupportedAsset(Object obj)
         {
             if (obj is DefaultAsset)
                 return false;
@@ -178,18 +314,23 @@ namespace Unity.Muse.Chat
         {
             var nonSelectedItemCount = 0;
 
-            var logs = new List<LogReference>();
+            var logs = new List<LogData>();
             ConsoleUtils.GetSelectedConsoleLogs(logs);
             foreach (var log in logs)
-                if (!ConsoleUtils.HasEqualLogReference(ConsoleSelection, log))
+                if (!ConsoleUtils.HasEqualLogEntry(ConsoleSelection, log))
                     nonSelectedItemCount++;
 
             foreach (var obj in Selection.objects)
                 if (!ObjectSelection.Contains(obj) && IsSupportedAsset(obj))
                     nonSelectedItemCount++;
 
-            m_AddEditorSelectionButton.title = $"Add Editor selection ({nonSelectedItemCount})";
+            m_AddEditorSelectionButton.text = $"Add Editor selection ({nonSelectedItemCount})";
             m_AddEditorSelectionButton.SetEnabled(nonSelectedItemCount > 0);
+        }
+
+        void PingObject(Object obj, SelectionElement e)
+        {
+            EditorGUIUtility.PingObject(obj);
         }
 
         void SelectedObject(Object obj, SelectionElement e)
@@ -219,9 +360,9 @@ namespace Unity.Muse.Chat
                 OnSelectionChanged?.Invoke();
         }
 
-        void SelectedLogReference(LogReference logRef, SelectionElement e)
+        void SelectedLogReference(LogData logRef, SelectionElement e)
         {
-            if (!ConsoleUtils.HasEqualLogReference(ConsoleSelection, logRef))
+            if (!ConsoleUtils.HasEqualLogEntry(ConsoleSelection, logRef))
             {
                 AddLogReferenceToSelection(logRef);
                 e.SetSelected(true);
@@ -237,7 +378,7 @@ namespace Unity.Muse.Chat
             RefreshSelectionCount();
         }
 
-        void AddLogReferenceToSelection(LogReference logRef, bool notifySelectionChanged = false)
+        void AddLogReferenceToSelection(LogData logRef, bool notifySelectionChanged = false)
         {
             ConsoleSelection.Add(logRef);
             OnContextLogAdded?.Invoke(logRef);
@@ -251,12 +392,12 @@ namespace Unity.Muse.Chat
             if (EditorApplication.timeSinceStartup < m_LastConsoleCheckTime + k_ConsoleCheckInterval)
                 return;
 
-            List<LogReference> logs = new();
+            List<LogData> logs = new();
             ConsoleUtils.GetSelectedConsoleLogs(logs);
 
             if (m_LastUpdatedLogReferences.Count != logs.Count
-                || m_LastUpdatedLogReferences.Any(log => !ConsoleUtils.HasEqualLogReference(logs, log))
-                || logs.Any(log => !ConsoleUtils.HasEqualLogReference(m_LastUpdatedLogReferences, log)) )
+                || m_LastUpdatedLogReferences.Any(log => !ConsoleUtils.HasEqualLogEntry(logs, log))
+                || logs.Any(log => !ConsoleUtils.HasEqualLogEntry(m_LastUpdatedLogReferences, log)) )
             {
                 PopulateListView();
             }
@@ -264,15 +405,15 @@ namespace Unity.Muse.Chat
             m_LastConsoleCheckTime = EditorApplication.timeSinceStartup;
         }
 
-        public void SetAdjustToPanel(Panel rootPanel)
+        void ValidateObjectSelection()
         {
-            m_Root.style.maxWidth = Math.Min(rootPanel.contentRect.width - k_RightMargin, k_MaxWidth);
-            m_Root.style.width = k_MaxWidth;
-
-            rootPanel.RegisterCallback<GeometryChangedEvent>(evt =>
+            for (var i = ObjectSelection.Count - 1; i >= 0; i--)
             {
-                m_Root.style.maxWidth = Math.Min(rootPanel.contentRect.width - k_RightMargin, k_MaxWidth);
-            });
+                if (ObjectSelection[i] == null)
+                {
+                    ObjectSelection.RemoveAt(i);
+                }
+            }
         }
     }
 }

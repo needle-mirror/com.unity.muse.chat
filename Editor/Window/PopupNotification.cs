@@ -1,16 +1,16 @@
 using System;
-using Unity.Muse.AppUI.UI;
+using Unity.Muse.Chat.UI.Utils;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
     class PopupNotification : ManagedTemplate
     {
         const int k_AnimationDuration = 100;
 
-        Text m_TextField;
+        Label m_TextField;
 
-        Icon m_Icon;
+        MuseChatImage m_Icon;
 
         bool m_Dismissed;
 
@@ -27,12 +27,13 @@ namespace Unity.Muse.Chat
 
         public PopupNotification()
             : base(MuseChatConstants.UIModulePath)
-        { }
+        {
+        }
 
         public void SetData(PopupNotificationContext messageContext)
         {
             m_TextField.text = messageContext.message;
-            m_Icon.iconName = messageContext.icon;
+            m_Icon.SetIconClassName(messageContext.icon);
             TimeOut = messageContext.timeOut;
         }
 
@@ -40,9 +41,9 @@ namespace Unity.Muse.Chat
         {
             view.SetupButton("dismissButton", OnDismissClicked);
 
-            m_Icon = view.Q<Icon>("icon");
+            m_Icon = view.SetupImage("icon");
 
-            m_TextField = view.Q<Text>("messageField");
+            m_TextField = view.Q<Label>("messageField");
 
             contentContainer.style.opacity = 0;
             contentContainer.experimental.animation.Start(0, 1, k_AnimationDuration, (element, f) =>

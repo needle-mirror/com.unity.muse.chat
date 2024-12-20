@@ -8,6 +8,7 @@ using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
 using Newtonsoft.Json;
 using Unity.Muse.Chat;
+using Unity.Muse.Chat.UI;
 
 namespace Unity.Muse.Editor.Markup
 {

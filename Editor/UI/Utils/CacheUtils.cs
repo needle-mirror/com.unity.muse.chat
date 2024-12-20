@@ -1,8 +1,8 @@
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI.Utils
 {
-    internal static class CacheUtils
+    static class CacheUtils
     {
-        private static readonly char[] k_PathTrimChars = {' ', '\t', '\n', '/'};
+        static readonly char[] k_PathTrimChars = {' ', '\t', '\n', '/'};
 
         public static string GetCachePath(string basePath, string subPath, string resourceFolderName)
         {

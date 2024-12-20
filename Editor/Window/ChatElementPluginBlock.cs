@@ -1,17 +1,13 @@
 using System.Linq;
-using System.Threading.Tasks;
-using Unity.Muse.AppUI.UI;
-using Unity.Muse.Chat.Plugins;
 using Unity.Muse.Editor.Markup;
-using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class ChatElementPluginBlock : ManagedTemplate
+    class ChatElementPluginBlock : ManagedTemplate
     {
         VisualElement m_BlockRoot;
-        Text m_TitleText;
+        Label m_TitleText;
 
         /// <summary>
         /// Create a new shared chat element
@@ -36,11 +32,11 @@ namespace Unity.Muse.Chat
 
         protected override void InitializeView(TemplateContainer view)
         {
-            m_TitleText = view.Q("titleText") as Text;
+            m_TitleText = view.Q("titleText") as Label;
             m_BlockRoot = view.Q("blockRoot");
         }
 
-        private void RefreshDisplay()
+        void RefreshDisplay()
         {
             if (PluginCalls.Length == 0)
             {
@@ -61,7 +57,7 @@ namespace Unity.Muse.Chat
             {
                 ChatElementPluginButton button = new();
                 button.Initialize();
-                button.SetData(call);
+                button.SetData(TEMPUpdatePluginCall(call));
                 m_BlockRoot.Add(button);
             }
         }
@@ -79,9 +75,31 @@ namespace Unity.Muse.Chat
                 case "GenerateTexture": return "Muse Texture";
                 case "GenerateSprite": return "Muse Sprite";
                 case "GenerateAnimationsFromPrompt": return "Muse Animate";
+                case "TriggerAgentFromPrompt": return "Run this with Muse?";
             }
 
             return "Plugin";
+        }
+
+        string GetActiveConversationLastUserMessage()
+        {
+            var activeConversation = Assistant.instance.GetActiveConversation();
+            var lastUserMessage = activeConversation.Messages.FindLast(
+                message => message.Role == "user").Content;
+            return lastUserMessage;
+        }
+
+        PluginCall TEMPUpdatePluginCall(PluginCall call)
+        {
+            var newCall = call;
+            switch (call.Function)
+            {
+                case "TriggerAgentFromPrompt":
+                    newCall.Label = "Run Command";
+                    newCall.Parameters[0] = GetActiveConversationLastUserMessage();
+                    break;
+            }
+            return newCall;
         }
     }
 }

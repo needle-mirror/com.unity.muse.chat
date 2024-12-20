@@ -1,3 +1,6 @@
+using System.Runtime.CompilerServices;
+
+[assembly:InternalsVisibleTo("Unity.Muse.DeveloperTools.Editor.Tests")]
 namespace Unity.Muse.Chat
 {
     internal struct MuseChatUpdateData

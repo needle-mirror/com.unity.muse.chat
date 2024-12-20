@@ -1,7 +1,7 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement class="mui-musing-root">
-        <ProgressBar name="musingProgressBar" class="mui-musing-progressbar" />
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="mui-musing-root">
+        <ui:ProgressBar name="musingProgressBar" class="mui-musing-progressbar" />
 
-        <appui:Text name="musingProgressMessage" text="Musing " class="mui-musing-text"></appui:Text>
-    </VisualElement>
+        <ui:Label name="musingProgressMessage" text="Musing " class="mui-chat-label mui-musing-text"></ui:Label>
+    </ui:VisualElement>
 </UXML>

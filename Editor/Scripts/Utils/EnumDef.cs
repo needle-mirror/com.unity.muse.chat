@@ -34,5 +34,10 @@ namespace Unity.Muse.Chat
         {
             return s_EntryToName[value];
         }
+
+        public static T Parse(string value)
+        {
+            return (T)Enum.Parse(Type, value);
+        }
     }
 }

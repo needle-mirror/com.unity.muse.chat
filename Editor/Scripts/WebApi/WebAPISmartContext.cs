@@ -16,22 +16,26 @@ namespace Unity.Muse.Chat
 {
     partial class WebAPI
     {
-        public async Task<SmartContextResponse> PostSmartContextAsync(string prompt, string editorContext, List<FunctionDefinition> catalog, string conversationId, CancellationToken cancellationToken)
+        public async Task<SmartContextResponse> PostSmartContextAsync(
+            string prompt,
+            EditorContextReport editorContext,
+            List<FunctionDefinition> catalog,
+            string conversationId,
+            CancellationToken cancellationToken)
         {
             if (!GetOrganizationID(out string organizationId))
                 return null;
 
-            var request = new SmartContextRequest(
-                prompt: prompt,
-                organizationId: organizationId,
-                conversationId: conversationId,
-                jsonCatalog: catalog,
-                editorContext: editorContext);
+            var request = new SmartContextRequest(organizationId, prompt)
+            {
+                ConversationId = conversationId, JsonCatalog = catalog, EditorContext = new EditorContext(editorContext)
+            };
 
             try
             {
                 MuseChatBackendApi api = new(CreateConfig());
-                return await api.PostSmartContextV1Async(request, cancellationToken);
+                return await api.PostSmartContextV1Builder(request)
+                    .BuildAndSendAsync(cancellationToken);
             }
             catch (ApiException e)
             {

@@ -1,45 +1,46 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Unity.Muse.AppUI.UI;
+using Unity.Muse.Chat.UI.Utils;
 using Unity.Muse.Common.Utils;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Button = Unity.Muse.AppUI.UI.Button;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class ChatElementUser : ChatElementBase
+    class ChatElementUser : ChatElementBase
     {
-        private const string k_ConnectAssembly = "UnityEditor.Connect.UnityConnect";
-        private const string k_UserInfoType = "UnityEditor.Connect.UserInfo";
-        private const string k_UserInfoMethod = "GetUserInfo";
-        private const string k_UserInstanceProperty = "instance";
-        private const string k_UserInfoDisplayNameProperty = "displayName";
-        private const string k_UserInfoIdProperty = "userId";
+        const string k_ConnectAssembly = "UnityEditor.Connect.UnityConnect";
+        const string k_UserInfoType = "UnityEditor.Connect.UserInfo";
+        const string k_UserInfoMethod = "GetUserInfo";
+        const string k_UserInstanceProperty = "instance";
+        const string k_UserInfoDisplayNameProperty = "displayName";
+        const string k_UserInfoIdProperty = "userId";
 
-        private const string k_EditModeActiveClass = "mui-um-edit-mode-active";
-        private const string k_EditModeRWTextFieldClass = "mui-user-edit-read-write-field";
+        const string k_EditModeActiveClass = "mui-um-edit-mode-active";
+        const string k_EditModeRWTextFieldClass = "mui-user-edit-read-write-field";
+        const string k_ContextElementClass = "mui-context-entry-user-message";
 
-        private readonly IList<VisualElement> m_TextFields = new List<VisualElement>();
+        readonly IList<VisualElement> m_TextFields = new List<VisualElement>();
 
-        private VisualElement m_ChatRoot;
+        VisualElement m_ChatRoot;
 
-        private VisualElement m_EditControls;
-        private Button m_EditButton;
-        private Button m_EditCancelButton;
+        VisualElement m_EditControls;
+        Button m_EditButton;
+        Button m_EditCancelButton;
 
-        private VisualElement m_TextFieldRoot;
-        private MuseTextField m_EditField;
-        private AppUI.UI.Avatar m_UserIcon;
-        private Text m_UserName;
-        private Accordion m_ContextFoldout;
-        private VisualElement m_ContextContent;
+        VisualElement m_TextFieldRoot;
+        MuseTextField m_EditField;
+        MuseChatImage m_UserIcon;
+        VisualElement m_UserIconFrame;
+        Label m_UserName;
+        Foldout m_ContextFoldout;
+        VisualElement m_ContextContent;
 
-        private bool m_EditEnabled = true;
-        private bool m_EditModeActive;
-        private bool m_EditButtonVisible = false;
+        bool m_EditEnabled = true;
+        bool m_EditModeActive;
+        bool m_EditButtonVisible = false;
 
         public bool EditEnabled
         {
@@ -75,6 +76,7 @@ namespace Unity.Muse.Chat
 
             RefreshText(m_TextFieldRoot, m_TextFields);
             RefreshUI();
+            RefreshContext();
         }
 
         string GetUserName()
@@ -113,9 +115,8 @@ namespace Unity.Muse.Chat
             {
                 if (icon != null)
                 {
-                    m_UserIcon.style.display = DisplayStyle.Flex;
-
-                    m_UserIcon.src = Background.FromTexture2D(icon);
+                    m_UserIconFrame.SetDisplay(true);
+                    m_UserIcon.SetTexture(icon);
                 }
             });
         }
@@ -124,8 +125,7 @@ namespace Unity.Muse.Chat
         {
             m_ChatRoot = view.Q<VisualElement>("chatRoot");
 
-            m_ContextFoldout = view.Q<Accordion>("contextFoldout");
-            m_ContextFoldout.RealignFoldoutIcon();
+            m_ContextFoldout = view.Q<Foldout>("contextFoldout");
 
             m_ContextContent = view.Q<VisualElement>("contextContent");
 
@@ -136,10 +136,11 @@ namespace Unity.Muse.Chat
             m_TextFieldRoot = view.Q<VisualElement>("userMessageTextFieldRoot");
 
             // Hide the icon until we find a way to display that:
-            m_UserIcon = view.Q<AppUI.UI.Avatar>("userIcon");
-            m_UserIcon.style.display = DisplayStyle.None;
+            m_UserIcon = view.SetupImage("userIcon");
+            m_UserIconFrame = view.Q<VisualElement>("userIconFrame");
+            m_UserIconFrame.SetDisplay(false);
 
-            m_UserName = view.Q<Text>("userName");
+            m_UserName = view.Q<Label>("userName");
             m_UserName.text = GetUserName();
 
             RegisterCallback<PointerEnterEvent>(OnPointerEnter);
@@ -151,7 +152,7 @@ namespace Unity.Muse.Chat
             return s.Trim('\n', '\r');
         }
 
-        private void InitializeEditField()
+        void InitializeEditField()
         {
             if (m_EditField != null)
             {
@@ -168,7 +169,7 @@ namespace Unity.Muse.Chat
             m_TextFieldRoot.parent.Add(m_EditField);
         }
 
-        private void OnEditFieldSubmit(string value)
+        void OnEditFieldSubmit(string value)
         {
             if (!m_EditModeActive)
             {
@@ -180,18 +181,18 @@ namespace Unity.Muse.Chat
             string changedText = value;
             if (changedText != TrimDisplayString(Message.Content))
             {
-                MuseEditorDriver.instance.ProcessEditPrompt(changedText, Message.Id);
+                Assistant.instance.ProcessEditPrompt(changedText, Message.Id);
             }
 
             SetEditMode(false);
         }
 
-        private void OnEditClicked(PointerUpEvent evt)
+        void OnEditClicked(PointerUpEvent evt)
         {
             SetEditMode(!m_EditModeActive);
         }
 
-        private void SetEditMode(bool state)
+        void SetEditMode(bool state)
         {
             // Never allow going into edit state if editing is disabled:
             if (!EditEnabled)
@@ -216,7 +217,7 @@ namespace Unity.Muse.Chat
             RefreshUI();
         }
 
-        private void RefreshUI()
+        void RefreshUI()
         {
             m_EditControls.style.display = EditEnabled ? DisplayStyle.Flex : DisplayStyle.None;
             m_ChatRoot.EnableInClassList(k_EditModeActiveClass, m_EditModeActive);
@@ -228,12 +229,11 @@ namespace Unity.Muse.Chat
             if (m_EditField != null)
             {
                 m_EditField.SetDisplay(m_EditModeActive);
+                m_EditField.SelectAllText();
             }
-
-            RefreshContext();
         }
 
-        private void RefreshContext()
+        void RefreshContext()
         {
             if (ContextEntries == null || ContextEntries.Count == 0)
             {
@@ -247,20 +247,20 @@ namespace Unity.Muse.Chat
             for (var index = 0; index < ContextEntries.Count; index++)
             {
                 var contextEntry = ContextEntries[index];
-                var entry = new ChatElementContextEntry();
+                var entry = new ContextElement();
                 entry.Initialize();
-                entry.SetData(index, contextEntry);
+                entry.SetData(contextEntry, extraStyle: k_ContextElementClass);
                 m_ContextContent.Add(entry);
             }
         }
 
-        private void OnPointerExit(PointerLeaveEvent evt)
+        void OnPointerExit(PointerLeaveEvent evt)
         {
             m_EditButtonVisible = false;
             RefreshUI();
         }
 
-        private void OnPointerEnter(PointerEnterEvent evt)
+        void OnPointerEnter(PointerEnterEvent evt)
         {
             m_EditButtonVisible = true;
             RefreshUI();

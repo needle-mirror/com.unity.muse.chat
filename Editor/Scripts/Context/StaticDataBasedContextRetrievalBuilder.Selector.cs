@@ -57,6 +57,8 @@ namespace Unity.Muse.Chat
 
             string IContextSelection.TargetName => string.Empty;
 
+            bool? IContextSelection.Truncated => false;
+
 
             public bool Dirty => true;
 

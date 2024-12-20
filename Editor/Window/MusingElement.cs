@@ -1,36 +1,34 @@
 using System;
-using System.Collections.Generic;
-using Unity.Muse.AppUI.UI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class MusingElement : ManagedTemplate
+    class MusingElement : ManagedTemplate
     {
-        private const string k_MusingProgressTime = "MUSING_PROGRESS_TIME";
+        const string k_MusingProgressTime = "MUSING_PROGRESS_TIME";
 
-        private float k_ProgressTime = SessionState.GetFloat(k_MusingProgressTime, 10);
+        float k_ProgressTime = SessionState.GetFloat(k_MusingProgressTime, 10);
 
-        private ProgressBar m_ProgressBar;
-        private VisualElement m_ProgressBarOverlay;
-        private Text m_Message;
-        private bool m_Running;
-        private ValueAnimation<float> m_ProgressAnimation;
+        ProgressBar m_ProgressBar;
+        VisualElement m_ProgressBarOverlay;
+        Label m_Message;
+        bool m_Running;
+        ValueAnimation<float> m_ProgressAnimation;
 
-        private const string k_ProgressCompleteMessage = "Almost ready";
-        private const string k_MusingMessage = "Musing";
-        private const string k_ProcessingMessage = "Processing request";
-        private const string k_AnalyzingMessage = "Analyzing project context";
-        private const string k_RunningMessage = "Running command";
-        private const string k_RefiningMessage = "Refining code";
-        private const string k_ReattemptingMessage = "Reattempting";
+        const string k_ProgressCompleteMessage = "Almost ready";
+        const string k_MusingMessage = "Musing";
+        const string k_ProcessingMessage = "Processing request";
+        const string k_AnalyzingMessage = "Analyzing project context";
+        const string k_RunningMessage = "Running command";
+        const string k_RefiningMessage = "Refining code";
+        const string k_ReattemptingMessage = "Reattempting";
 
-        private readonly string[] k_DefaultStateStrings = { k_MusingMessage, k_ProcessingMessage, k_AnalyzingMessage };
-        private readonly string[] k_RunExecutingStateStrings = { k_MusingMessage, k_RunningMessage };
-        private readonly string[] k_CodeRepairStateStrings = { k_MusingMessage, k_RefiningMessage };
+        readonly string[] k_DefaultStateStrings = { k_MusingMessage, k_ProcessingMessage, k_AnalyzingMessage };
+        readonly string[] k_RunExecutingStateStrings = { k_MusingMessage, k_RunningMessage };
+        readonly string[] k_CodeRepairStateStrings = { k_MusingMessage, k_RefiningMessage };
 
         public MusingElement()
             : base(MuseChatConstants.UIModulePath)
@@ -40,7 +38,7 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             m_ProgressBar = view.Q<ProgressBar>("musingProgressBar");
-            m_Message = view.Q<Text>("musingProgressMessage");
+            m_Message = view.Q<Label>("musingProgressMessage");
 
             m_ProgressBarOverlay = view.Q(className: "unity-progress-bar__progress");
 
@@ -48,7 +46,7 @@ namespace Unity.Muse.Chat
             RegisterCallback<DetachFromPanelEvent>(OnDetachFromPanel);
         }
 
-        private void UpdateMessage()
+        void UpdateMessage()
         {
             // TODO: Get this from the active conversation:
             var commandMode = UserSessionState.instance.SelectedCommandMode;
@@ -62,19 +60,9 @@ namespace Unity.Muse.Chat
             else
             {
                 string[] stringsForState = k_DefaultStateStrings;
-                switch (commandMode)
-                {
-                    case ChatCommandType.Run:
-                        // TODO: How to check if we're executing a command?
-                        // stringsForState = k_RunExecutingStateStrings;
-                        break;
-                    case ChatCommandType.Code:
-                        // TODO: How to check if we're refining code?
-                        // stringsForState = k_CodeRepairStateStrings;
-                        // TODO: Check if code did not compile and do this:
-                        // message = k_ReattemptingMessage
-                        break;
-                }
+
+                if (Assistant.instance.CurrentPromptState == Assistant.PromptState.RepairCode)
+                    stringsForState = k_CodeRepairStateStrings;
 
                 var index = Math.Min(stringsForState.Length, (int)(progress / 100f * stringsForState.Length));
                 message = stringsForState[index];
@@ -109,15 +97,18 @@ namespace Unity.Muse.Chat
             EditorApplication.update -= UpdateProgress;
 
             // If the response started streaming, update progress time for next time:
-            if (MuseEditorDriver.instance.CurrentPromptState == MuseEditorDriver.PromptState.Streaming)
+            if (Assistant.instance.CurrentPromptState == Assistant.PromptState.Streaming)
             {
-                var startTime = MuseEditorDriver.instance.GetActiveConversation().StartTime;
+                var activeConversation = Assistant.instance.GetActiveConversation();
+                if (activeConversation != null)
+                {
+                    var startTime = Assistant.instance.GetActiveConversation().StartTime;
+                    var timeTaken = (float)(EditorApplication.timeSinceStartup - startTime);
+                    // Never let it get too big, could be delayed if there are breakpoints or other long running tasks:
+                    k_ProgressTime = Mathf.Min(100, (k_ProgressTime + timeTaken) / 2);
 
-                var timeTaken = (float)(EditorApplication.timeSinceStartup - startTime);
-                // Never let it get too big, could be delayed if there are breakpoints or other long running tasks:
-                k_ProgressTime = Mathf.Min(100, (k_ProgressTime + timeTaken) / 2);
-
-                SessionState.SetFloat(k_MusingProgressTime, k_ProgressTime);
+                    SessionState.SetFloat(k_MusingProgressTime, k_ProgressTime);
+                }
             }
 
             if (m_ProgressAnimation != null)
@@ -134,25 +125,25 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnDetachFromPanel(DetachFromPanelEvent evt)
+        void OnDetachFromPanel(DetachFromPanelEvent evt)
         {
             Stop();
         }
 
-        private void OnAttachToPanel(AttachToPanelEvent evt)
+        void OnAttachToPanel(AttachToPanelEvent evt)
         {
         }
 
-        private void UpdateProgress()
+        void UpdateProgress()
         {
             UpdateMessage();
 
             m_ProgressBar.value = Mathf.Min(100, GetProgress());
         }
 
-        private float GetProgress()
+        float GetProgress()
         {
-            var conversation = MuseEditorDriver.instance.GetActiveConversation();
+            var conversation = Assistant.instance.GetActiveConversation();
             if (conversation == null)
             {
                 return 0;

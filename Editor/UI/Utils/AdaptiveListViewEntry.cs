@@ -1,11 +1,11 @@
 using System;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal abstract class AdaptiveListViewEntry : ManagedTemplate
+    abstract class AdaptiveListViewEntry : ManagedTemplate
     {
-        private int m_Index;
+        int m_Index;
 
         protected AdaptiveListViewEntry(string basePath = null)
             : base(basePath ?? MuseChatConstants.UIModulePath)

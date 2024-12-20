@@ -1,13 +1,15 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" editor-extension-mode="False">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
     <ui:VisualElement>
         <ui:VisualElement name="historyPanelHeaderRoot">
-            <appui:Text name="historyPanelHeaderText" text="Date"/>
+            <ui:Label name="historyPanelHeaderText" text="Date" class="mui-chat-label"/>
         </ui:VisualElement>
         <ui:VisualElement name="historyPanelElementConversationRoot">
-            <appui:Text text="New conversation" name="historyPanelElementConversationText" />
-            <appui:TextField name="historyPanelElementConversationEditText" />
+            <ui:Label text="New conversation" name="historyPanelElementConversationText" class="mui-chat-label"/>
+            <ui:TextField name="historyPanelElementConversationEditText" />
             <ui:VisualElement class="mui-history-panel-entry-controls">
-                <appui:Button name="historyPanelFavoriteStateButton" leading-icon="star" />
+                <ui:Button name="historyPanelFavoriteStateButton">
+                    <ui:Image name="historyPanelFavoriteStateIcon" class="mui-action-button-image mui-icon-star"/>
+                </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

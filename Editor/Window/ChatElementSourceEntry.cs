@@ -1,16 +1,15 @@
-using Unity.Muse.AppUI.UI;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Button = Unity.Muse.AppUI.UI.Button;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class ChatElementSourceEntry : ManagedTemplate
+    class ChatElementSourceEntry : ManagedTemplate
     {
         Button m_SourceLink;
-        Text m_SourceLinkHint;
-        Text m_SourceLinkNumber;
-        LocalizedTextElement m_SourceLinkTextElement;
+        Label m_SourceLinkHint;
+        Label m_SourceLinkText;
+        Label m_SourceLinkNumber;
+        Label m_SourceLinkTextElement;
 
         /// <summary>
         /// Create a new shared chat element
@@ -40,27 +39,26 @@ namespace Unity.Muse.Chat
         {
             m_SourceLink = view.SetupButton("sourceLink", OnSourceClicked);
 
-            m_SourceLinkNumber = new Text();
-            m_SourceLinkNumber.AddToClassList("mui-source-entry-number");
-            m_SourceLink.Q<VisualElement>("appui-button__titlecontainer").Insert(0, m_SourceLinkNumber);
+            m_SourceLinkNumber = view.Q<Label>("sourceLinkNumber");
+            m_SourceLinkNumber.text = m_SourceLinkNumber.ToString();
 
-            m_SourceLinkTextElement = m_SourceLink.Q<LocalizedTextElement>("appui-button__title");
-            m_SourceLinkTextElement.style.flexWrap = Wrap.NoWrap;
-            m_SourceLinkTextElement.RegisterCallback<GeometryChangedEvent>(_ => RefreshDisplay());
+            m_SourceLinkText = view.Q<Label>("sourceLinkLabel");
 
-            m_SourceLinkHint = view.Q<Text>("sourceLinkHint");
+            m_SourceLink.RegisterCallback<GeometryChangedEvent>(_ => RefreshDisplay());
+
+            m_SourceLinkHint = view.Q<Label>("sourceLinkHint");
         }
 
-        private void OnSourceClicked(PointerUpEvent evt)
+        void OnSourceClicked(PointerUpEvent evt)
         {
             Application.OpenURL(SourceBlock.source);
         }
 
-        private void RefreshDisplay()
+        void RefreshDisplay()
         {
             m_SourceLinkNumber.text = $"{Index + 1}";
 
-            m_SourceLink.title = SourceBlock.reason;
+            m_SourceLinkText.text = SourceBlock.reason;
             m_SourceLink.tooltip = SourceBlock.source;
 
             m_SourceLinkHint.text = SourceBlock.source;

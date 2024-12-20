@@ -1,18 +1,17 @@
 using System;
-using Unity.Muse.AppUI.UI;
 using Unity.Muse.Common.Utils;
 using UnityEngine.UIElements;
-using Button = Unity.Muse.AppUI.UI.Button;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class MuseChatNotificationBanner : ManagedTemplate
+    class MuseChatNotificationBanner : ManagedTemplate
     {
         VisualElement m_NotificationBanner;
-        Text m_NotificationBannerTitle;
-        Text m_NotificationBannerMessage;
+        Label m_NotificationBannerTitle;
+        Label m_NotificationBannerMessage;
         Button m_DismissButton;
         Button m_ActionButton;
+        Label m_ActionButtonLabel;
 
         Action m_ActionCallback;
         Action m_DismissCallback;
@@ -33,7 +32,7 @@ namespace Unity.Muse.Chat
 
             m_DismissButton.SetDisplay(canDismiss);
             m_ActionButton.SetDisplay(actionCallback != null);
-            m_ActionButton.title = actionCallbackText;
+            m_ActionButtonLabel.text = actionCallbackText;
         }
 
         void DismissClicked(PointerUpEvent evt)
@@ -52,9 +51,10 @@ namespace Unity.Muse.Chat
         protected override void InitializeView(TemplateContainer view)
         {
             m_NotificationBanner = view.Q<VisualElement>("notificationBanner");
-            m_NotificationBannerTitle = view.Q<Text>("notificationBannerTitle");
-            m_NotificationBannerMessage = view.Q<Text>("notificationBannerMessage");
+            m_NotificationBannerTitle = view.Q<Label>("notificationBannerTitle");
+            m_NotificationBannerMessage = view.Q<Label>("notificationBannerMessage");
             m_ActionButton = view.SetupButton("notificationBannerActionButton", ActionClicked);
+            m_ActionButtonLabel = view.Q<Label>("notificationBannerActionButtonLabel");
             m_DismissButton = view.SetupButton("notificationBannerDismissButton", DismissClicked);
 
             Show(false);

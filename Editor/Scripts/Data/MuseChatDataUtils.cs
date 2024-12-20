@@ -24,13 +24,17 @@ namespace Unity.Muse.Chat
 
                 case Inspiration.ModeEnum.Run:
                 {
+#if ENABLE_ASSISTANT_BETA_FEATURES
                     result.Mode = ChatCommandType.Run;
+#endif
                     break;
                 }
 
                 case Inspiration.ModeEnum.Code:
                 {
+#if ENABLE_ASSISTANT_BETA_FEATURES
                     result.Mode = ChatCommandType.Code;
+#endif
                     break;
                 }
 
@@ -45,10 +49,11 @@ namespace Unity.Muse.Chat
 
         public static Inspiration ToExternal(this MuseChatInspiration data)
         {
-            Inspiration apiData;
-            apiData = data.Id.IsValid
-                ? new Inspiration(id: data.Id.Value, value: data.Value, description: data.Description)
-                : new Inspiration(value: data.Value, description: data.Description);
+            Inspiration apiData = new Inspiration(Inspiration.ModeEnum.Ask, data.Value)
+            {
+                Id = data.Id.IsValid ? data.Id.Value : default,
+                Description = data.Description
+            };
 
             switch (data.Mode)
             {
@@ -57,7 +62,7 @@ namespace Unity.Muse.Chat
                     apiData.Mode = Inspiration.ModeEnum.Ask;
                     break;
                 }
-
+#if ENABLE_ASSISTANT_BETA_FEATURES
                 case ChatCommandType.Run:
                 {
                     apiData.Mode = Inspiration.ModeEnum.Run;
@@ -69,6 +74,7 @@ namespace Unity.Muse.Chat
                     apiData.Mode = Inspiration.ModeEnum.Code;
                     break;
                 }
+#endif
             }
 
             return apiData;

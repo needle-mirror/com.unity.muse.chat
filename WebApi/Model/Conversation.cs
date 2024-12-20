@@ -20,69 +20,17 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "Conversation")]
     internal partial class Conversation
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Conversation" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected Conversation() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Conversation" /> class.
-        /// </summary>
-        /// <param name="id">Uniform conversation ID.</param>
-        /// <param name="title">Title of conversation. (required)</param>
-        /// <param name="history">Conversation history. (required)</param>
-        /// <param name="owners">User IDs of owners of the conversation. (required)</param>
-        /// <param name="tags">tags</param>
-        /// <param name="context">context</param>
-        /// <param name="isFavorite">isFavorite</param>
-        /// <param name="functionCatalog">functionCatalog</param>
-        public Conversation(string id = default(string), string title = default(string), List<ConversationFragment> history = default(List<ConversationFragment>), List<string> owners = default(List<string>), List<string> tags = default(List<string>), string context = default(string), bool? isFavorite = default(bool?), List<FunctionDefinition> functionCatalog = default(List<FunctionDefinition>))
+        public Conversation(List<string> owners, string title)
         {
-            // to ensure "title" is required (not null)
-            if (title == null)
-            {
-                throw new ArgumentNullException("title is a required property for Conversation and cannot be null");
-            }
-            this.Title = title;
-            // to ensure "history" is required (not null)
-            if (history == null)
-            {
-                throw new ArgumentNullException("history is a required property for Conversation and cannot be null");
-            }
-            this.History = history;
-            // to ensure "owners" is required (not null)
-            if (owners == null)
-            {
-                throw new ArgumentNullException("owners is a required property for Conversation and cannot be null");
-            }
-            this.Owners = owners;
-            this.Id = id;
-            this.Tags = tags;
-            this.Context = context;
-            this.IsFavorite = isFavorite;
-            this.FunctionCatalog = functionCatalog;
+            Owners = owners;
+            Title = title;
         }
-
-        /// <summary>
-        /// Uniform conversation ID.
-        /// </summary>
-        /// <value>Uniform conversation ID.</value>
-        [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Title of conversation.
-        /// </summary>
-        /// <value>Title of conversation.</value>
-        [DataMember(Name = "title", IsRequired = true, EmitDefaultValue = true)]
-        public string Title { get; set; }
-
-        /// <summary>
-        /// Conversation history.
-        /// </summary>
-        /// <value>Conversation history.</value>
-        [DataMember(Name = "history", IsRequired = true, EmitDefaultValue = true)]
-        public List<ConversationFragment> History { get; set; }
 
         /// <summary>
         /// User IDs of owners of the conversation.
@@ -92,10 +40,11 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public List<string> Owners { get; set; }
 
         /// <summary>
-        /// Gets or Sets Tags
+        /// Title of conversation.
         /// </summary>
-        [DataMember(Name = "tags", EmitDefaultValue = true)]
-        public List<string> Tags { get; set; }
+        /// <value>Title of conversation.</value>
+        [DataMember(Name = "title", IsRequired = true, EmitDefaultValue = true)]
+        public string Title { get; set; }
 
         /// <summary>
         /// Gets or Sets Context
@@ -104,16 +53,36 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public string Context { get; set; }
 
         /// <summary>
+        /// Gets or Sets FunctionCatalog
+        /// </summary>
+        [DataMember(Name = "function_catalog", EmitDefaultValue = true)]
+        public List<FunctionDefinition> FunctionCatalog { get; set; }
+
+        /// <summary>
+        /// Conversation history.
+        /// </summary>
+        /// <value>Conversation history.</value>
+        [DataMember(Name = "history", EmitDefaultValue = false)]
+        public List<ConversationFragment> History { get; set; }
+
+        /// <summary>
+        /// Uniform conversation ID.
+        /// </summary>
+        /// <value>Uniform conversation ID.</value>
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public string Id { get; set; }
+
+        /// <summary>
         /// Gets or Sets IsFavorite
         /// </summary>
         [DataMember(Name = "is_favorite", EmitDefaultValue = true)]
         public bool? IsFavorite { get; set; }
 
         /// <summary>
-        /// Gets or Sets FunctionCatalog
+        /// Gets or Sets Tags
         /// </summary>
-        [DataMember(Name = "function_catalog", EmitDefaultValue = true)]
-        public List<FunctionDefinition> FunctionCatalog { get; set; }
+        [DataMember(Name = "tags", EmitDefaultValue = true)]
+        public List<string> Tags { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -123,14 +92,14 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class Conversation {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  Title: ").Append(Title).Append("\n");
-            sb.Append("  History: ").Append(History).Append("\n");
             sb.Append("  Owners: ").Append(Owners).Append("\n");
-            sb.Append("  Tags: ").Append(Tags).Append("\n");
+            sb.Append("  Title: ").Append(Title).Append("\n");
             sb.Append("  Context: ").Append(Context).Append("\n");
-            sb.Append("  IsFavorite: ").Append(IsFavorite).Append("\n");
             sb.Append("  FunctionCatalog: ").Append(FunctionCatalog).Append("\n");
+            sb.Append("  History: ").Append(History).Append("\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
+            sb.Append("  IsFavorite: ").Append(IsFavorite).Append("\n");
+            sb.Append("  Tags: ").Append(Tags).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -143,7 +112,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

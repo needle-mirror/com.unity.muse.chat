@@ -21,9 +21,9 @@ namespace Unity.Muse.Editor.Markup
             k_Pipeline = pipelineBuilder.Build();
         }
 
-        internal static void MarkupText(string text, IList<WebAPI.SourceBlock> sourceBlocks, IList<VisualElement> newTextElements)
+        internal static void MarkupText(string text, IList<WebAPI.SourceBlock> sourceBlocks, IList<VisualElement> newTextElements, VisualElement previousLastElement)
         {
-            var ourRenderer = new ChatMarkdownRenderer(sourceBlocks, newTextElements);
+            var ourRenderer = new ChatMarkdownRenderer(sourceBlocks, newTextElements, previousLastElement);
             k_Pipeline.Setup(ourRenderer);
 
             Markdown.Convert(text, ourRenderer, k_Pipeline);

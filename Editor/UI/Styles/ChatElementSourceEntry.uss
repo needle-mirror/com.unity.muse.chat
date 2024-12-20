@@ -5,10 +5,10 @@
 }
 
 #sourceLink:hover {
-    background-color: var(--appui-backgrounds-100);
+    background-color: var(--muse-chat-backgrounds-100);
 }
 
-#appui-button__titlecontainer {
+.mui-source-entry-button-block {
     flex-direction: row;
 }
 
@@ -26,6 +26,8 @@
 
 #sourceLink {
     align-self: flex-start;
+    flex-direction: row;
+    align-items: center;
     border-radius: 6px;
     margin-right: 8px;
     padding: 2px;
@@ -41,4 +43,12 @@
 #sourceLinkHint {
     font-size: 12px;
     display: none;
+}
+
+#sourceLinkNumber {
+    margin-left: 2px;
+}
+
+#sourceLinkLabel {
+    margin-right: 4px;
 }

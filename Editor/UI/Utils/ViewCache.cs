@@ -1,15 +1,16 @@
 using System.Collections.Generic;
+using Unity.Muse.Chat.UI.Utils;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal class ViewCache
+    class ViewCache
     {
-        private static readonly ViewCache k_DefaultCache = new();
-        private static readonly IDictionary<string, ViewCache> k_SpecializedCaches;
+        static readonly ViewCache k_DefaultCache = new();
+        static readonly IDictionary<string, ViewCache> k_SpecializedCaches;
 
-        private readonly IDictionary<string, VisualTreeAsset> m_Cache;
-        private readonly string m_ViewPath;
+        readonly IDictionary<string, VisualTreeAsset> m_Cache;
+        readonly string m_ViewPath;
 
         /// <summary>
         /// Static constructor for specialized caches

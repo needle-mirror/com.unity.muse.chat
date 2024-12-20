@@ -1,6 +1,6 @@
 .mui-selection-element-root {
-    border-color: var(--appui-backgrounds-50);
-    background-color: var(--appui-backgrounds-200);
+    border-color: var(--muse-chat-backgrounds-50);
+    background-color: var(--muse-chat-backgrounds-200);
 }
 
 .mui-selection-element-row {
@@ -10,7 +10,7 @@
 }
 
 .mui-selection-element-row:hover {
-    background-color: var(--appui-backgrounds-300);
+    background-color: var(--muse-chat-backgrounds-300);
 }
 
 .mui-selection-element-text {
@@ -53,10 +53,10 @@
     justify-content: flex-end;
 }
 
-.mui-selection-element-add-remove-button {
+.mui-selection-element-find-button {
     flex-direction: row;
     justify-content: flex-end;
-    border-bottom-color: var(--appui-backgrounds-50);
+    border-bottom-color: var(--muse-chat-backgrounds-50);
     border-bottom-width: 1px;
     background-color: rgba(0, 0, 0, 0);
     color: var(--muse-chat-action-button-default);
@@ -64,14 +64,10 @@
     border-width: 0;
 }
 
-.mui-selection-element-add-remove-button .appui-button__title {
-    align-self: flex-end;
+#selectionElementFindButton:hover {
+    background-color: rgba(0, 0, 0, 0);
 }
 
-.mui-selection-element-add-remove-button:hover {
-    color: var(--appui-primary-1200);
-}
-
-.mui-selection-element-add-remove-button:disabled {
+.mui-selection-element-find-button:disabled {
     display: none;
 }

@@ -4,25 +4,25 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal partial class AdaptiveListView<TD, TV> : VisualElement
+    partial class AdaptiveListView<TD, TV> : VisualElement
         where TV: AdaptiveListViewEntry
     {
-        private const string k_BaseClassName = "adaptive-list-view";
+        const string k_BaseClassName = "adaptive-list-view";
 
-        private readonly IList<TD> k_Data = new List<TD>();
-        private readonly IList<TV> k_VisualElements = new List<TV>();
-        private readonly List<int> k_PendingUpdates = new();
-        private readonly List<bool> k_SelectionState = new();
+        readonly IList<TD> k_Data = new List<TD>();
+        readonly IList<TV> k_VisualElements = new List<TV>();
+        readonly List<int> k_PendingUpdates = new();
+        readonly List<bool> k_SelectionState = new();
 
         Scroller m_VerticalScroller;
 
-        private ListView m_InnerList;
-        private ScrollView m_InnerScroll;
+        ListView m_InnerList;
+        ScrollView m_InnerScroll;
 
-        private bool m_UpdateInProgress;
-        private bool m_RefreshRequired;
+        bool m_UpdateInProgress;
+        bool m_RefreshRequired;
 
         public bool EnableSelection = false;
         public bool EnableScrollLock = false;
@@ -110,7 +110,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private TV MakeItem()
+        TV MakeItem()
         {
             var element = Activator.CreateInstance<TV>();
             element.Initialize();
@@ -118,7 +118,7 @@ namespace Unity.Muse.Chat
             return element;
         }
 
-        private void DestroyItem(TV element)
+        void DestroyItem(TV element)
         {
             element.SelectionChanged -= OnDataSelected;
         }
@@ -149,7 +149,7 @@ namespace Unity.Muse.Chat
             RefreshElement(index);
         }
 
-        private void RefreshIfRequired()
+        void RefreshIfRequired()
         {
             if (m_RefreshRequired)
             {
@@ -157,7 +157,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void DoRefreshList(bool fullRefresh)
+        void DoRefreshList(bool fullRefresh)
         {
             m_RefreshRequired = false;
 
@@ -189,7 +189,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void RefreshElement(int index)
+        void RefreshElement(int index)
         {
             if (EnableVirtualization)
             {
@@ -319,13 +319,13 @@ namespace Unity.Muse.Chat
             ChangeScrollState(ScrollState.None);
         }
 
-        private void BindItem(VisualElement element, int messageIndex)
+        void BindItem(VisualElement element, int messageIndex)
         {
             var wrapper = (TV)element;
             wrapper.SetData(messageIndex, k_Data[messageIndex], k_SelectionState[messageIndex]);
         }
 
-        private void ContinueCreateElements()
+        void ContinueCreateElements()
         {
             int operations = 0;
             while (k_VisualElements.Count < k_Data.Count)
@@ -358,7 +358,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void ContinueUpdateElements()
+        void ContinueUpdateElements()
         {
             if (k_PendingUpdates.Count == 0)
             {
@@ -392,7 +392,7 @@ namespace Unity.Muse.Chat
             EnforceScrollState();
         }
 
-        private void OnGeometryChanged(GeometryChangedEvent evt)
+        void OnGeometryChanged(GeometryChangedEvent evt)
         {
             EnforceScrollState();
         }

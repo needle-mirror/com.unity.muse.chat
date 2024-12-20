@@ -17,7 +17,10 @@ namespace Unity.Muse.Chat.FunctionCalling
             k_Tools.Clear();
 
             foreach (CachedFunction cachedFunction in functionCache.GetFunctionsByTags(tags))
-                k_Tools.Add(cachedFunction.FunctionDefinition.Name, cachedFunction);
+            {
+                // Silent fail if multiple functions with same key are added
+                k_Tools.TryAdd(cachedFunction.FunctionDefinition.Name, cachedFunction);
+            }
         }
 
         public bool TryGetSelectorAndConvertArgs(string name, string[] args, out CachedFunction function,
@@ -28,8 +31,14 @@ namespace Unity.Muse.Chat.FunctionCalling
             if (!k_Tools.TryGetValue(name, out function))
                 return false;
 
+            if (function.FunctionDefinition.Parameters == null || function.FunctionDefinition.Parameters.Count == 0)
+            {
+                convertedArgs = Array.Empty<object>();
+                return true;
+            }
+
             // Check what parameters are required:
-            var requiredArgCount = function.FunctionDefinition.Parameters.Count(parameter => !parameter.Optional);
+            var requiredArgCount = function.FunctionDefinition?.Parameters?.Count(parameter => !parameter.Optional) ?? 0;
 
             if (args.Length < requiredArgCount)
             {
@@ -105,6 +114,7 @@ namespace Unity.Muse.Chat.FunctionCalling
                 {
                     InternalLog.LogWarning(
                         $"SmartContextError: The LLM did not return an arg that was a valid named arg");
+                    return false;
                 }
             }
 

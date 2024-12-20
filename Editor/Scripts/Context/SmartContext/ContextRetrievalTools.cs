@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -19,27 +17,42 @@ namespace Unity.Muse.Chat.Context.SmartContext
         }
 
         [ContextProvider("Returns the serialized data of the object or asset (GameObject, prefab, script, etc.)")]
-        internal static string ObjectDataExtractor(
+        internal static SmartContextToolbox.ExtractedContext ObjectDataExtractor(
             [Parameter("Name of the object or asset to extract data from.")]
             string objectName,
             [Parameter(
-                "Optional: Filter to specify a particular component on the object if it’s a GameObject.")]
-            string componentFilter = null)
+                "Optional: Filter to specify the NAME of a particular component on the object IF it’s a GameObject or prefab")]
+            string componentFilter = null,
+            [Parameter(
+                "Optional: Filter to specify an asset type, from the following asset types: script, mesh, texture, material, audioclip, sprite, model, and prefab.")]
+            string assetType = null)
         {
             if (string.IsNullOrEmpty(objectName))
-                return string.Empty;
+                return null;
 
-            var contextBuilder = new ContextBuilder();
-            MuseEditorDriver.instance.GetAttachedContextString(ref contextBuilder);
-            var selectedContext = contextBuilder.BuildContext(SmartContextToolbox.SmartContextLimit);
+            var selectedContext = new ContextBuilder();
+            Assistant.instance.GetAttachedContextString(ref selectedContext);
 
-            var matchingAsset = ContextRetrievalHelpers.FindObject<Object>(objectName);
+            Object matchingAsset = null;
+
+            if (!string.IsNullOrEmpty(assetType))
+            {
+                // TODO: Generally ensure we use a known and valid type
+                assetType = assetType.ToLower();
+
+                // Assets
+                matchingAsset = TryFindAssets(objectName, assetType);
+            }
+
+            // Objects
+            if (matchingAsset == null)
+                matchingAsset = ContextRetrievalHelpers.FindObject<Object>(objectName);
 
             var objectContext = new UnityObjectContextSelection();
 
             if (matchingAsset == null)
             {
-                return string.Empty;
+                return null;
             }
 
             var prefix = $"Contents of asset {matchingAsset.name}:\n";
@@ -88,7 +101,11 @@ namespace Unity.Muse.Chat.Context.SmartContext
                         if (componentsResult.Length <= SmartContextToolbox.SmartContextLimit ||
                             fullOrDownsizedPayLoad == 1)
                         {
-                            return componentsResult;
+                            return new SmartContextToolbox.ExtractedContext
+                            {
+                                Payload = componentsResult,
+                                ContextType = "component data"
+                            };
                         }
                     }
                 }
@@ -97,7 +114,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
             var path = AssetDatabase.GetAssetPath(matchingAsset);
             if (!string.IsNullOrEmpty(path))
             {
-                prefix = $"Contents of asset at path '{path}':\n";
+                prefix = $"Contents of asset at path '{path}':";
             }
 
             objectContext.SetTarget(matchingAsset);
@@ -106,23 +123,32 @@ namespace Unity.Muse.Chat.Context.SmartContext
             // If the payload is already in the selected context, do not return anything:
             if (selectedContext.Contains(objectPayload))
             {
-                return string.Empty;
+                return null;
             }
 
             var result = prefix + objectPayload;
             if (result.Length <= SmartContextToolbox.SmartContextLimit)
             {
-                return result;
+                return new SmartContextToolbox.ExtractedContext
+                {
+                    Payload = result,
+                    ContextType = "object data"
+                };
             }
 
             objectPayload = ((IContextSelection)objectContext).DownsizedPayload;
             // If the payload is already in the selected context, do not return anything:
             if (selectedContext.Contains(objectPayload))
             {
-                return string.Empty;
+                return null;
             }
 
-            return prefix + objectPayload;
+            return new SmartContextToolbox.ExtractedContext
+            {
+                Payload = prefix + objectPayload,
+                ContextType = "object data",
+                Truncated = true
+            };
         }
     }
 }

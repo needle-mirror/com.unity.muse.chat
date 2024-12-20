@@ -1,25 +1,30 @@
 using System.Collections.Generic;
 using System.Text;
-using Unity.Muse.AppUI.UI;
 using Unity.Muse.Editor.Markup;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.UIElements.Experimental;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.UI
 {
-    internal abstract class ChatElementBase : ManagedTemplate
+    abstract class ChatElementBase : ManagedTemplate
     {
         // Note: We may have to tweak this dynamically based on what content we intend to add to the text element
-        private const int k_MessageChunkSize = 5000;
+        const int k_MessageChunkSize = 5000;
 
-        private const string k_ActionCursorClassName = "mui-action-cursor";
+        const string k_ActionCursorClassName = "mui-action-cursor";
 
-        private IList<WebAPI.SourceBlock> m_SourceBlocks;
-        private IList<StubWebAPIContextEntry> m_ContextEntries;
+        IList<WebAPI.SourceBlock> m_SourceBlocks;
+        IList<MuseChatContextEntry> m_ContextEntries;
 
-        private readonly IList<VisualElement> m_NewTextElements = new List<VisualElement>();
+        readonly IList<VisualElement> m_TextElementCache = new List<VisualElement>();
+
+        protected enum LinkType
+        {
+            Reference,
+            GameObject
+        }
 
         protected ChatElementBase()
             : base(MuseChatConstants.UIModulePath)
@@ -56,24 +61,23 @@ namespace Unity.Muse.Chat
         protected IList<string> MessageChunks { get; }
 
         protected IList<WebAPI.SourceBlock> SourceBlocks => m_SourceBlocks;
-        protected IList<StubWebAPIContextEntry> ContextEntries => m_ContextEntries;
+        protected IList<MuseChatContextEntry> ContextEntries => m_ContextEntries;
 
         protected void RefreshText(VisualElement root, IList<VisualElement> textFields)
         {
-            if (Message.Role == MuseEditorDriver.k_UserRole)
+            if (Message.Role == Assistant.k_UserRole)
             {
                 // Synchronize each text element for our message chunks
                 for (var i = 0; i < MessageChunks.Count; i++)
                 {
                     var text = MessageChunks[i];
 
-                    if (Message.Role == MuseEditorDriver.k_UserRole)
+                    if (Message.Role == Assistant.k_UserRole)
                         text = MarkupUtil.QuoteCarriageReturn(text);
 
                     if (textFields.Count <= i)
                     {
-                        var textElement = new Text(text);
-                        textElement.AddToClassList("mui-textbox");
+                        var textElement = new Label { text = text };
                         textElement.RegisterCallback<PointerDownLinkTagEvent>(OnLinkClicked);
                         textElement.RegisterCallback<PointerOverLinkTagEvent>(OnLinkOver);
                         textElement.RegisterCallback<PointerOutLinkTagEvent>(OnLinkOut);
@@ -83,7 +87,7 @@ namespace Unity.Muse.Chat
                     }
                     else
                     {
-                        var textField = textFields[i] as Text;
+                        var textField = textFields[i] as Label;
                         textField.text = text;
                     }
                 }
@@ -102,53 +106,48 @@ namespace Unity.Muse.Chat
             }
 
             // For chat responses, parse chunks and add text elements with formatting/rich text tags where applicable
-            m_NewTextElements.Clear();
+
+            textFields.Clear();
+            root.Clear();
+
+            VisualElement lastElement = null;
             for (var i = 0; i < MessageChunks.Count; i++)
             {
                 var text = MessageChunks[i];
 
-                MarkdownAPI.MarkupText(text, m_SourceBlocks, m_NewTextElements);
+                m_TextElementCache.Clear();
+                MarkdownAPI.MarkupText(text, m_SourceBlocks, m_TextElementCache, lastElement);
 
-                for (var id = 0; id < m_NewTextElements.Count; id++)
+                for (var id = 0; id < m_TextElementCache.Count; id++)
                 {
-                    var visualElement = m_NewTextElements[id];
+                    var visualElement = m_TextElementCache[id];
 
-                    if (textFields.Count <= id)
+                    if (visualElement is Label textElement)
                     {
+                        textElement.selection.isSelectable = true;
+
                         visualElement.RegisterCallback<PointerDownLinkTagEvent>(OnLinkClicked);
                         visualElement.RegisterCallback<PointerOverLinkTagEvent>(OnLinkOver);
                         visualElement.RegisterCallback<PointerOutLinkTagEvent>(OnLinkOut);
-
-                        if (visualElement is Text textElement)
-                        {
-                            textElement.AddToClassList("mui-textbox");
-                            textElement.selection.isSelectable = true;
-                        }
-                        else if (visualElement is ChatElementCodeBlock codeBlock)
-                        {
-                            codeBlock.SetSelectable(true);
-                        }
-
-                        textFields.Add(visualElement);
-                        root.Add(visualElement);
                     }
-                    else
+                    else if (visualElement is ChatElementCodeBlock codeBlock)
                     {
-                        int oldIndex = root.IndexOf(textFields[id]);
-                        root.Insert(oldIndex, visualElement);
-                        root.Remove(textFields[id]);
-                        textFields[id] = visualElement;
-
-                        if (visualElement is ChatElementCodeBlock codeBlock)
-                        {
-                            codeBlock.SetSelectable(true);
-                        }
+                        codeBlock.SetMessage(Message);
+                        codeBlock.SetSelectable(true);
                     }
+                    else if (visualElement is ChatElementActionBlock actionBlock)
+                    {
+                        actionBlock.SetMessage(Message);
+                    }
+
+                    textFields.Add(visualElement);
+                    root.Add(visualElement);
+                    lastElement = visualElement;
                 }
             }
 
             // Clear out obsolete fields
-            for (var id = textFields.Count - 1; id >= m_NewTextElements.Count; id--)
+            for (var id = textFields.Count - 1; id >= m_TextElementCache.Count; id--)
             {
                 var obsoleteField = textFields[id];
                 obsoleteField.RemoveFromHierarchy();
@@ -159,31 +158,56 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void OnLinkOut(PointerOutLinkTagEvent evt)
+        void OnLinkOut(PointerOutLinkTagEvent evt)
         {
-            if (evt.target is Text text)
+            if (evt.target is Label text)
             {
                 text.RemoveFromClassList(k_ActionCursorClassName);
             }
         }
 
-        private void OnLinkOver(PointerOverLinkTagEvent evt)
+        void OnLinkOver(PointerOverLinkTagEvent evt)
         {
-            if (evt.target is Text text)
+            if (evt.target is Label text)
             {
                 text.AddToClassList(k_ActionCursorClassName);
             }
         }
 
-        private void OnLinkClicked(PointerDownLinkTagEvent evt)
+        void OnLinkClicked(PointerDownLinkTagEvent evt)
         {
-            if (!MessageUtils.GetAssetFromLink(evt.linkID, out var asset))
+            if (evt.linkID.IndexOf(MuseChatConstants.SourceReferencePrefix) >= 0)
             {
-                Debug.LogWarning("Asset not found: " + evt.linkID);
+                HandleLinkClick(LinkType.Reference, evt.linkID.Replace(MuseChatConstants.SourceReferencePrefix, ""));
                 return;
             }
 
-            Selection.activeObject = asset;
+            HandleLinkClick(LinkType.GameObject, evt.linkID);
+
+        }
+
+        protected virtual void HandleLinkClick(LinkType type, string id)
+        {
+            switch (type)
+            {
+                case LinkType.GameObject:
+                {
+                    if (!MessageUtils.GetAssetFromLink(id, out var asset))
+                    {
+                        Debug.LogWarning("Asset not found: " + id);
+                        return;
+                    }
+
+                    Selection.activeObject = asset;
+                    return;
+                }
+
+                default:
+                {
+                    Debug.LogError("Unhandled link type: " + type + " == " + id);
+                    return;
+                }
+            }
         }
 
         protected virtual string GetAnimatedMessage(string message)
@@ -196,6 +220,20 @@ namespace Unity.Muse.Chat
             m_SourceBlocks?.Clear();
             m_ContextEntries?.Clear();
             MessageChunks.Clear();
+
+            if (Message.Context is { Length: > 0 })
+            {
+                if (m_ContextEntries == null)
+                {
+                    m_ContextEntries = new List<MuseChatContextEntry>();
+                }
+
+                for (var i = 0; i < Message.Context.Length; i++)
+                {
+                    m_ContextEntries.Add(Message.Context[i]);
+                }
+            }
+
             if (string.IsNullOrEmpty(Message.Content))
             {
                 return;
