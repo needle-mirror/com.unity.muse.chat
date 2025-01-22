@@ -78,7 +78,7 @@ namespace Unity.Muse.Chat
             List<SourceOrFootnote> sourceOrFootnotes = new();
 
             messageContent = message.Content;
-            if (message.Role == MuseEditorDriver.k_UserRole)
+            if (message.Role == Assistant.k_UserRole)
             {
                 var contextBlock = k_ContextRegex.Match(messageContent);
                 if (contextBlock.Success)
@@ -88,7 +88,7 @@ namespace Unity.Muse.Chat
 
                 return;
             }
-            else if (message.Role == MuseEditorDriver.k_AssistantRole)
+            else if (message.Role == Assistant.k_AssistantRole)
             {
                 s_StringBuilder.Clear();
 
@@ -356,7 +356,7 @@ namespace Unity.Muse.Chat
 
         public static string GetReferenceString(int index)
         {
-            return $"<size=11><b><color=#{MuseChatConstants.SourcesReferenceColor}> [ {index} ]</color></b></size>";
+            return $"<link=\"{MuseChatConstants.SourceReferencePrefix}{index - 1}\"><size=11><b><color=#{MuseChatConstants.SourceReferenceColor}> [ {index} ]</color></b></size></link>";
         }
 
         public static string GetAssetLink<T>(string guid, string title)
@@ -450,47 +450,6 @@ namespace Unity.Muse.Chat
 
             string yearMonthKey = $"{5000 - timeStamp.Year}{50 - timeStamp.Month}";
             return $"{yearMonthKey}#{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(timeStamp.Month)} {timeStamp.Year}";
-        }
-
-        public static Texture2D GetTextureForObject(Object obj)
-        {
-            if (obj is MonoScript && AssetDatabase.Contains(obj))
-                return AssetDatabase.GetCachedIcon(AssetDatabase.GetAssetPath(obj)) as Texture2D;
-
-            return EditorGUIUtility.ObjectContent(null, obj.GetType()).image as Texture2D;
-        }
-
-        public static string GetLogIconClassName(LogReference.ConsoleMessageMode logMessageMode)
-        {
-            switch (logMessageMode)
-            {
-                case LogReference.ConsoleMessageMode.Warning:
-                    return "mui-icon-warn";
-                case LogReference.ConsoleMessageMode.Error:
-                    return "mui-icon-error";
-                default:
-                    return "mui-icon-info";
-            }
-        }
-
-        public static bool IsPrefabType(Object obj)
-        {
-            var isAsset = AssetDatabase.Contains(obj);
-            if (!isAsset)
-                return obj is GameObject && IsPrefabInScene(obj);
-
-            return PrefabUtility.IsPartOfAnyPrefab(obj);
-        }
-
-        public static bool IsPrefabInScene(Object obj)
-        {
-            if (obj is not GameObject)
-                return false;
-
-            if (AssetDatabase.Contains(obj))
-                return false;
-
-            return PrefabUtility.GetCorrespondingObjectFromOriginalSource(obj) != null;
         }
     }
 }

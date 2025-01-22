@@ -36,9 +36,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
             {
                 if (TryGetSelectorAndConvertArgs(name, args, out var tool, out var convertedArgs))
                 {
-                    output = new ContextSelection(
-                        tool,
-                        (string)tool.Method.Invoke(null, convertedArgs));
+                    var result = (ExtractedContext)tool.Method.Invoke(null, convertedArgs);
+                    output = result != null ? new ContextSelection(tool, result) : null;
 
                     return true;
                 }

@@ -9,6 +9,7 @@ namespace Unity.Muse.Chat
         public string Author;
         public string Role;
         public string Content;
+        public MuseChatContextEntry[] Context;
         public bool IsComplete;
         public int ErrorCode;
         public string ErrorText;
@@ -21,12 +22,13 @@ namespace Unity.Muse.Chat
             if (string.IsNullOrEmpty(Author))
                 return defaultCommand;
 
+#if ENABLE_ASSISTANT_BETA_FEATURES
             if (Author.ToLower().Contains("agent"))
                 return ChatCommandType.Run;
 
             if (Author.ToLower().Contains("codegen"))
                 return ChatCommandType.Code;
-
+#endif
             return ChatCommandType.Ask;
         }
     }

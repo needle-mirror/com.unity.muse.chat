@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace Unity.Muse.Chat
@@ -8,9 +9,9 @@ namespace Unity.Muse.Chat
     /// </summary>
     internal class ConsoleContextSelection : IContextSelection
     {
-        LogReference m_Target;
+        LogData? m_Target;
 
-        internal void SetTarget(LogReference target)
+        internal void SetTarget(LogData target)
         {
             m_Target = target;
         }
@@ -24,7 +25,7 @@ namespace Unity.Muse.Chat
                 if (m_Target == null)
                     return "No log selected";
 
-                return $"{m_Target.Message.Substring(0, Mathf.Min(m_Target.Message.Length, 200))}";
+                return $"{m_Target.Value.Message.Substring(0, Mathf.Min(m_Target.Value.Message.Length, 200))}";
             }
         }
 
@@ -35,7 +36,7 @@ namespace Unity.Muse.Chat
                 if (m_Target == null)
                     return null;
 
-                return $"{UnityDataUtils.OutputLogData(m_Target, true)}";
+                return $"{UnityDataUtils.OutputLogData(m_Target.Value, true)}";
             }
         }
 
@@ -46,13 +47,47 @@ namespace Unity.Muse.Chat
                 if (m_Target == null)
                     return null;
 
-                return $"{UnityDataUtils.OutputLogData(m_Target, false)}";
+                return $"{UnityDataUtils.OutputLogData(m_Target.Value, false)}";
             }
         }
 
-        string IContextSelection.ContextType => m_Target.Mode == LogReference.ConsoleMessageMode.Error? "console error" : m_Target.Mode == LogReference.ConsoleMessageMode.Warning? "console warning" : "console log";
+        string IContextSelection.ContextType
+        {
+            get
+            {
+                if (m_Target == null)
+                {
+                    return "UNSET!";
+                }
+
+                switch (m_Target.Value.Type)
+                {
+                    case LogDataType.Info:
+                    {
+                        return "console log";
+                    }
+
+                    case LogDataType.Error:
+                    {
+                        return "console error";
+                    }
+
+                    case LogDataType.Warning:
+                    {
+                        return "console warning";
+                    }
+
+                    default:
+                    {
+                        throw new InvalidDataException("Unknown log type: " + m_Target.Value.Type);
+                    }
+                }
+            }
+        }
 
         string IContextSelection.TargetName => string.Empty;
+
+        bool? IContextSelection.Truncated => null;
 
         bool IEquatable<IContextSelection>.Equals(IContextSelection other)
         {

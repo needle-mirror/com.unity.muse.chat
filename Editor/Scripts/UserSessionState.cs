@@ -9,12 +9,10 @@ namespace Unity.Muse.Chat
         const string k_LastActiveConversationId = "MuseChatUserSession_LastActiveConversationId";
         const ChatCommandType k_DefaultCommandMode = ChatCommandType.Ask;
 
-        [SerializeField]	       
+        [SerializeField]
         public ChatCommandType SelectedCommandMode = k_DefaultCommandMode;
 
         public bool HasActiveSession => IsHistoryOpen || LastActiveConversationId != null;
-
-        public bool DebugUIModeEnabled;
 
         public bool IsHistoryOpen
         {

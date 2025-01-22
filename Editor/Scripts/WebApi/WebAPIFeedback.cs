@@ -29,39 +29,34 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            var request = new Feedback(
-                details: text,
-                conversationId: conversationID,
-                conversationFragmentId: conversationFragmentId,
-                sentiment: sentiment,
-                organizationId: organizationId,
-                category: feedbackType);
+            var request = new Feedback(feedbackType, conversationFragmentId, conversationID, text, organizationId,
+                sentiment);
 
             try
             {
-                var api = BoostrapAPI(InterceptFeedbackRequest, InterceptFeedbackResponse, out var cancellationTokenSource);
+                var api = BoostrapAPI(out var cancellationTokenSource);
 
                 // Construct a wrapper object that groups important resources
                 m_ActiveFeedbackRequestOperation = new FeedbackRequestOperation
                 {
-                    Request = request,
-                    CancellationTokenSource = cancellationTokenSource
+                    Request = request, CancellationTokenSource = cancellationTokenSource
                 };
 
                 // Start the request task, this should cause the Intercept code to
                 // populate m_ActiveRequest with a UnityWebRequest
-                Task requestTask = api.PostMuseFeedbackV1Async(request, cancellationTokenSource.Token);
+                Task requestTask = api.PostMuseFeedbackV1Builder(request)
+                    .BuildAndSendAsync(cancellationTokenSource.Token);
 
                 EditorApplication.update += Tick;
 
                 void Tick()
                 {
-                    if(!requestTask.IsCompleted)
+                    if (!requestTask.IsCompleted)
                         return;
 
                     if (!requestTask.IsCompletedSuccessfully)
                     {
-                        if(requestTask.Exception != null)
+                        if (requestTask.Exception != null)
                             Debug.LogException(requestTask.Exception);
                         else
                             Debug.LogError("Send Feedback Request failed");
@@ -80,21 +75,26 @@ namespace Unity.Muse.Chat
             }
         }
 
-        private void InterceptFeedbackResponse(UnityWebRequest request, string path, RequestOptions ops, IReadableConfiguration config, object obj)
+        private void InterceptFeedbackResponse(UnityWebRequest request, string path, RequestOptions ops,
+            IReadableConfiguration config, object obj)
         {
-            m_ActiveFeedbackRequestOperation.ConversationId = m_ActiveFeedbackRequestOperation.WebRequest.GetResponseHeader("X-Muse-Conversation-ID");
-            m_ActiveFeedbackRequestOperation.FinalData = m_ActiveFeedbackRequestOperation.WebRequest.downloadHandler.text;
+            m_ActiveFeedbackRequestOperation.ConversationId =
+                m_ActiveFeedbackRequestOperation.WebRequest.GetResponseHeader("X-Muse-Conversation-ID");
+            m_ActiveFeedbackRequestOperation.FinalData =
+                m_ActiveFeedbackRequestOperation.WebRequest.downloadHandler.text;
             m_ActiveFeedbackRequestOperation.IsComplete = true;
         }
 
-        private void InterceptFeedbackRequest(UnityWebRequest request, string path, RequestOptions ops, IReadableConfiguration config)
+        private void InterceptFeedbackRequest(UnityWebRequest request, string path, RequestOptions ops,
+            IReadableConfiguration config)
         {
             // The ops.Data variable should be the options used to create the request which can be used to verify that
             // the UnityWebRequest is being linked to the correct object
             if (m_ActiveFeedbackRequestOperation.Request == ops.Data)
                 m_ActiveFeedbackRequestOperation.WebRequest = request;
             else
-                Debug.LogError($"The Request {m_ActiveFeedbackRequestOperation.Request} and {ops.Data} do not match. This means that the active request is not the same as the request being intercepted. This should not happen.");
+                Debug.LogError(
+                    $"The Request {m_ActiveFeedbackRequestOperation.Request} and {ops.Data} do not match. This means that the active request is not the same as the request being intercepted. This should not happen.");
         }
 
         class FeedbackRequestOperation

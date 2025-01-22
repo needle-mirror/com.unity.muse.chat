@@ -1,6 +1,6 @@
 {
     "name": "Unity.Muse.Chat.BackendApi",
-    "rootNamespace": "",
+    "rootNamespace": "Unity.Muse.Chat.BackendApi",
     "references": [],
     "includePlatforms": [
         "Editor"

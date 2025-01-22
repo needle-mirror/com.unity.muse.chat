@@ -24,6 +24,7 @@ namespace Unity.Muse.Agent.Dynamic
 #endif
     class ExecutionResult
     {
+        internal static readonly string LinkTextColor = EditorGUIUtility.isProSkin ? "#8facef" : "#055b9f";
         internal static readonly string WarningTextColor = EditorGUIUtility.isProSkin ? "#DFB33D" : "#B76300";
 
         static int k_NextExecutionId = 1;
@@ -125,7 +126,7 @@ namespace Unity.Muse.Agent.Dynamic
                         {
                             if (objectInstance != null)
                             {
-                                return $"<link={objectInstance.GetInstanceID()}>{objectInstance.name.RichColor("#8facef")}</link>";
+                                return $"<link={objectInstance.GetInstanceID()}>{objectInstance.name.RichColor(LinkTextColor)}</link>";
                             }
                             else
                             {

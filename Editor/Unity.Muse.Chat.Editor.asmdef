@@ -7,10 +7,9 @@
         "GUID:e0205eb74dc764cf6ab9891355857e49",
         "GUID:ba676c383ebd54fdcbd97ce70f06b009",
         "GUID:1f45b3b2be7df0b4b8d026aa3d7fba7c",
-        "GUID:c88be702817089fb57f7000436616938",
-        "GUID:2edcef92c5756d2da266000405840bb7",
         "GUID:5c002a1798dfb4ff2bea5f300e09abd5",
-        "GUID:345f029b4460747ac84e21878089c9f2"
+        "GUID:345f029b4460747ac84e21878089c9f2",
+        "GUID:2edcef92c5756d2da266000405840bb7"
     ],
     "includePlatforms": [
         "Editor"
@@ -28,6 +27,12 @@
     ],
     "autoReferenced": false,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "Unity",
+            "expression": "2022",
+            "define": "ENABLE_ASSISTANT_BETA_FEATURES"
+        }
+    ],
     "noEngineReferences": false
 }

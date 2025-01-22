@@ -20,82 +20,18 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "ConversationFragment")]
     internal partial class ConversationFragment
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ConversationFragment" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected ConversationFragment() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConversationFragment" /> class.
-        /// </summary>
-        /// <param name="id">Uniform message ID.</param>
-        /// <param name="requestId">requestId</param>
-        /// <param name="timestamp">UTC milliseconds timestamp of message ... I mean ... conversation fragment.</param>
-        /// <param name="role">Role of conversation fragment author, either \&quot;user\&quot; or \&quot;assistant\&quot;. (required)</param>
-        /// <param name="content">Content of conversation fragment. (required)</param>
-        /// <param name="author">User ID of conversation fragment author. (required)</param>
-        /// <param name="tags">List of tags associated with the conversation fragment.</param>
-        /// <param name="preferred">preferred</param>
-        public ConversationFragment(string id = default(string), string requestId = default(string), long timestamp = default(long), string role = default(string), string content = default(string), string author = default(string), List<string> tags = default(List<string>), bool? preferred = default(bool?))
+        public ConversationFragment(string author, string content, string role)
         {
-            // to ensure "role" is required (not null)
-            if (role == null)
-            {
-                throw new ArgumentNullException("role is a required property for ConversationFragment and cannot be null");
-            }
-            this.Role = role;
-            // to ensure "content" is required (not null)
-            if (content == null)
-            {
-                throw new ArgumentNullException("content is a required property for ConversationFragment and cannot be null");
-            }
-            this.Content = content;
-            // to ensure "author" is required (not null)
-            if (author == null)
-            {
-                throw new ArgumentNullException("author is a required property for ConversationFragment and cannot be null");
-            }
-            this.Author = author;
-            this.Id = id;
-            this.RequestId = requestId;
-            this.Timestamp = timestamp;
-            this.Tags = tags;
-            this.Preferred = preferred;
+            Author = author;
+            Content = content;
+            Role = role;
         }
-
-        /// <summary>
-        /// Uniform message ID.
-        /// </summary>
-        /// <value>Uniform message ID.</value>
-        [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; }
-
-        /// <summary>
-        /// Gets or Sets RequestId
-        /// </summary>
-        [DataMember(Name = "request_id", EmitDefaultValue = true)]
-        public string RequestId { get; set; }
-
-        /// <summary>
-        /// UTC milliseconds timestamp of message ... I mean ... conversation fragment.
-        /// </summary>
-        /// <value>UTC milliseconds timestamp of message ... I mean ... conversation fragment.</value>
-        [DataMember(Name = "timestamp", EmitDefaultValue = false)]
-        public long Timestamp { get; set; }
-
-        /// <summary>
-        /// Role of conversation fragment author, either \&quot;user\&quot; or \&quot;assistant\&quot;.
-        /// </summary>
-        /// <value>Role of conversation fragment author, either \&quot;user\&quot; or \&quot;assistant\&quot;.</value>
-        [DataMember(Name = "role", IsRequired = true, EmitDefaultValue = true)]
-        public string Role { get; set; }
-
-        /// <summary>
-        /// Content of conversation fragment.
-        /// </summary>
-        /// <value>Content of conversation fragment.</value>
-        [DataMember(Name = "content", IsRequired = true, EmitDefaultValue = true)]
-        public string Content { get; set; }
 
         /// <summary>
         /// User ID of conversation fragment author.
@@ -105,6 +41,51 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public string Author { get; set; }
 
         /// <summary>
+        /// Content of conversation fragment.
+        /// </summary>
+        /// <value>Content of conversation fragment.</value>
+        [DataMember(Name = "content", IsRequired = true, EmitDefaultValue = true)]
+        public string Content { get; set; }
+
+        /// <summary>
+        /// Role of conversation fragment author, either \"user\" or \"assistant\".
+        /// </summary>
+        /// <value>Role of conversation fragment author, either \"user\" or \"assistant\".</value>
+        [DataMember(Name = "role", IsRequired = true, EmitDefaultValue = true)]
+        public string Role { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ContextId
+        /// </summary>
+        [DataMember(Name = "context_id", EmitDefaultValue = true)]
+        public string ContextId { get; set; }
+
+        /// <summary>
+        /// Uniform message ID.
+        /// </summary>
+        /// <value>Uniform message ID.</value>
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Preferred
+        /// </summary>
+        [DataMember(Name = "preferred", EmitDefaultValue = true)]
+        public bool? Preferred { get; set; }
+
+        /// <summary>
+        /// Gets or Sets RequestId
+        /// </summary>
+        [DataMember(Name = "request_id", EmitDefaultValue = true)]
+        public string RequestId { get; set; }
+
+        /// <summary>
+        /// Gets or Sets SelectedContextMetadata
+        /// </summary>
+        [DataMember(Name = "selected_context_metadata", EmitDefaultValue = true)]
+        public List<SelectedContextMetadataItems> SelectedContextMetadata { get; set; }
+
+        /// <summary>
         /// List of tags associated with the conversation fragment.
         /// </summary>
         /// <value>List of tags associated with the conversation fragment.</value>
@@ -112,10 +93,11 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public List<string> Tags { get; set; }
 
         /// <summary>
-        /// Gets or Sets Preferred
+        /// UTC milliseconds timestamp of message ... I mean ... conversation fragment.
         /// </summary>
-        [DataMember(Name = "preferred", EmitDefaultValue = true)]
-        public bool? Preferred { get; set; }
+        /// <value>UTC milliseconds timestamp of message ... I mean ... conversation fragment.</value>
+        [DataMember(Name = "timestamp", EmitDefaultValue = false)]
+        public long Timestamp { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -125,14 +107,16 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class ConversationFragment {\n");
-            sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  RequestId: ").Append(RequestId).Append("\n");
-            sb.Append("  Timestamp: ").Append(Timestamp).Append("\n");
-            sb.Append("  Role: ").Append(Role).Append("\n");
-            sb.Append("  Content: ").Append(Content).Append("\n");
             sb.Append("  Author: ").Append(Author).Append("\n");
-            sb.Append("  Tags: ").Append(Tags).Append("\n");
+            sb.Append("  Content: ").Append(Content).Append("\n");
+            sb.Append("  Role: ").Append(Role).Append("\n");
+            sb.Append("  ContextId: ").Append(ContextId).Append("\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Preferred: ").Append(Preferred).Append("\n");
+            sb.Append("  RequestId: ").Append(RequestId).Append("\n");
+            sb.Append("  SelectedContextMetadata: ").Append(SelectedContextMetadata).Append("\n");
+            sb.Append("  Tags: ").Append(Tags).Append("\n");
+            sb.Append("  Timestamp: ").Append(Timestamp).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -145,7 +129,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

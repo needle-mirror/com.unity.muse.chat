@@ -5,7 +5,7 @@ namespace Unity.Muse.Chat
 {
     class AgentMessageUtils
     {
-        public static string HandleActionMarkup(string message)
+        public static string HandleRunCommandMarkup(string message)
         {
             if (string.IsNullOrEmpty(message) || !ContainsAgentActionIndicator(message))
             {
@@ -17,7 +17,7 @@ namespace Unity.Muse.Chat
 
         static bool ContainsAgentActionIndicator(string message)
         {
-            var agentActionIndicators = new[] { "IAgentAction", "ActionScript", "ExecutionResult", "PreviewBuilder" };
+            var agentActionIndicators = new[] { "IRunCommand", "ExecutionResult", "PreviewBuilder" };
 
             return agentActionIndicators.Any(message.Contains);
         }
@@ -35,7 +35,7 @@ namespace Unity.Muse.Chat
             var standardizedMessage = StandardizeCodeMarkup(message);
 
             // Ensure the message is wrapped in a csx code block
-            if (!MuseAgent.k_CsxMarkupRegex.IsMatch(standardizedMessage))
+            if (!RunCommandInterpreter.k_CsxMarkupRegex.IsMatch(standardizedMessage))
             {
                 standardizedMessage = $"```csx\n{standardizedMessage}\n```";
             }

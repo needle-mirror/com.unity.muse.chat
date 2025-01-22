@@ -4,27 +4,30 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [1.1.0-exp.5] - 2024-10-29
-
-### Changed
-- Inline parameters in Agent commands
-- New UI presentation for command execution
-
-## [1.1.0-exp.4] - 2024-10-09
-
-### Fixed
-- Context not always used properly
-
-
-## [1.1.0-exp.3] - 2024-10-09
-
-### Changed
-- Add a save option on failed generated script
-
-## [1.1.0-exp.2] - 2024-09-25
+## [1.1.0-exp.6] - 2025-01-22
 
 ### Added
-- Agent and Code experimental features
+- Run Command code edition
+- Command in-line object fields
+
+### Changed
+- Various UI improvements and fixes
+- Optimization of smart context extractors
+- Added subscene extraction to smart context
+- Added delete option to inspirations
+- Updated documentation
+- Removed AppUI dependency
+- Move to authentication without API Key
+- Updated Muse Common to 2.0.10
+- Fixed bug causing crashes on some systems
+- Added UI fixes and tweeks
+- Updated Muse Common to 2.0.9
+
+
+## [1.0.0-pre.15] - 2024-09-18
+
+### Changed
+- Improvements to the light mode UI
 
 ## [1.0.0-pre.14] - 2024-09-13
 

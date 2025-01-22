@@ -1,6 +1,12 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement class="mui-source-entry-root">
-        <appui:Button name="sourceLink"></appui:Button>
-        <appui:Text name="sourceLinkHint"></appui:Text>
-    </VisualElement>
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="mui-source-entry-root">
+        <ui:VisualElement class="mui-source-entry-button-block">
+            <ui:Button name="sourceLink">
+                <ui:Label name="sourceLinkNumber" class="mui-chat-label mui-source-entry-number"/>
+                <ui:Label name="sourceLinkLabel" class="mui-chat-label"/>
+            </ui:Button>
+        </ui:VisualElement>
+
+        <ui:Label name="sourceLinkHint" class="mui-chat-label"></ui:Label>
+    </ui:VisualElement>
 </UXML>

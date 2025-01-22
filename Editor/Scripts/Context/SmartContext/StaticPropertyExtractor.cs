@@ -200,7 +200,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
             k_RootFields[0] = propertyName;
             propertyValue = UnityDataUtils.OutputUnityObject(
                 targetObject,
-                false, false, useDisplayName: true,
+                false, false, useDisplayName: true, includeInstanceID: false,
                 rootFields: k_RootFields);
 
             return true;
@@ -237,13 +237,13 @@ namespace Unity.Muse.Chat.Context.SmartContext
                          "AudioManager, PhysicsManager, NavMeshAreas, MemorySettings, Physics2DSettings, EditorSettings, GraphicsSettings, " +
                          "ShaderGraphSettings, UnityConnectSettings, VFXManager, XRSettings, PresetManager, TagManager, " +
                          "TimeManager, VersionControlSettings, InputManager, PlayerSettings, QualitySettings.")]
-        internal static string ProjectSettingExtractor(
+        internal static SmartContextToolbox.ExtractedContext ProjectSettingExtractor(
             [Parameter("The specific Unity project setting to extract.")]
             string projectSettingName)
         {
             if (string.IsNullOrEmpty(projectSettingName))
             {
-                return string.Empty;
+                return null;
             }
 
             var staticPropertyNameInput = projectSettingName;
@@ -257,9 +257,6 @@ namespace Unity.Muse.Chat.Context.SmartContext
             // Replace all non-alpha numeric characters except _ with . for fuzzy search of separators:
             staticPropertyNameInput = Regex.Replace(staticPropertyNameInput, @"[^a-zA-Z0-9_]+", ".");
 
-            // Search for the class name in all available assemblies:
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
             // Don't call properties that return certain types that should never get sent:
             var propertyReturnTypesToIgnore = new List<Type>
             {
@@ -270,7 +267,24 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 typeof(AssetBundle)
             };
 
-            s_AllTypes ??= assemblies.SelectMany(assembly => assembly.GetTypes()).ToList();
+            if (s_AllTypes == null)
+            {
+                // Search for the class name in all available assemblies:
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                // Extract each type from s_AllTypes with exception handling:
+                s_AllTypes = assemblies.SelectMany(assembly =>
+                {
+                    try
+                    {
+                        return assembly.GetTypes();
+                    }
+                    catch (Exception)
+                    {
+                        return Enumerable.Empty<Type>();
+                    }
+                }).ToList();
+            }
 
             // First, try to find matches in static properties of classes:
             var allResults = s_AllTypes
@@ -327,11 +341,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
                         .Where(result => result != null); // Filter out non-matching or low-score results
                 }).ToList();
 
-            // If there were any results, do not show fully expanded project settings:
-            var showExpandedSettings = allResults.Count == 0;
-
             var settingsResults =
-                ProjectSettingExtractor(staticPropertyNameInput, projectSettingName, showExpandedSettings);
+                ProjectSettingExtractor(staticPropertyNameInput, projectSettingName, true);
 
             allResults.AddRange(settingsResults);
 
@@ -348,6 +359,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                     group.OrderBy(result => result.PropertySource)
                         .First()) // Select the one with the highest Source value from each group
                 .OrderByDescending(result => result.Score)
+                .ThenByDescending(result => result.PropertySource)
                 .GroupBy(result => result.TypeName)
                 .Take(k_FinalResultLimit) // Limit number of results to show
                 .Aggregate(stringBuilder, (sb, group) =>
@@ -370,7 +382,11 @@ namespace Unity.Muse.Chat.Context.SmartContext
                     return sb.Append(resultAsString);
                 });
 
-            return result.ToString().TrimEnd('\n');
+            return new SmartContextToolbox.ExtractedContext()
+            {
+                Payload = result.ToString().TrimEnd('\n'),
+                ContextType = "project setting"
+            };
         }
 
         private static List<FuzzySearchResult> ProjectSettingExtractor(
@@ -473,7 +489,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                                         {
                                             Name = settingsFileName,
                                             Value = UnityDataUtils.OutputUnityObject(settingFile,
-                                                false, false, useDisplayName: true)
+                                                false, false, useDisplayName: true, includeInstanceID: false)
                                         };
                                     }
                                 }

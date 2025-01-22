@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEditor;
 
 namespace Unity.Muse.Chat
@@ -11,6 +12,9 @@ namespace Unity.Muse.Chat
 
         internal const int CompactWindowThreshold = 700;
         internal const string CompactStyle = "mui-compact";
+        internal const string IconStylePrefix = "mui-icon-";
+
+        internal const int RoutesPopupOffset = 13;
 
         internal const string TextCutoffSuffix = "...";
 
@@ -29,19 +33,14 @@ namespace Unity.Muse.Chat
         internal const string StyleFolder = "Styles/";
 
         internal const string UIModulePath = BasePath + UIEditorPath;
+        internal const string UIStylePath = UIModulePath + StyleFolder;
 
         internal const string MuseChatBaseStyle = "MuseChat.tss";
         internal const string MuseChatSharedStyleDark = "MuseChatSharedDark";
         internal const string MuseChatSharedStyleLight = "MuseChatSharedLight";
 
-        internal const string WizardsStyle = "Wizards";
-
-        internal const string AppUIEditorClass = "unity-editor";
-        internal const string AppUIThemeLight = "editor-light";
-        internal const string AppUIThemeDark = "editor-dark";
-        internal const string AppUIScale = "small";
-
-        internal static readonly string SourcesReferenceColor = EditorGUIUtility.isProSkin ? "FF85ABFF" : "881f49FF";
+        internal static readonly string SourceReferenceColor = EditorGUIUtility.isProSkin ? "FF85ABFF" : "881f49FF";
+        internal static readonly string SourceReferencePrefix = "REF:";
 
         internal const string ProjectIdTagPrefix = "projId:";
 
@@ -58,8 +57,47 @@ namespace Unity.Muse.Chat
         internal const bool SkipPlanning = false;
 
         internal const int SuggestedSelectedContextLimit = 5;
-        internal const int PromptContextLimit = 17000;
+        internal const int PromptContextLimit = 34000;
+
 
         internal const string AgentModelPath = "Packages/com.unity.muse.chat/Editor/agentModel.asset";
+
+        public static readonly RouteCommand AskRoute = new (
+            "Ask",
+            "/ask",
+            "/ask [text]",
+            "Ask a question in the Editor",
+            ChatCommandType.Ask
+        );
+
+        public static readonly RouteCommand RunRoute = new(
+            "Run",
+            "/run",
+            "/run [text]",
+            "Run commands in the Editor",
+            ChatCommandType.Run
+        );
+
+        public static readonly RouteCommand CodeRoute = new(
+            "Code",
+            "/code",
+            "/code [text]",
+            "Write scriptes with a dedicated code engine",
+            ChatCommandType.Code
+        );
+
+      /*  public static readonly RouteCommand MatchThreeRoute = new(
+            "Match 3",
+            "/match3",
+            "/match3 [quantity, size, shape]",
+            "Generate a match 3 board",
+            ChatCommandType.MatchThree
+        );*/
+
+        internal static readonly List<RouteCommand> Routes =  new (){
+            RunRoute,
+            CodeRoute,
+          //  MatchThreeRoute,
+        };
     }
 }

@@ -23,10 +23,6 @@
     padding-right: 6px;
 }
 
-.mui-header-button .appui-button__titlecontainer     {
-    align-items: flex-start;
-}
-
 .mui-header-label.mui-compact {
     display: none;
 }
@@ -44,7 +40,7 @@
 .mui-header-dropdown {
     position: absolute;
     right: 8px;
-    top: 8px;
+    top: 0px;
 
     min-width: 15px;
     height: 24px;
@@ -107,10 +103,6 @@
     margin-bottom: 4px;
 }
 
-#conversationRoot .unity-base-slider__dragger {
-    background-color: var(--appui-backgrounds-200);
-}
-
 #notificationContainer {
     align-self: flex-end;
     align-items: flex-end;
@@ -142,20 +134,27 @@
 }
 
 .mui-chat-command-button {
-    margin: 0px;
+    margin: 0;
     padding: 4px;
     min-height: 24px;
+    min-width: 24px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
 }
 
-.mui-chat-cmd-ask.is-selected .appui-icon{
+.mui-chat-command-button:hover {
+    background-color: var(--muse-chat-foregrounds-25);
+}
+
+.mui-chat-cmd-ask.is-selected .muse-chat-icon{
    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdAskOn.png');
 }
 
-.mui-chat-cmd-run.is-selected .appui-icon{
+.mui-chat-cmd-run.is-selected .muse-chat-icon{
    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdRunOn.png');
 }
 
-.mui-chat-cmd-code.is-selected .appui-icon{
+.mui-chat-cmd-code.is-selected .muse-chat-icon{
    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/CmdCodeOn.png');
 }
 
@@ -200,21 +199,26 @@
     height: 100%;
     background-color: var(--muse-chat-drop-zone-bg);
     border-width: 2px;
-    border-color: var(--appui-primary-800);
+    border-color: var(--muse-chat-primary-800);
+}
+
+.mui-chat-drop-zone {
+    flex-grow: 1;
+    margin: 4px;
 }
 
 .mui-chat-dropzone-text-title {
     align-self: center;
-    color: var(--appui-color-dark-gray-800);
+    color: var(--muse-chat-color-dark-gray-800);
     -unity-font-style: bold;
-    font-size: var(--appui-font-sizes-200);
+    font-size: 16px;
     padding-bottom: 10px;
 }
 
 .mui-chat-dropzone-text {
     align-self: center;
-    color: var(--appui-color-dark-gray-800);
-    font-size: var(--appui-font-sizes-100);
+    color: var(--muse-chat-color-dark-gray-800);
+    font-size: 14px;
 }
 
 .mui-chat-selected-context-labels-root{
@@ -242,26 +246,27 @@
 }
 
 .mui-chat-selected-context-button {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     margin-top: 2px;
     margin-bottom: 2px;
     margin-right: 4px;
     border-width: 0;
     height: 20px;
-    background-color: var(--appui-backgrounds-200);
+    background-color: var(--muse-chat-backgrounds-200);
 }
 
 .mui-chat-selected-context-button:hover {
-    background-color: var(--appui-backgrounds-300);
+    background-color: var(--muse-chat-backgrounds-300);
 }
 
 .mui-chat-selected-context-button-default-behavior:hover {
-    background-color: var(--appui-backgrounds-300);
+    background-color: var(--muse-chat-backgrounds-300);
 }
 
-.mui-chat-selected-context-button .appui-button__leadingicon {
-    width: 14px;
-    height: 14px;
-    --unity-image-tint-color: white;
+.mui-chat-selected-context-button-label {
+    margin-left: 4px;
 }
 
 .mui-chat-context-spacer {
@@ -273,11 +278,11 @@
     margin-bottom: 2px;
     margin-right: 4px;
     border-width: 0;
-    background-color: var(--appui-backgrounds-200);
+    background-color: var(--muse-chat-backgrounds-200);
 }
 
 .mui-chat-clear-context-button:hover {
-    background-color: var(--appui-backgrounds-300);
+    background-color: var(--muse-chat-backgrounds-300);
 }
 
 .mui-chat-clear-context-button:disabled {
@@ -286,14 +291,6 @@
 
 .mui-selected-context-button-open {
     background-color: var(--muse-chat-add-context-button-open);
-}
-
-.mui-selected-context-button .appui-button__title {
-    text-overflow: ellipsis;
-    -unity-text-overflow-position: end;
-    overflow: hidden;
-    white-space: nowrap;
-    max-width: 80px;
 }
 
 .mui-chat-selected-context-warning-root {
@@ -305,8 +302,8 @@
     width: 100%;
     margin-bottom: 8px;
     padding: 4px;
-    background-color: var(--appui-backgrounds-100);
-    border-color: var(--appui-warning-25);
+    background-color: var(--muse-chat-backgrounds-100);
+    border-color: var(--muse-chat-warning-25);
     border-width: 1px;
     border-radius: 3px;
     overflow: hidden;
@@ -325,3 +322,26 @@
     margin-top: 42px;
 }
 
+#root-panel {
+    flex-grow: 1;
+}
+
+.mui-chat-popup-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+#appUICompatPanel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 0;
+    left: 0;
+}
+
+#appUICompatPanel .notifications-area {
+    min-height: 100px;
+}

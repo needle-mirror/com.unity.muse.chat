@@ -29,7 +29,7 @@
 }
 
 .preview-entry-actionable {
-    background-color: var(--appui-backgrounds-300);
+    background-color: var(--muse-chat-backgrounds-300);
     border-radius: 4px;
     margin-bottom: 4px;
 }

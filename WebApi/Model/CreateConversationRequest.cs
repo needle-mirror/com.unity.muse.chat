@@ -20,25 +20,15 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "CreateConversationRequest")]
     internal partial class CreateConversationRequest
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateConversationRequest" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected CreateConversationRequest() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CreateConversationRequest" /> class.
-        /// </summary>
-        /// <param name="organizationId">The ID of the Unity organization. (required)</param>
-        /// <param name="functionCatalog">functionCatalog</param>
-        public CreateConversationRequest(string organizationId = default(string), List<FunctionDefinition> functionCatalog = default(List<FunctionDefinition>))
+        public CreateConversationRequest(string organizationId)
         {
-            // to ensure "organizationId" is required (not null)
-            if (organizationId == null)
-            {
-                throw new ArgumentNullException("organizationId is a required property for CreateConversationRequest and cannot be null");
-            }
-            this.OrganizationId = organizationId;
-            this.FunctionCatalog = functionCatalog;
+            OrganizationId = organizationId;
         }
 
         /// <summary>
@@ -76,7 +66,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

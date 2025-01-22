@@ -22,7 +22,10 @@ namespace Unity.Muse.Chat.FunctionCalling
         }
 
         public IEnumerable<CachedFunction> GetFunctionsByTags(params string[] tags)
-            => m_Functions.Where(info => info.FunctionDefinition.Tags.Intersect(tags).Any());
+            => m_Functions?
+                .Where(info => info != null && info.FunctionDefinition != null && info.FunctionDefinition.Tags != null)
+                .Where(info => info.FunctionDefinition.Tags.Intersect(tags).Any())
+               ?? new List<CachedFunction>();
 
         public IEnumerable<CachedFunction> GetAllFunctions() => m_Functions;
     }

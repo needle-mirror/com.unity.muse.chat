@@ -44,7 +44,7 @@ namespace Unity.Muse.Chat
         }
 
         static ListRequest s_ListRequest;
-        static Dictionary<string, string> s_PackageMap = new ();
+        static Dictionary<string, string> s_PackageMap = new();
 
         static int s_PackageUpdateCount = 0;
 
@@ -156,8 +156,8 @@ namespace Unity.Muse.Chat
                 namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
             else
                 namedBuildTarget = EditorUserBuildSettings.standaloneBuildSubtarget == StandaloneBuildSubtarget.Server
-                ? NamedBuildTarget.Server
-                : NamedBuildTarget.Standalone;
+                    ? NamedBuildTarget.Server
+                    : NamedBuildTarget.Standalone;
 
             var apiCompatibilityLevel = PlayerSettings.GetApiCompatibilityLevel(namedBuildTarget);
             return apiCompatibilityLevel.ToString();
@@ -250,10 +250,10 @@ namespace Unity.Muse.Chat
         {
             return new Dictionary<string, string>
             {
-                {"Active Rendering Pipeline", GetProjectRenderingPipeline()},
-                {"Target Platform/OS", GetTargetPlatform()},
-                {"API Compatibility Level", GetCompatibilityLevel()},
-                {"Input System", GetInputSystem()}
+                { "Active Rendering Pipeline", GetProjectRenderingPipeline() },
+                { "Target Platform/OS", GetTargetPlatform() },
+                { "API Compatibility Level", GetCompatibilityLevel() },
+                { "Input System", GetInputSystem() }
             };
         }
 
@@ -268,7 +268,7 @@ namespace Unity.Muse.Chat
         /// <param name="logData">The stored data for a single log entry</param>
         /// <param name="includeSource">If true, the content of the related source file will be included</param>
         /// <returns>A string summary of the given log message</returns>
-        public static string OutputLogData(LogReference logData, bool includeSource)
+        public static string OutputLogData(LogData logData, bool includeSource)
         {
             if (includeSource)
             {
@@ -321,7 +321,10 @@ namespace Unity.Muse.Chat
         /// <param name="useDisplayName">Write field using their beautified display name.</param>
         /// <param name="ignorePrefabInstance">If true, prefab instances are ignored.</param>
         /// <returns>A string summary of the given object and its components</returns>
-        public static string OutputUnityObject(Object targetObject, bool includeTypes, bool includeTooltips, int maxDepth = -1, string[] rootFields = default, bool useDisplayName = false, bool ignorePrefabInstance = true, bool outputDirectory = false)
+        public static string OutputUnityObject(Object targetObject, bool includeTypes, bool includeTooltips,
+            int maxDepth = -1, string[] rootFields = default, bool useDisplayName = false,
+            bool ignorePrefabInstance = true, bool outputDirectory = false, bool includeObjectName = true, bool includeInstanceID = true,
+            int jsonLengthLimit = -1)
         {
             if (targetObject == null)
                 return string.Empty;
@@ -332,10 +335,12 @@ namespace Unity.Muse.Chat
             var parameters = new JsonSerializationParameters
             {
                 DisableSerializedReferences = true,
-                UserDefinedAdapters = adapters
+                UserDefinedAdapters = adapters,
+                Minified = true
             };
             var jsonAdapter = new SerializationObjectJsonAdapter();
             jsonAdapter.OutputType = includeTypes;
+            jsonAdapter.OutputNonObviousTypes = true;
             jsonAdapter.OutputTooltip = includeTooltips;
             jsonAdapter.MaxObjectDepth = maxDepth;
             jsonAdapter.RootParameters = rootFields;
@@ -346,12 +351,71 @@ namespace Unity.Muse.Chat
             jsonAdapter.OverrideProvider = GetSerializationOverrideProvider();
 
             adapters.Add(jsonAdapter);
-            var objectName = jsonAdapter.GetObjectKey(targetSerializedObject);
-            if (string.IsNullOrEmpty(objectName))
+
+            var objectName = string.Empty;
+            if (includeObjectName)
             {
-                objectName = targetObject.GetType().ToString();
+                objectName = jsonAdapter.GetObjectKey(targetSerializedObject, includeInstanceID);
+                if (string.IsNullOrEmpty(objectName))
+                {
+                    objectName = targetObject.GetType().ToString();
+                }
             }
-            return $"{objectName}\n{JsonSerialization.ToJson(targetSerializedObject, parameters)}";
+
+            // Try to find the best depth to serialize the object.
+            // If we get a SerializationException, the length set to SerializationObjectJsonAdapter.JsonOutputLimit
+            // was exceeded. We then try to find the best depth to serialize the object by binary search.
+            var json = string.Empty;
+            SerializationObjectJsonAdapter.JsonOutputLimit = jsonLengthLimit;
+
+            jsonAdapter.MaxPropertyDepth = -1; // No limit to start with.
+            int min = 0, max = 0; // Min and Max values to try in binary search.
+            do
+            {
+                try
+                {
+                    json = JsonSerialization.ToJson(targetSerializedObject, parameters);
+                    // Serialization succeeded. If serialization failed previously, try to increase the depth.
+                    if (jsonAdapter.MaxPropertyDepth != -1 && jsonAdapter.MaxPropertyDepth < max)
+                    {
+                        min = jsonAdapter.MaxPropertyDepth; // The min is the last successful depth.
+                        SetNewDepth();
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                catch (SerializationObjectJsonAdapter.SerializationException e)
+                {
+                    // Set max to the highest possible depth to try:
+                    if (max == 0)
+                    {
+                        max = e.Depth - 1;
+                    }
+                    else
+                    {
+                        max = Math.Max(0, jsonAdapter.MaxPropertyDepth - 1);
+                    }
+
+                    SetNewDepth();
+                }
+            } while (jsonAdapter.MaxPropertyDepth > 0);
+
+            return $"{objectName}\n{json}";
+
+            void SetNewDepth()
+            {
+                // Set depth to midpoint between min and max to search our way to the highest possible value:
+                var newDepth = (min + max) / 2;
+                if (newDepth <= 0 || newDepth == jsonAdapter.MaxPropertyDepth)
+                {
+                    // If the new depth is the same as the old depth, we're close to the max, try that:
+                    newDepth = max;
+                }
+
+                jsonAdapter.MaxPropertyDepth = newDepth;
+            }
         }
 
         /// <summary>

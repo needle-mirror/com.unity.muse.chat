@@ -1,5 +1,5 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement name="blockRoot" class="mui-plugin-block-root">
-        <appui:Text name="titleText" class="mui-plugin-block-text" />
-    </VisualElement>
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="blockRoot" class="mui-plugin-block-root">
+        <ui:Label name="titleText" class="mui-chat-label mui-plugin-block-text" />
+    </ui:VisualElement>
 </UXML>

@@ -23,9 +23,12 @@ namespace Unity.Muse.Chat
 
                 if (Enum.TryParse<ChatCommandType>(cmdText, true, out var cmdType))
                     return (cmdType, argumentText);
+
+                // If command is unknown default, to Ask
+                return (ChatCommandType.Ask, argumentText);
             }
 
-            return (default, null);
+            return (ChatCommandType.Ask, input);
         }
     }
 }

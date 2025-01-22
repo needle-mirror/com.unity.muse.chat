@@ -15,31 +15,27 @@ using OpenAPIDateConverter = Unity.Muse.Chat.BackendApi.Client.OpenAPIDateConver
 namespace Unity.Muse.Chat.BackendApi.Model
 {
     /// <summary>
-    /// AB test message preference request.
+    /// Conversation fragment update request.
     /// </summary>
     [DataContract(Name = "ConversationFragmentPatch")]
     internal partial class ConversationFragmentPatch
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConversationFragmentPatch" /> class.
-        /// </summary>
-        [JsonConstructorAttribute]
-        protected ConversationFragmentPatch() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConversationFragmentPatch" /> class.
-        /// </summary>
-        /// <param name="preferred">AB test message preference. (required)</param>
-        public ConversationFragmentPatch(bool preferred = default(bool))
+
+        public ConversationFragmentPatch()
         {
-            this.Preferred = preferred;
         }
 
         /// <summary>
-        /// AB test message preference.
+        /// Gets or Sets Content
         /// </summary>
-        /// <value>AB test message preference.</value>
-        [DataMember(Name = "preferred", IsRequired = true, EmitDefaultValue = true)]
-        public bool Preferred { get; set; }
+        [DataMember(Name = "content", EmitDefaultValue = true)]
+        public string Content { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Preferred
+        /// </summary>
+        [DataMember(Name = "preferred", EmitDefaultValue = true)]
+        public bool? Preferred { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -49,6 +45,7 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class ConversationFragmentPatch {\n");
+            sb.Append("  Content: ").Append(Content).Append("\n");
             sb.Append("  Preferred: ").Append(Preferred).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -62,7 +59,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

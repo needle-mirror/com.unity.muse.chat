@@ -20,23 +20,15 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "SmartContextResponse")]
     internal partial class SmartContextResponse
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SmartContextResponse" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected SmartContextResponse() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SmartContextResponse" /> class.
-        /// </summary>
-        /// <param name="functionCalls">functionCalls (required)</param>
-        public SmartContextResponse(List<FunctionCall> functionCalls = default(List<FunctionCall>))
+        public SmartContextResponse(List<FunctionCall> functionCalls)
         {
-            // to ensure "functionCalls" is required (not null)
-            if (functionCalls == null)
-            {
-                throw new ArgumentNullException("functionCalls is a required property for SmartContextResponse and cannot be null");
-            }
-            this.FunctionCalls = functionCalls;
+            FunctionCalls = functionCalls;
         }
 
         /// <summary>
@@ -66,7 +58,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

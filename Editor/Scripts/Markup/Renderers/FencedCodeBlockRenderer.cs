@@ -1,7 +1,8 @@
 using System.Text;
 using Markdig.Renderers;
 using Markdig.Syntax;
-using Unity.Muse.Chat;
+using Unity.Muse.Chat.UI;
+using Unity.Muse.Chat.UI.Components.ChatElements;
 using UnityEditor;
 
 namespace Unity.Muse.Editor.Markup.Renderers

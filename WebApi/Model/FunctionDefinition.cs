@@ -20,42 +20,17 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "FunctionDefinition")]
     internal partial class FunctionDefinition
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FunctionDefinition" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected FunctionDefinition() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FunctionDefinition" /> class.
-        /// </summary>
-        /// <param name="name">The name of the function to be called. This should be the original function name and should not be converted to pythonic snake case. (required)</param>
-        /// <param name="description">The description of the function, used by the LLM. (required)</param>
-        /// <param name="parameters">The parameters of the function.</param>
-        /// <param name="tags">tags</param>
-        public FunctionDefinition(string name = default(string), string description = default(string), List<ParameterDefinition> parameters = default(List<ParameterDefinition>), List<string> tags = default(List<string>))
+        public FunctionDefinition(string description, string name)
         {
-            // to ensure "name" is required (not null)
-            if (name == null)
-            {
-                throw new ArgumentNullException("name is a required property for FunctionDefinition and cannot be null");
-            }
-            this.Name = name;
-            // to ensure "description" is required (not null)
-            if (description == null)
-            {
-                throw new ArgumentNullException("description is a required property for FunctionDefinition and cannot be null");
-            }
-            this.Description = description;
-            this.Parameters = parameters;
-            this.Tags = tags;
+            Description = description;
+            Name = name;
         }
-
-        /// <summary>
-        /// The name of the function to be called. This should be the original function name and should not be converted to pythonic snake case.
-        /// </summary>
-        /// <value>The name of the function to be called. This should be the original function name and should not be converted to pythonic snake case.</value>
-        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = true)]
-        public string Name { get; set; }
 
         /// <summary>
         /// The description of the function, used by the LLM.
@@ -63,6 +38,13 @@ namespace Unity.Muse.Chat.BackendApi.Model
         /// <value>The description of the function, used by the LLM.</value>
         [DataMember(Name = "description", IsRequired = true, EmitDefaultValue = true)]
         public string Description { get; set; }
+
+        /// <summary>
+        /// The name of the function to be called. This should be the original function name and should not be converted to pythonic snake case.
+        /// </summary>
+        /// <value>The name of the function to be called. This should be the original function name and should not be converted to pythonic snake case.</value>
+        [DataMember(Name = "name", IsRequired = true, EmitDefaultValue = true)]
+        public string Name { get; set; }
 
         /// <summary>
         /// The parameters of the function.
@@ -85,8 +67,8 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class FunctionDefinition {\n");
-            sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
+            sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Parameters: ").Append(Parameters).Append("\n");
             sb.Append("  Tags: ").Append(Tags).Append("\n");
             sb.Append("}\n");
@@ -101,7 +83,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

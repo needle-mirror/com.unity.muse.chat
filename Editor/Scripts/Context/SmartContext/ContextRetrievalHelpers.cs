@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
@@ -12,6 +11,22 @@ namespace Unity.Muse.Chat.Context.SmartContext
 {
     internal static class ContextRetrievalHelpers
     {
+        internal struct ObjectAndScore
+        {
+            public Object Object;
+            public long Score;
+
+            public bool IsDefault => Object == null && Score == 0;
+        }
+
+        internal struct PathAndScore
+        {
+            public string Path;
+            public long Score;
+
+            public bool IsDefault => string.IsNullOrEmpty(Path) && Score == 0;
+        }
+
         /// <summary>
         /// Returns the GameObject or prefab that most closely matches the given name.
         /// </summary>
@@ -19,24 +34,75 @@ namespace Unity.Muse.Chat.Context.SmartContext
         /// <returns>Matching GameObject</returns>
         internal static T FindObject<T>(string gameObjectName) where T : Object
         {
-            var objectsToSearch =
-                Object.FindObjectsByType<GameObject>(FindObjectsSortMode.InstanceID).ToList<Object>()
-                    .Concat(
+            var assetPathsToSearch =
                         AssetDatabase.FindAssets($"t:{typeof(T).Name}")
                             .Select(AssetDatabase.GUIDToAssetPath)
-                            .Where(path => path.StartsWith("Assets"))
-                            .Select(AssetDatabase.LoadAssetAtPath<T>));
+                            .Where(path => path.StartsWith("Assets")).ToList();
 
-            var listAsT = new List<T>();
-            foreach (var o in objectsToSearch)
+            var sceneObjectsToSearch =
+                Object.FindObjectsByType<GameObject>(FindObjectsInactive.Include,
+                    FindObjectsSortMode.InstanceID).ToList<Object>();
+
+            var bestSceneObj = FuzzyObjectSearchWithScore(gameObjectName, sceneObjectsToSearch).FirstOrDefault();
+            var bestAssetPath = FuzzyObjectSearchByPathWithScore(gameObjectName, assetPathsToSearch).FirstOrDefault();
+
+            if (!bestSceneObj.IsDefault && (bestAssetPath.IsDefault || bestSceneObj.Score > bestAssetPath.Score))
             {
-                if (o is T oAsT)
-                {
-                    listAsT.Add(oAsT);
-                }
+                return bestSceneObj.Object as T;
             }
 
-            return FuzzyObjectSearch(gameObjectName, listAsT).FirstOrDefault();
+            if (!bestAssetPath.IsDefault)
+            {
+                return AssetDatabase.LoadAssetAtPath<T>(bestAssetPath.Path);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the asset Object that most closely matches the given name.
+        /// </summary>
+        /// <param name="assetName">Name to fuzzy search for</param>
+        /// <returns>Matching asset Object</returns>
+        internal static T FindAsset<T>(string assetName) where T : Object
+        {
+            var objectsToSearch =
+                AssetDatabase.FindAssets($"t:{typeof(T).Name}")
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Where(path => path.StartsWith("Assets"));
+
+            var res = FuzzyObjectSearchByPathWithScore(assetName, objectsToSearch).FirstOrDefault();
+
+            if (!res.IsDefault)
+            {
+                return AssetDatabase.LoadAssetAtPath<T>(res.Path);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the asset Object that most closely matches the given name.
+        /// Having a type name as a parameter allows using non-class names the AssetDatabase supports like model or script.
+        /// </summary>
+        /// <param name="assetName">Name to fuzzy search for</param>
+        /// <param name="typeName">Type of asset to search for</param>
+        /// <returns>Matching asset Object</returns>
+        internal static Object FindAsset(string assetName, string typeName)
+        {
+            var objectsToSearch =
+                AssetDatabase.FindAssets($"t:{typeName}")
+                    .Select(AssetDatabase.GUIDToAssetPath)
+                    .Where(path => path.StartsWith("Assets"));
+
+            var res = FuzzyObjectSearchByPathWithScore(assetName, objectsToSearch).FirstOrDefault();
+
+            if (!res.IsDefault)
+            {
+                return AssetDatabase.LoadAssetAtPath<Object>(res.Path);
+            }
+
+            return null;
         }
 
         internal static IEnumerable<Component> FindComponents(GameObject gameObject, string componentName)
@@ -81,6 +147,14 @@ namespace Unity.Muse.Chat.Context.SmartContext
         internal static IEnumerable<T> FuzzyObjectSearch<T>(string pattern, IEnumerable<T> objectsToSearch)
             where T : Object
         {
+            var finalResult = FuzzyObjectSearchWithScore(pattern, objectsToSearch)
+                .Select(x => x.Object as T);
+
+            return finalResult;
+        }
+
+        internal static IEnumerable<ObjectAndScore> FuzzyObjectSearchWithScore(string pattern, IEnumerable<Object> objectsToSearch)
+        {
             pattern ??= string.Empty;
 
             pattern = pattern.ToLowerInvariant();
@@ -114,25 +188,114 @@ namespace Unity.Muse.Chat.Context.SmartContext
             // Also search by parts of the string.
             // Separate search pattern to find matches containing parts of the pattern:
             var splitSearchPatterns = pattern.Split(" ");
+            if (splitSearchPatterns.Length > 1)
+            {
+                var splitSearchResults = splitSearchPatterns
+                    .SelectMany(splitSearchPattern =>
+                        objects
+                            .Select(obj =>
+                            {
+                                long outScore = 0;
+                                var isMatch = FuzzySearch.FuzzyMatch(splitSearchPattern, obj.name, ref outScore);
+                                return new { obj, outScore, isMatch };
+                            })
+                            .Where(x => x.isMatch));
 
-            var splitSearchResults = splitSearchPatterns
-                .SelectMany(splitSearchPattern =>
-                    objects
-                        .Select(obj =>
+                // Add items from splitSearchResults that do not already have an obj in results.
+                // If the object exists in the splitSearchResults multiple times, sum up the scores:
+                foreach (var splitSearchResult in splitSearchResults.GroupBy(x => x.obj))
+                {
+                    var existingResult = results.FirstOrDefault(x => x.obj == splitSearchResult.Key);
+                    if (existingResult == null)
+                    {
+                        results.Add(new
                         {
-                            long outScore = 0;
-                            var isMatch = FuzzySearch.FuzzyMatch(splitSearchPattern, obj.name, ref outScore);
-                            return new { obj, outScore, isMatch };
-                        })
-                        .Where(x => x.isMatch));
-
-            // Add items from splitSearchResults that do not already have an obj in results:
-            results.AddRange(splitSearchResults.Where(x => results.All(y => y.obj != x.obj)));
+                            splitSearchResult.First().obj,
+                            outScore = splitSearchResult.Sum(x => x.outScore),
+                            isMatch = true
+                        });
+                    }
+                }
+            }
 
             var finalResult = results
                 .OrderByDescending(x => x.outScore)
                 .ThenBy(x => x.obj.name.ToLowerInvariant() != pattern) // Prefer objects that have an exact name match
-                .Select(x => x.obj);
+                .Select(x => new ObjectAndScore { Object = x.obj, Score = x.outScore });
+
+            return finalResult;
+        }
+
+        internal static IEnumerable<PathAndScore> FuzzyObjectSearchByPathWithScore(string pattern, IEnumerable<string> pathsToSearch)
+        {
+            pattern ??= string.Empty;
+
+            pattern = pattern.ToLowerInvariant();
+
+            var paths = pathsToSearch.ToArray();
+
+            var includePathSearch = pattern.Contains("."); // If the search pattern contains a dot, it might be a path.
+
+            // Search by entire string first:
+            var results =
+                paths
+                    .Select(path =>
+                    {
+                        long outScore = 0;
+                        var objName = Path.GetFileNameWithoutExtension(path);
+                        var isMatch = FuzzySearch.FuzzyMatch(pattern, objName, ref outScore);
+
+                        // If the object name does not match, try searching by path:
+                        if (includePathSearch && !isMatch)
+                        {
+                            if (!string.IsNullOrEmpty(path))
+                            {
+                                isMatch = FuzzySearch.FuzzyMatch(pattern, path, ref outScore);
+                            }
+                        }
+
+                        return new { objPath = path, outScore, isMatch };
+                    })
+                    .Where(x => x.isMatch).ToList();
+
+            // Also search by parts of the string.
+            // Separate search pattern to find matches containing parts of the pattern:
+            var splitSearchPatterns = pattern.Split(" ");
+            if (splitSearchPatterns.Length > 1)
+            {
+                var splitSearchResults = splitSearchPatterns
+                    .SelectMany(splitSearchPattern =>
+                        paths
+                            .Select(path =>
+                            {
+                                long outScore = 0;
+                                var objName = Path.GetFileNameWithoutExtension(path);
+                                var isMatch = FuzzySearch.FuzzyMatch(splitSearchPattern, objName, ref outScore);
+                                return new { objPath = path, outScore, isMatch };
+                            })
+                            .Where(x => x.isMatch));
+
+                // Add items from splitSearchResults that do not already have an obj in results.
+                // If the object exists in the splitSearchResults multiple times, sum up the scores:
+                foreach (var splitSearchResult in splitSearchResults.GroupBy(x => x.objPath))
+                {
+                    var existingResult = results.FirstOrDefault(x => x.objPath == splitSearchResult.Key);
+                    if (existingResult == null)
+                    {
+                        results.Add(new
+                        {
+                            splitSearchResult.First().objPath,
+                            outScore = splitSearchResult.Sum(x => x.outScore),
+                            isMatch = true
+                        });
+                    }
+                }
+            }
+
+            var finalResult = results
+                .OrderByDescending(x => x.outScore)
+                .ThenBy(x => x.objPath.ToLowerInvariant() != pattern) // Prefer objects that have an exact name match
+                .Select(x => new PathAndScore { Path = x.objPath, Score = x.outScore });
 
             return finalResult;
         }

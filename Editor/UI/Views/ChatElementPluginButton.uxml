@@ -1,6 +1,8 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement class="mui-chat-response-plugin-block-button-root">
-        <appui:Text name="label" text="Label" class="mui-chat-response-plugin-block-button-label" />
-        <appui:Button name="button" tooltip="Save Code" class="mui-chat-response-plugin-block-button-button"/>
-    </VisualElement>
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="mui-chat-response-plugin-block-button-root">
+        <ui:VisualElement class="mui-chat-response-plugin-block-button-label-root">
+            <ui:Label name="pluginButtonLabel" text="Label" class="mui-chat-label mui-chat-response-plugin-block-button-label" />
+        </ui:VisualElement>
+        <ui:Button name="pluginButton" tooltip="Save Code" class="mui-chat-response-plugin-block-button-button"/>
+    </ui:VisualElement>
 </UXML>

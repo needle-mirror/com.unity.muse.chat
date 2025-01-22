@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Unity.Muse.Chat.Context.SmartContext;
 using Unity.Muse.Common.Editor.Integration;
 using UnityEditor;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Unity.Muse.Chat.FunctionCalling
             List<CachedFunction> methods = new();
 
             PopulateListFromAttribute<ContextProviderAttribute>(
-                method => method.IsStatic && method.ReturnType == typeof(string),
+                method => method.IsStatic && method.ReturnType == typeof(SmartContextToolbox.ExtractedContext),
                 attribute => attribute.Description
             );
 

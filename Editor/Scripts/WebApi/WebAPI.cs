@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.BackendApi.Api;
@@ -24,15 +25,19 @@ namespace Unity.Muse.Chat
         public class ContextIndicatedConversationInfo : ConversationInfo
         {
             public ContextIndicatedConversationInfo(bool isContextual, ConversationInfo info)
-                : base(info.ConversationId, info.Title, info.LastMessageTimestamp)
             {
+                ConversationId = info.ConversationId;
+                Title = info.Title;
+                LastMessageTimestamp = info.LastMessageTimestamp;
                 IsContextual = isContextual;
                 IsFavorite = info.IsFavorite;
             }
 
             public ContextIndicatedConversationInfo(bool isContextual, string conversationId = default(string), string title = default(string), long lastMessageTimestamp = default(long))
-                : base(conversationId, title, lastMessageTimestamp)
             {
+                ConversationId = conversationId;
+                Title = title;
+                LastMessageTimestamp = lastMessageTimestamp;
                 IsContextual = isContextual;
             }
 
@@ -46,6 +51,20 @@ namespace Unity.Muse.Chat
         static string[] k_UnityVersionField;
 
         Task m_ConnectTask;
+
+        /// <summary>
+        /// There are cases where the access_token fails to be set in the CloudProjectSettings correctly. This is often
+        /// to do with tests. The AccessTokenBackup is a fallback in the case that the CloudProjectSettings access_token
+        /// is null, the AccessTokenBackup will be used instead. If that is also null, the request will fail. It is for
+        /// internal purposes only.
+        /// </summary>
+        internal static string AccessTokenBackup { get; set; }
+
+        /// <summary>
+        /// Similarly to the <see cref="AccessTokenBackup"/> variable, this is a backup value that can be set internally
+        /// for situations where the OrganizationId is not set correctly. It is for internal purposes only.
+        /// </summary>
+        internal static string OrganizationIdBackup { get; set; }
 
         static WebAPI()
         {
@@ -66,10 +85,7 @@ namespace Unity.Muse.Chat
                 BasePath = MuseChatEnvironment.instance.ApiUrl
             };
 
-            config.ApiKey.Add("access_token", MuseChatEnvironment.instance.ApiAccessToken);
-            var bearerToken = CloudProjectSettings.accessToken;
-            config.DefaultHeaders.Add("Authorization", $"Bearer {bearerToken}");
-
+            config.DefaultHeaders.Add("Authorization", $"Bearer {GetAccessToken()}");
             return config;
         }
 
@@ -92,20 +108,11 @@ namespace Unity.Muse.Chat
             return task.Exception?.InnerExceptions[0];
         }
 
-        MuseChatBackendApi BoostrapAPI(RequestInterceptDelegate requestIntercept, ResponseInterceptDelegate responseIntercept, out CancellationTokenSource cancellationTokenSource)
+        MuseChatBackendApi BoostrapAPI(out CancellationTokenSource cancellationTokenSource)
         {
             var configuration = CreateConfig();
             MuseChatBackendApi api = new(configuration);
-
-            // Make sure Intercept Request is added the the event
-            api.ApiClient.OnRequestIntercepted -= requestIntercept;
-            api.ApiClient.OnRequestIntercepted += requestIntercept;
-
-            api.ApiClient.OnResponseIntercepted -= responseIntercept;
-            api.ApiClient.OnResponseIntercepted += responseIntercept;
-
             cancellationTokenSource = new();
-
             return api;
         }
 
@@ -115,11 +122,25 @@ namespace Unity.Muse.Chat
 
             if (string.IsNullOrWhiteSpace(id))
             {
-                Debug.LogWarning("Cannot find a valid organization.");
-                return false;
+                id = OrganizationIdBackup;
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    Debug.LogWarning("Cannot find a valid organization.");
+                    return false;
+                }
             }
 
             return true;
+        }
+
+        static string GetAccessToken()
+        {
+            string token = CloudProjectSettings.accessToken;
+
+            if (string.IsNullOrWhiteSpace(token))
+                token = AccessTokenBackup;
+
+            return token;
         }
     }
 }

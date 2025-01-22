@@ -36,5 +36,10 @@ namespace Unity.Muse.Chat
         /// The name of the target object
         /// </summary>
         internal string TargetName { get; }
+
+        /// <summary>
+        /// Whether the data has been truncated or is complete.
+        /// </summary>
+        internal bool? Truncated { get; }
     }
 }

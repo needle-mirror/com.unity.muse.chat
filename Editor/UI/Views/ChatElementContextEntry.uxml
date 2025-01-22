@@ -1,5 +1,0 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement class="mui-source-entry-root">
-        <appui:Button name="contextLink" title="Object" leading-icon="mui-icon-game-object"></appui:Button>
-    </VisualElement>
-</UXML>

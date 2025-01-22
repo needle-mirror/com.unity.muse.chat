@@ -214,28 +214,23 @@ namespace Unity.Muse.Chat
             return false;
         }
 
-        internal static bool TryGetClassNameInheritingFrom(this SyntaxTree syntaxTree, Type baseType, out string className)
+        public static bool ContainsInterface(this SyntaxTree syntaxTree, string interfaceName)
         {
-            var root = syntaxTree.GetRoot() as CompilationUnitSyntax;
-            if (root == null)
+            var root = syntaxTree.GetCompilationUnitRoot();
+
+            var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
+
+            foreach (var classDeclaration in classDeclarations)
             {
-                className = string.Empty;
-                return false;
+                var baseList = classDeclaration.BaseList;
+                if (baseList == null) continue;
+
+                if (baseList.Types.Select(baseType => baseType.Type.ToString()).Any(baseTypeName => baseTypeName == interfaceName))
+                    return true;
             }
 
-            var classDeclaration = root.DescendantNodes()
-                .OfType<ClassDeclarationSyntax>()
-                .FirstOrDefault(c => c.BaseList != null &&
-                                     c.BaseList.Types.Any(t => t.Type.ToString() == baseType.Name));
-
-            if (classDeclaration != null)
-            {
-                className = classDeclaration.Identifier.Text;
-                return true;
-            }
-
-            className = string.Empty;
             return false;
         }
+
     }
 }

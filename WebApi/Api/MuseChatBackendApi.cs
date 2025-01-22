@@ -1,2247 +1,6045 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Net;
-using System.Net.Mime;
+using System.Threading;
+using System.Threading.Tasks;
+using Unity.Collections;
 using Unity.Muse.Chat.BackendApi.Client;
+using UnityEngine.Networking;
 using Unity.Muse.Chat.BackendApi.Model;
 
 namespace Unity.Muse.Chat.BackendApi.Api
 {
-
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    internal interface IMuseChatBackendApiSync : IApiAccessor
+    internal interface IMuseChatBackendApi
     {
-        #region Synchronous Operations
-        /// <summary>
-        /// Delete Conversation Fragment
-        /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentId(string conversationId, string fragmentId);
+
 
         /// <summary>
-        /// Delete Conversation Fragment
+        /// Build request to call /muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfo(string conversationId, string fragmentId);
-        /// <summary>
-        /// Delete Conversation Fragment
-        /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ErrorResponse</returns>
-        ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1(string conversationId, string fragmentId);
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdBuilder(string conversationId, string fragmentId);
+
 
         /// <summary>
-        /// Delete Conversation Fragment
+        /// Build request to call /v1/muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfo(string conversationId, string fragmentId);
-        /// <summary>
-        /// Delete Conversation
-        /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationId(string conversationId);
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Builder(string conversationId, string fragmentId);
+
 
         /// <summary>
-        /// Delete Conversation
+        /// Build request to call /muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationIdWithHttpInfo(string conversationId);
-        /// <summary>
-        /// Delete Conversation
-        /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ErrorResponse</returns>
-        ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationIdV1(string conversationId);
+        public DeleteMuseConversationUsingConversationIdRequestBuilder DeleteMuseConversationUsingConversationIdBuilder(string conversationId);
+
 
         /// <summary>
-        /// Delete Conversation
+        /// Build request to call /v1/muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationIdV1WithHttpInfo(string conversationId);
-        /// <summary>
-        /// Delete Conversations By Tags
-        /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> DeleteMuseConversationsByTags(List<string> tags = default(List<string>));
+        public DeleteMuseConversationUsingConversationIdV1RequestBuilder DeleteMuseConversationUsingConversationIdV1Builder(string conversationId);
+
 
         /// <summary>
-        /// Delete Conversations By Tags
+        /// Build request to call /muse/conversations/by-tags
         /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> DeleteMuseConversationsByTagsWithHttpInfo(List<string> tags = default(List<string>));
-        /// <summary>
-        /// Delete Conversations By Tags
-        /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ErrorResponse</returns>
-        ApiResponse<ErrorResponse> DeleteMuseConversationsByTagsV1(List<string> tags = default(List<string>));
+        public DeleteMuseConversationsByTagsRequestBuilder DeleteMuseConversationsByTagsBuilder();
+
 
         /// <summary>
-        /// Delete Conversations By Tags
+        /// Build request to call /v1/muse/conversations/by-tags
         /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        ApiResponse<ErrorResponse> DeleteMuseConversationsByTagsV1WithHttpInfo(List<string> tags = default(List<string>));
-        /// <summary>
-        /// Health
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        ApiResponse<Object> GetHealth();
+        public DeleteMuseConversationsByTagsV1RequestBuilder DeleteMuseConversationsByTagsV1Builder();
+
 
         /// <summary>
-        /// Health
+        /// Build request to call /muse/inspiration/{inspiration_id}
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> GetHealthWithHttpInfo();
-        /// <summary>
-        /// Healthz
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        ApiResponse<Object> GetHealthz();
+        public DeleteMuseInspirationUsingInspirationIdRequestBuilder DeleteMuseInspirationUsingInspirationIdBuilder(string inspirationId);
+
 
         /// <summary>
-        /// Healthz
+        /// Build request to call /v1/muse/inspiration/{inspiration_id}
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> GetHealthzWithHttpInfo();
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> GetMuseBetaCheckEntitlement();
+        public DeleteMuseInspirationUsingInspirationIdV1RequestBuilder DeleteMuseInspirationUsingInspirationIdV1Builder(string inspirationId);
+
 
         /// <summary>
-        /// Check Entitlement
+        /// Build request to call /health
         /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> GetMuseBetaCheckEntitlementWithHttpInfo();
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        ApiResponse<Object> GetMuseBetaCheckEntitlementV1();
+        public GetHealthRequestBuilder GetHealthBuilder();
+
 
         /// <summary>
-        /// Check Entitlement
+        /// Build request to call /healthz
         /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> GetMuseBetaCheckEntitlementV1WithHttpInfo();
-        /// <summary>
-        /// Get Conversations
-        /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>List&lt;ConversationInfo&gt;</returns>
-        [Obsolete]
-        ApiResponse<List<ConversationInfo>> GetMuseConversation(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?));
+        public GetHealthzRequestBuilder GetHealthzBuilder();
+
 
         /// <summary>
-        /// Get Conversations
+        /// Build request to call /muse/beta/check_entitlement
         /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of List&lt;ConversationInfo&gt;</returns>
-        [Obsolete]
-        ApiResponse<List<ConversationInfo>> GetMuseConversationWithHttpInfo(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?));
-        /// <summary>
-        /// Get Conversation
-        /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ResponseGetMuseConversationUsingConversationId</returns>
-        [Obsolete]
-        ApiResponse<ResponseGetMuseConversationUsingConversationId> GetMuseConversationUsingConversationId(string conversationId);
+        public GetMuseBetaCheckEntitlementRequestBuilder GetMuseBetaCheckEntitlementBuilder();
+
 
         /// <summary>
-        /// Get Conversation
+        /// Build request to call /v1/muse/beta/check_entitlement
         /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ResponseGetMuseConversationUsingConversationId</returns>
-        [Obsolete]
-        ApiResponse<ResponseGetMuseConversationUsingConversationId> GetMuseConversationUsingConversationIdWithHttpInfo(string conversationId);
-        /// <summary>
-        /// Get Conversation
-        /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ResponseGetMuseConversationUsingConversationIdV1</returns>
-        ApiResponse<ResponseGetMuseConversationUsingConversationIdV1> GetMuseConversationUsingConversationIdV1(string conversationId);
+        public GetMuseBetaCheckEntitlementV1RequestBuilder GetMuseBetaCheckEntitlementV1Builder();
+
 
         /// <summary>
-        /// Get Conversation
+        /// Build request to call /muse/conversation
         /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ResponseGetMuseConversationUsingConversationIdV1</returns>
-        ApiResponse<ResponseGetMuseConversationUsingConversationIdV1> GetMuseConversationUsingConversationIdV1WithHttpInfo(string conversationId);
-        /// <summary>
-        /// Get Conversations
-        /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>List&lt;ConversationInfo&gt;</returns>
-        ApiResponse<List<ConversationInfo>> GetMuseConversationV1(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?));
+        public GetMuseConversationRequestBuilder GetMuseConversationBuilder();
+
 
         /// <summary>
-        /// Get Conversations
+        /// Build request to call /muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of List&lt;ConversationInfo&gt;</returns>
-        ApiResponse<List<ConversationInfo>> GetMuseConversationV1WithHttpInfo(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?));
-        /// <summary>
-        /// Get Inspirations
-        /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ResponseGetMuseInspiration</returns>
-        [Obsolete]
-        ApiResponse<ResponseGetMuseInspiration> GetMuseInspiration(string mode = default(string), int? limit = default(int?), int? skip = default(int?));
+        public GetMuseConversationUsingConversationIdRequestBuilder GetMuseConversationUsingConversationIdBuilder(string conversationId);
+
 
         /// <summary>
-        /// Get Inspirations
+        /// Build request to call /v1/muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of ResponseGetMuseInspiration</returns>
-        [Obsolete]
-        ApiResponse<ResponseGetMuseInspiration> GetMuseInspirationWithHttpInfo(string mode = default(string), int? limit = default(int?), int? skip = default(int?));
-        /// <summary>
-        /// Get Inspirations
-        /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ResponseGetMuseInspirationV1</returns>
-        ApiResponse<ResponseGetMuseInspirationV1> GetMuseInspirationV1(string mode = default(string), int? limit = default(int?), int? skip = default(int?));
+        public GetMuseConversationUsingConversationIdV1RequestBuilder GetMuseConversationUsingConversationIdV1Builder(string conversationId);
+
 
         /// <summary>
-        /// Get Inspirations
+        /// Build request to call /v1/muse/conversation
         /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of ResponseGetMuseInspirationV1</returns>
-        ApiResponse<ResponseGetMuseInspirationV1> GetMuseInspirationV1WithHttpInfo(string mode = default(string), int? limit = default(int?), int? skip = default(int?));
-        /// <summary>
-        /// Get Opt
-        /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Dictionary&lt;string, OptDecision&gt;</returns>
-        [Obsolete]
-        ApiResponse<Dictionary<string, OptDecision>> GetMuseOpt();
+        public GetMuseConversationV1RequestBuilder GetMuseConversationV1Builder();
+
 
         /// <summary>
-        /// Get Opt
+        /// Build request to call /muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Dictionary&lt;string, OptDecision&gt;</returns>
-        [Obsolete]
-        ApiResponse<Dictionary<string, OptDecision>> GetMuseOptWithHttpInfo();
-        /// <summary>
-        /// Get Opt
-        /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Dictionary&lt;string, OptDecision&gt;</returns>
-        ApiResponse<Dictionary<string, OptDecision>> GetMuseOptV1();
+        public GetMuseInspirationRequestBuilder GetMuseInspirationBuilder();
+
 
         /// <summary>
-        /// Get Opt
+        /// Build request to call /v1/muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Dictionary&lt;string, OptDecision&gt;</returns>
-        ApiResponse<Dictionary<string, OptDecision>> GetMuseOptV1WithHttpInfo();
-        /// <summary>
-        /// Get Topic
-        /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>string</returns>
-        [Obsolete]
-        ApiResponse<string> GetMuseTopicUsingConversationId(string conversationId, string organizationId);
+        public GetMuseInspirationV1RequestBuilder GetMuseInspirationV1Builder();
+
 
         /// <summary>
-        /// Get Topic
+        /// Build request to call /muse/opt
         /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>ApiResponse of string</returns>
-        [Obsolete]
-        ApiResponse<string> GetMuseTopicUsingConversationIdWithHttpInfo(string conversationId, string organizationId);
-        /// <summary>
-        /// Get Topic
-        /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>string</returns>
-        ApiResponse<string> GetMuseTopicUsingConversationIdV1(string conversationId, string organizationId);
+        public GetMuseOptRequestBuilder GetMuseOptBuilder();
+
 
         /// <summary>
-        /// Get Topic
+        /// Build request to call /v1/muse/opt
         /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>ApiResponse of string</returns>
-        ApiResponse<string> GetMuseTopicUsingConversationIdV1WithHttpInfo(string conversationId, string organizationId);
-        /// <summary>
-        /// Health Head
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        ApiResponse<Object> HeadHealth();
+        public GetMuseOptV1RequestBuilder GetMuseOptV1Builder();
+
 
         /// <summary>
-        /// Health Head
+        /// Build request to call /muse/topic/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> HeadHealthWithHttpInfo();
-        /// <summary>
-        /// Patch Conversation Fragment Preference
-        /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentId(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch);
+        public GetMuseTopicUsingConversationIdRequestBuilder GetMuseTopicUsingConversationIdBuilder(string conversationId, string organizationId);
+
 
         /// <summary>
-        /// Patch Conversation Fragment Preference
+        /// Build request to call /v1/muse/topic/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfo(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch);
-        /// <summary>
-        /// Patch Conversation Fragment Preference
-        /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ErrorResponse</returns>
-        ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch);
+        public GetMuseTopicUsingConversationIdV1RequestBuilder GetMuseTopicUsingConversationIdV1Builder(string conversationId, string organizationId);
+
 
         /// <summary>
-        /// Patch Conversation Fragment Preference
+        /// Build request to call /versions/
         /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfo(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch);
-        /// <summary>
-        /// Patch Conversation
-        /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationId(string conversationId, ConversationPatchRequest conversationPatchRequest);
+        public GetVersionsRequestBuilder GetVersionsBuilder();
+
 
         /// <summary>
-        /// Patch Conversation
+        /// Build request to call /health
         /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationIdWithHttpInfo(string conversationId, ConversationPatchRequest conversationPatchRequest);
-        /// <summary>
-        /// Patch Conversation
-        /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ErrorResponse</returns>
-        ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationIdV1(string conversationId, ConversationPatchRequest conversationPatchRequest);
+        public HeadHealthRequestBuilder HeadHealthBuilder();
+
 
         /// <summary>
-        /// Patch Conversation
+        /// Build request to call /muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationIdV1WithHttpInfo(string conversationId, ConversationPatchRequest conversationPatchRequest);
-        /// <summary>
-        /// Action
-        /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseAgentAction(ActionRequest actionRequest);
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder PatchMuseConversationFragmentUsingConversationIdAndFragmentIdBuilder(string conversationId, string fragmentId, ConversationFragmentPatch requestBody);
+
 
         /// <summary>
-        /// Action
+        /// Build request to call /v1/muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseAgentActionWithHttpInfo(ActionRequest actionRequest);
-        /// <summary>
-        /// Action
-        /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>Object</returns>
-        ApiResponse<Object> PostMuseAgentActionV1(ActionRequest actionRequest);
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Builder(string conversationId, string fragmentId, ConversationFragmentPatch requestBody);
+
 
         /// <summary>
-        /// Action
+        /// Build request to call /muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> PostMuseAgentActionV1WithHttpInfo(ActionRequest actionRequest);
-        /// <summary>
-        /// Action Code Repair
-        /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseAgentCodeRepair(ActionCodeRepairRequest actionCodeRepairRequest);
+        public PatchMuseConversationUsingConversationIdRequestBuilder PatchMuseConversationUsingConversationIdBuilder(string conversationId, ConversationPatchRequest requestBody);
+
 
         /// <summary>
-        /// Action Code Repair
+        /// Build request to call /v1/muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseAgentCodeRepairWithHttpInfo(ActionCodeRepairRequest actionCodeRepairRequest);
-        /// <summary>
-        /// Action Code Repair
-        /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>Object</returns>
-        ApiResponse<Object> PostMuseAgentCodeRepairV1(ActionCodeRepairRequest actionCodeRepairRequest);
+        public PatchMuseConversationUsingConversationIdV1RequestBuilder PatchMuseConversationUsingConversationIdV1Builder(string conversationId, ConversationPatchRequest requestBody);
+
 
         /// <summary>
-        /// Action Code Repair
+        /// Build request to call /muse/agent/action
         /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> PostMuseAgentCodeRepairV1WithHttpInfo(ActionCodeRepairRequest actionCodeRepairRequest);
-        /// <summary>
-        /// Codegen
-        /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseAgentCodegen(CodeGenRequest codeGenRequest);
+        public PostMuseAgentActionRequestBuilder PostMuseAgentActionBuilder(ActionRequest requestBody);
+
 
         /// <summary>
-        /// Codegen
+        /// Build request to call /v1/muse/agent/action
         /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseAgentCodegenWithHttpInfo(CodeGenRequest codeGenRequest);
-        /// <summary>
-        /// Codegen
-        /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>Object</returns>
-        ApiResponse<Object> PostMuseAgentCodegenV1(CodeGenRequest codeGenRequest);
+        public PostMuseAgentActionV1RequestBuilder PostMuseAgentActionV1Builder(ActionRequest requestBody);
+
 
         /// <summary>
-        /// Codegen
+        /// Build request to call /muse/agent/code_repair
         /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> PostMuseAgentCodegenV1WithHttpInfo(CodeGenRequest codeGenRequest);
-        /// <summary>
-        /// Chat
-        /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseChat(ChatRequest chatRequest);
+        public PostMuseAgentCodeRepairRequestBuilder PostMuseAgentCodeRepairBuilder(ActionCodeRepairRequest requestBody);
+
 
         /// <summary>
-        /// Chat
+        /// Build request to call /v1/muse/agent/code_repair
         /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseChatWithHttpInfo(ChatRequest chatRequest);
-        /// <summary>
-        /// Chat
-        /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>Object</returns>
-        ApiResponse<Object> PostMuseChatV1(ChatRequest chatRequest);
+        public PostMuseAgentCodeRepairV1RequestBuilder PostMuseAgentCodeRepairV1Builder(ActionCodeRepairRequest requestBody);
+
 
         /// <summary>
-        /// Chat
+        /// Build request to call /muse/agent/codegen
         /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> PostMuseChatV1WithHttpInfo(ChatRequest chatRequest);
-        /// <summary>
-        /// Completion
-        /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseCompletion(CompletionRequest completionRequest);
+        public PostMuseAgentCodegenRequestBuilder PostMuseAgentCodegenBuilder(CodeGenRequest requestBody);
+
 
         /// <summary>
-        /// Completion
+        /// Build request to call /v1/muse/agent/codegen
         /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseCompletionWithHttpInfo(CompletionRequest completionRequest);
-        /// <summary>
-        /// Completion
-        /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>Object</returns>
-        ApiResponse<Object> PostMuseCompletionV1(CompletionRequest completionRequest);
+        public PostMuseAgentCodegenV1RequestBuilder PostMuseAgentCodegenV1Builder(CodeGenRequest requestBody);
+
 
         /// <summary>
-        /// Completion
+        /// Build request to call /muse/chat
         /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> PostMuseCompletionV1WithHttpInfo(CompletionRequest completionRequest);
-        /// <summary>
-        /// Create Conversation
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>Conversation</returns>
-        [Obsolete]
-        ApiResponse<Conversation> PostMuseConversation(CreateConversationRequest createConversationRequest);
+        public PostMuseChatRequestBuilder PostMuseChatBuilder(ChatRequest requestBody);
+
 
         /// <summary>
-        /// Create Conversation
+        /// Build request to call /v1/muse/chat
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>ApiResponse of Conversation</returns>
-        [Obsolete]
-        ApiResponse<Conversation> PostMuseConversationWithHttpInfo(CreateConversationRequest createConversationRequest);
-        /// <summary>
-        /// Create Conversation
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>Conversation</returns>
-        ApiResponse<Conversation> PostMuseConversationV1(CreateConversationRequest createConversationRequest);
+        public PostMuseChatV1RequestBuilder PostMuseChatV1Builder(ChatRequest requestBody);
+
 
         /// <summary>
-        /// Create Conversation
+        /// Build request to call /muse/completion
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>ApiResponse of Conversation</returns>
-        ApiResponse<Conversation> PostMuseConversationV1WithHttpInfo(CreateConversationRequest createConversationRequest);
-        /// <summary>
-        /// Feedback
-        /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> PostMuseFeedback(Feedback feedback);
+        public PostMuseCompletionRequestBuilder PostMuseCompletionBuilder(ContextualCompletionRequest requestBody);
+
 
         /// <summary>
-        /// Feedback
+        /// Build request to call /muse/completion/repair
         /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        ApiResponse<ErrorResponse> PostMuseFeedbackWithHttpInfo(Feedback feedback);
-        /// <summary>
-        /// Feedback
-        /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ErrorResponse</returns>
-        ApiResponse<ErrorResponse> PostMuseFeedbackV1(Feedback feedback);
+        public PostMuseCompletionRepairRequestBuilder PostMuseCompletionRepairBuilder(CompletionRepairRequest requestBody);
+
 
         /// <summary>
-        /// Feedback
+        /// Build request to call /v1/muse/completion/repair
         /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        ApiResponse<ErrorResponse> PostMuseFeedbackV1WithHttpInfo(Feedback feedback);
-        /// <summary>
-        /// Create Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ResponsePostMuseInspiration</returns>
-        [Obsolete]
-        ApiResponse<ResponsePostMuseInspiration> PostMuseInspiration(Inspiration inspiration);
+        public PostMuseCompletionRepairV1RequestBuilder PostMuseCompletionRepairV1Builder(CompletionRepairRequest requestBody);
+
 
         /// <summary>
-        /// Create Inspiration
+        /// Build request to call /v1/muse/completion
         /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ApiResponse of ResponsePostMuseInspiration</returns>
-        [Obsolete]
-        ApiResponse<ResponsePostMuseInspiration> PostMuseInspirationWithHttpInfo(Inspiration inspiration);
-        /// <summary>
-        /// Create Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ResponsePostMuseInspirationV1</returns>
-        ApiResponse<ResponsePostMuseInspirationV1> PostMuseInspirationV1(Inspiration inspiration);
+        public PostMuseCompletionV1RequestBuilder PostMuseCompletionV1Builder(ContextualCompletionRequest requestBody);
+
 
         /// <summary>
-        /// Create Inspiration
+        /// Build request to call /muse/conversation
         /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ApiResponse of ResponsePostMuseInspirationV1</returns>
-        ApiResponse<ResponsePostMuseInspirationV1> PostMuseInspirationV1WithHttpInfo(Inspiration inspiration);
-        /// <summary>
-        /// Opt
-        /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseOpt(OptRequest optRequest);
+        public PostMuseConversationRequestBuilder PostMuseConversationBuilder(CreateConversationRequest requestBody);
+
 
         /// <summary>
-        /// Opt
+        /// Build request to call /v1/muse/conversation
         /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        ApiResponse<Object> PostMuseOptWithHttpInfo(OptRequest optRequest);
-        /// <summary>
-        /// Opt
-        /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>Object</returns>
-        ApiResponse<Object> PostMuseOptV1(OptRequest optRequest);
+        public PostMuseConversationV1RequestBuilder PostMuseConversationV1Builder(CreateConversationRequest requestBody);
+
 
         /// <summary>
-        /// Opt
+        /// Build request to call /muse/feedback
         /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        ApiResponse<Object> PostMuseOptV1WithHttpInfo(OptRequest optRequest);
-        /// <summary>
-        /// Smart Context
-        /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>SmartContextResponse</returns>
-        [Obsolete]
-        ApiResponse<SmartContextResponse> PostSmartContext(SmartContextRequest smartContextRequest);
+        public PostMuseFeedbackRequestBuilder PostMuseFeedbackBuilder(Feedback requestBody);
+
 
         /// <summary>
-        /// Smart Context
+        /// Build request to call /v1/muse/feedback
         /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>ApiResponse of SmartContextResponse</returns>
-        [Obsolete]
-        ApiResponse<SmartContextResponse> PostSmartContextWithHttpInfo(SmartContextRequest smartContextRequest);
-        /// <summary>
-        /// Smart Context
-        /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>SmartContextResponse</returns>
-        ApiResponse<SmartContextResponse> PostSmartContextV1(SmartContextRequest smartContextRequest);
+        public PostMuseFeedbackV1RequestBuilder PostMuseFeedbackV1Builder(Feedback requestBody);
+
 
         /// <summary>
-        /// Smart Context
+        /// Build request to call /muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>ApiResponse of SmartContextResponse</returns>
-        ApiResponse<SmartContextResponse> PostSmartContextV1WithHttpInfo(SmartContextRequest smartContextRequest);
-        /// <summary>
-        /// Update Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ResponsePutMuseInspirationUsingInspirationId</returns>
-        [Obsolete]
-        ApiResponse<ResponsePutMuseInspirationUsingInspirationId> PutMuseInspirationUsingInspirationId(string inspirationId, UpdateInspirationRequest updateInspirationRequest);
+        public PostMuseInspirationRequestBuilder PostMuseInspirationBuilder(Inspiration requestBody);
+
 
         /// <summary>
-        /// Update Inspiration
+        /// Build request to call /v1/muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ApiResponse of ResponsePutMuseInspirationUsingInspirationId</returns>
-        [Obsolete]
-        ApiResponse<ResponsePutMuseInspirationUsingInspirationId> PutMuseInspirationUsingInspirationIdWithHttpInfo(string inspirationId, UpdateInspirationRequest updateInspirationRequest);
-        /// <summary>
-        /// Update Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ResponsePutMuseInspirationUsingInspirationIdV1</returns>
-        ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1> PutMuseInspirationUsingInspirationIdV1(string inspirationId, UpdateInspirationRequest updateInspirationRequest);
+        public PostMuseInspirationV1RequestBuilder PostMuseInspirationV1Builder(Inspiration requestBody);
+
 
         /// <summary>
-        /// Update Inspiration
+        /// Build request to call /muse/opt
         /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ApiResponse of ResponsePutMuseInspirationUsingInspirationIdV1</returns>
-        ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1> PutMuseInspirationUsingInspirationIdV1WithHttpInfo(string inspirationId, UpdateInspirationRequest updateInspirationRequest);
-        #endregion Synchronous Operations
+        public PostMuseOptRequestBuilder PostMuseOptBuilder(OptRequest requestBody);
+
+
+        /// <summary>
+        /// Build request to call /v1/muse/opt
+        /// </summary>
+        public PostMuseOptV1RequestBuilder PostMuseOptV1Builder(OptRequest requestBody);
+
+
+        /// <summary>
+        /// Build request to call /smart-context
+        /// </summary>
+        public PostSmartContextRequestBuilder PostSmartContextBuilder(SmartContextRequest requestBody);
+
+
+        /// <summary>
+        /// Build request to call /v1/smart-context
+        /// </summary>
+        public PostSmartContextV1RequestBuilder PostSmartContextV1Builder(SmartContextRequest requestBody);
+
+
+        /// <summary>
+        /// Build request to call /muse/inspiration/{inspiration_id}
+        /// </summary>
+        public PutMuseInspirationUsingInspirationIdRequestBuilder PutMuseInspirationUsingInspirationIdBuilder(string inspirationId, UpdateInspirationRequest requestBody);
+
+
+        /// <summary>
+        /// Build request to call /v1/muse/inspiration/{inspiration_id}
+        /// </summary>
+        public PutMuseInspirationUsingInspirationIdV1RequestBuilder PutMuseInspirationUsingInspirationIdV1Builder(string inspirationId, UpdateInspirationRequest requestBody);
+
     }
 
     /// <summary>
-    /// Represents a collection of functions to interact with the API endpoints
+    /// Used to build requests to call /muse/conversation/{conversation_id}/fragment/{fragment_id}
     /// </summary>
-    internal interface IMuseChatBackendApiAsync : IApiAccessor
+    internal class DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder
     {
-        #region Asynchronous Operations
+        internal readonly string ConversationId;
+        internal readonly string FragmentId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
         /// <summary>
-        /// Delete Conversation Fragment
+        /// Create builder to call /muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, string fragmentId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            FragmentId = fragmentId;
+        }
+
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequest Build() => new DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequest
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequest : IDeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequest
+    {
+        DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder m_Builder;
+
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequest(DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(m_Builder.ConversationId, m_Builder.FragmentId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="fragmentId"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(string conversationId, string fragmentId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentId");
+
+            // verify the required parameter 'fragmentId' is set
+            if (fragmentId == null)
+                throw new ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("fragment_id", ClientUtils.ParameterToString(fragmentId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ErrorResponse>("/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversation/{conversation_id}/fragment/{fragment_id}
+    /// </summary>
+    internal class DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder
+    {
+        internal readonly string ConversationId;
+        internal readonly string FragmentId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Delete Conversation Fragment
+        /// Create builder to call /v1/muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, string fragmentId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            FragmentId = fragmentId;
+        }
+
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request Build() => new DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request(this);
+
+
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request : IDeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request
+    {
+        DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder m_Builder;
+
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request(DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(m_Builder.ConversationId, m_Builder.FragmentId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="fragmentId"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfoAsync(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Delete Conversation Fragment
-        /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(string conversationId, string fragmentId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
+
+            // verify the required parameter 'fragmentId' is set
+            if (fragmentId == null)
+                throw new ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("fragment_id", ClientUtils.ParameterToString(fragmentId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/conversation/{conversation_id}
+    /// </summary>
+    internal class DeleteMuseConversationUsingConversationIdRequestBuilder
+    {
+        internal readonly string ConversationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Delete Conversation Fragment
+        /// Create builder to call /muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfoAsync(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Delete Conversation
-        /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
+        public DeleteMuseConversationUsingConversationIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+        }
+
+        public DeleteMuseConversationUsingConversationIdRequest Build() => new DeleteMuseConversationUsingConversationIdRequest(this);
+
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseConversationUsingConversationIdRequest
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseConversationUsingConversationIdRequest : IDeleteMuseConversationUsingConversationIdRequest
+    {
+        DeleteMuseConversationUsingConversationIdRequestBuilder m_Builder;
+
+        public DeleteMuseConversationUsingConversationIdRequest(DeleteMuseConversationUsingConversationIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseConversationUsingConversationIdAsync(m_Builder.ConversationId, cancellationToken, callbacks);
+        }
 
         /// <summary>
-        /// Delete Conversation
+        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
         /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdWithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Delete Conversation
-        /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdV1Async(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdAsync(string conversationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationUsingConversationId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ErrorResponse>("/muse/conversation/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversation/{conversation_id}
+    /// </summary>
+    internal class DeleteMuseConversationUsingConversationIdV1RequestBuilder
+    {
+        internal readonly string ConversationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Delete Conversation
+        /// Create builder to call /v1/muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public DeleteMuseConversationUsingConversationIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+        }
+
+        public DeleteMuseConversationUsingConversationIdV1Request Build() => new DeleteMuseConversationUsingConversationIdV1Request(this);
+
+
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseConversationUsingConversationIdV1Request
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseConversationUsingConversationIdV1Request : IDeleteMuseConversationUsingConversationIdV1Request
+    {
+        DeleteMuseConversationUsingConversationIdV1RequestBuilder m_Builder;
+
+        public DeleteMuseConversationUsingConversationIdV1Request(DeleteMuseConversationUsingConversationIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseConversationUsingConversationIdV1Async(m_Builder.ConversationId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdV1WithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdV1Async(string conversationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationUsingConversationIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/conversations/by-tags
+    /// </summary>
+    internal class DeleteMuseConversationsByTagsRequestBuilder
+    {
+        internal List<string> Tags;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
         /// <summary>
-        /// Delete Conversations By Tags
+        /// Create builder to call /muse/conversations/by-tags
         /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public DeleteMuseConversationsByTagsRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public DeleteMuseConversationsByTagsRequestBuilder SetTags(List<string> value)
+        {
+            Tags = value;
+            return this;
+        }
+
+        public DeleteMuseConversationsByTagsRequest Build() => new DeleteMuseConversationsByTagsRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseConversationsByTagsRequest
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseConversationsByTagsRequest : IDeleteMuseConversationsByTagsRequest
+    {
+        DeleteMuseConversationsByTagsRequestBuilder m_Builder;
+
+        public DeleteMuseConversationsByTagsRequest(DeleteMuseConversationsByTagsRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseConversationsByTagsAsync(m_Builder.Tags, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="tags">List of tags to delete conversations by. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsAsync(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Delete Conversations By Tags
-        /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsWithHttpInfoAsync(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Delete Conversations By Tags
-        /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsV1Async(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsAsync(List<string> tags = default(List<string>), CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (tags != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("multi", "tags", tags));
+            }
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ErrorResponse>("/muse/conversations/by-tags", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversations/by-tags
+    /// </summary>
+    internal class DeleteMuseConversationsByTagsV1RequestBuilder
+    {
+        internal List<string> Tags;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Delete Conversations By Tags
+        /// Create builder to call /v1/muse/conversations/by-tags
         /// </summary>
-        /// <remarks>
-        /// Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public DeleteMuseConversationsByTagsV1RequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public DeleteMuseConversationsByTagsV1RequestBuilder SetTags(List<string> value)
+        {
+            Tags = value;
+            return this;
+        }
+
+        public DeleteMuseConversationsByTagsV1Request Build() => new DeleteMuseConversationsByTagsV1Request(this);
+
+
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseConversationsByTagsV1Request
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseConversationsByTagsV1Request : IDeleteMuseConversationsByTagsV1Request
+    {
+        DeleteMuseConversationsByTagsV1RequestBuilder m_Builder;
+
+        public DeleteMuseConversationsByTagsV1Request(DeleteMuseConversationsByTagsV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseConversationsByTagsV1Async(m_Builder.Tags, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="tags">List of tags to delete conversations by. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsV1WithHttpInfoAsync(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsV1Async(List<string> tags = default(List<string>), CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (tags != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("multi", "tags", tags));
+            }
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ErrorResponse>("/v1/muse/conversations/by-tags", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/inspiration/{inspiration_id}
+    /// </summary>
+    internal class DeleteMuseInspirationUsingInspirationIdRequestBuilder
+    {
+        internal readonly string InspirationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /muse/inspiration/{inspiration_id}
+        /// </summary>
+        public DeleteMuseInspirationUsingInspirationIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string inspirationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            InspirationId = inspirationId;
+        }
+
+        public DeleteMuseInspirationUsingInspirationIdRequest Build() => new DeleteMuseInspirationUsingInspirationIdRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationId>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseInspirationUsingInspirationIdRequest
+    {
+        Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationId>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseInspirationUsingInspirationIdRequest : IDeleteMuseInspirationUsingInspirationIdRequest
+    {
+        DeleteMuseInspirationUsingInspirationIdRequestBuilder m_Builder;
+
+        public DeleteMuseInspirationUsingInspirationIdRequest(DeleteMuseInspirationUsingInspirationIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationId>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseInspirationUsingInspirationIdAsync(m_Builder.InspirationId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Delete Inspiration Delete an inspiration from the database.  Args:     request: FastAPI request object.     inspiration_id: The ID of the inspiration to delete.  Returns: Success message or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inspirationId"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (ResponseDeleteMuseInspirationUsingInspirationId)</returns>
+        [Obsolete]
+         async Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationId>> DeleteMuseInspirationUsingInspirationIdAsync(string inspirationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'inspirationId' is set
+            if (inspirationId == null)
+                throw new ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->DeleteMuseInspirationUsingInspirationId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("inspiration_id", ClientUtils.ParameterToString(inspirationId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ResponseDeleteMuseInspirationUsingInspirationId>("/muse/inspiration/{inspiration_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/inspiration/{inspiration_id}
+    /// </summary>
+    internal class DeleteMuseInspirationUsingInspirationIdV1RequestBuilder
+    {
+        internal readonly string InspirationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /v1/muse/inspiration/{inspiration_id}
+        /// </summary>
+        public DeleteMuseInspirationUsingInspirationIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string inspirationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            InspirationId = inspirationId;
+        }
+
+        public DeleteMuseInspirationUsingInspirationIdV1Request Build() => new DeleteMuseInspirationUsingInspirationIdV1Request(this);
+
+
+        public async Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationIdV1>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IDeleteMuseInspirationUsingInspirationIdV1Request
+    {
+        Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationIdV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class DeleteMuseInspirationUsingInspirationIdV1Request : IDeleteMuseInspirationUsingInspirationIdV1Request
+    {
+        DeleteMuseInspirationUsingInspirationIdV1RequestBuilder m_Builder;
+
+        public DeleteMuseInspirationUsingInspirationIdV1Request(DeleteMuseInspirationUsingInspirationIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationIdV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await DeleteMuseInspirationUsingInspirationIdV1Async(m_Builder.InspirationId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Delete Inspiration Delete an inspiration from the database.  Args:     request: FastAPI request object.     inspiration_id: The ID of the inspiration to delete.  Returns: Success message or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inspirationId"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (ResponseDeleteMuseInspirationUsingInspirationIdV1)</returns>
+         async Task<ApiResponse<ResponseDeleteMuseInspirationUsingInspirationIdV1>> DeleteMuseInspirationUsingInspirationIdV1Async(string inspirationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'inspirationId' is set
+            if (inspirationId == null)
+                throw new ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->DeleteMuseInspirationUsingInspirationIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("inspiration_id", ClientUtils.ParameterToString(inspirationId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.DeleteAsync<ResponseDeleteMuseInspirationUsingInspirationIdV1>("/v1/muse/inspiration/{inspiration_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /health
+    /// </summary>
+    internal class GetHealthRequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /health
+        /// </summary>
+        public GetHealthRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetHealthRequest Build() => new GetHealthRequest(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetHealthRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetHealthRequest : IGetHealthRequest
+    {
+        GetHealthRequestBuilder m_Builder;
+
+        public GetHealthRequest(GetHealthRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetHealthAsync(cancellationToken, callbacks);
+        }
+
         /// <summary>
         /// Health
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetHealthAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
+         async Task<ApiResponse<Object>> GetHealthAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<Object>("/health", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /healthz
+    /// </summary>
+    internal class GetHealthzRequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Health
+        /// Create builder to call /healthz
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetHealthWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public GetHealthzRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetHealthzRequest Build() => new GetHealthzRequest(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetHealthzRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetHealthzRequest : IGetHealthzRequest
+    {
+        GetHealthzRequestBuilder m_Builder;
+
+        public GetHealthzRequest(GetHealthzRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetHealthzAsync(cancellationToken, callbacks);
+        }
+
         /// <summary>
         /// Healthz
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetHealthzAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
+         async Task<ApiResponse<Object>> GetHealthzAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<Object>("/healthz", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/beta/check_entitlement
+    /// </summary>
+    internal class GetMuseBetaCheckEntitlementRequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Healthz
+        /// Create builder to call /muse/beta/check_entitlement
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetHealthzWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
+        public GetMuseBetaCheckEntitlementRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseBetaCheckEntitlementRequest Build() => new GetMuseBetaCheckEntitlementRequest(this);
+
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseBetaCheckEntitlementRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseBetaCheckEntitlementRequest : IGetMuseBetaCheckEntitlementRequest
+    {
+        GetMuseBetaCheckEntitlementRequestBuilder m_Builder;
+
+        public GetMuseBetaCheckEntitlementRequest(GetMuseBetaCheckEntitlementRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseBetaCheckEntitlementAsync(cancellationToken, callbacks);
+        }
 
         /// <summary>
-        /// Check Entitlement
+        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
         /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Check Entitlement
-        /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementV1Async(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<Object>("/muse/beta/check_entitlement", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/beta/check_entitlement
+    /// </summary>
+    internal class GetMuseBetaCheckEntitlementV1RequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Check Entitlement
+        /// Create builder to call /v1/muse/beta/check_entitlement
         /// </summary>
-        /// <remarks>
-        /// Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementV1WithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public GetMuseBetaCheckEntitlementV1RequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseBetaCheckEntitlementV1Request Build() => new GetMuseBetaCheckEntitlementV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseBetaCheckEntitlementV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseBetaCheckEntitlementV1Request : IGetMuseBetaCheckEntitlementV1Request
+    {
+        GetMuseBetaCheckEntitlementV1RequestBuilder m_Builder;
+
+        public GetMuseBetaCheckEntitlementV1Request(GetMuseBetaCheckEntitlementV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseBetaCheckEntitlementV1Async(cancellationToken, callbacks);
+        }
+
         /// <summary>
-        /// Get Conversations
+        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
         /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
+         async Task<ApiResponse<Object>> GetMuseBetaCheckEntitlementV1Async(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<Object>("/v1/muse/beta/check_entitlement", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/conversation
+    /// </summary>
+    internal class GetMuseConversationRequestBuilder
+    {
+        internal int? Limit;
+        internal int? Skip;
+        internal bool? SkipProjectTag;
+        internal string Tags;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /muse/conversation
+        /// </summary>
+        public GetMuseConversationRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseConversationRequestBuilder SetLimit(int? value)
+        {
+            Limit = value;
+            return this;
+        }
+
+        public GetMuseConversationRequestBuilder SetSkip(int? value)
+        {
+            Skip = value;
+            return this;
+        }
+
+        public GetMuseConversationRequestBuilder SetSkipProjectTag(bool? value)
+        {
+            SkipProjectTag = value;
+            return this;
+        }
+
+        public GetMuseConversationRequestBuilder SetTags(string value)
+        {
+            Tags = value;
+            return this;
+        }
+
+        public GetMuseConversationRequest Build() => new GetMuseConversationRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<List<ConversationInfo>>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseConversationRequest
+    {
+        Task<ApiResponse<List<ConversationInfo>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseConversationRequest : IGetMuseConversationRequest
+    {
+        GetMuseConversationRequestBuilder m_Builder;
+
+        public GetMuseConversationRequest(GetMuseConversationRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<List<ConversationInfo>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseConversationAsync(m_Builder.Limit, m_Builder.Skip, m_Builder.SkipProjectTag, m_Builder.Tags, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="limit"> (optional, default to 100)</param>
         /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of List&lt;ConversationInfo&gt;</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<List<ConversationInfo>>> GetMuseConversationAsync(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Get Conversations
-        /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
         /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
+        /// <param name="tags"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (List&lt;ConversationInfo&gt;)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<List<ConversationInfo>>> GetMuseConversationWithHttpInfoAsync(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Conversation
-        /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseConversationUsingConversationId</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseConversationUsingConversationId>> GetMuseConversationUsingConversationIdAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<List<ConversationInfo>>> GetMuseConversationAsync(int? limit = default(int?), int? skip = default(int?), bool? skipProjectTag = default(bool?), string tags = default(string), CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (limit != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "limit", limit));
+            }
+            if (skip != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "skip", skip));
+            }
+            if (skipProjectTag != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "skip_project_tag", skipProjectTag));
+            }
+            if (tags != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "tags", tags));
+            }
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<List<ConversationInfo>>("/muse/conversation", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/conversation/{conversation_id}
+    /// </summary>
+    internal class GetMuseConversationUsingConversationIdRequestBuilder
+    {
+        internal readonly string ConversationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Conversation
+        /// Create builder to call /muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public GetMuseConversationUsingConversationIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+        }
+
+        public GetMuseConversationUsingConversationIdRequest Build() => new GetMuseConversationUsingConversationIdRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ResponseGetMuseConversationUsingConversationId>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseConversationUsingConversationIdRequest
+    {
+        Task<ApiResponse<ResponseGetMuseConversationUsingConversationId>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseConversationUsingConversationIdRequest : IGetMuseConversationUsingConversationIdRequest
+    {
+        GetMuseConversationUsingConversationIdRequestBuilder m_Builder;
+
+        public GetMuseConversationUsingConversationIdRequest(GetMuseConversationUsingConversationIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ResponseGetMuseConversationUsingConversationId>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseConversationUsingConversationIdAsync(m_Builder.ConversationId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponseGetMuseConversationUsingConversationId)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseConversationUsingConversationId>> GetMuseConversationUsingConversationIdWithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Conversation
-        /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseConversationUsingConversationIdV1</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> GetMuseConversationUsingConversationIdV1Async(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ResponseGetMuseConversationUsingConversationId>> GetMuseConversationUsingConversationIdAsync(string conversationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseConversationUsingConversationId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<ResponseGetMuseConversationUsingConversationId>("/muse/conversation/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversation/{conversation_id}
+    /// </summary>
+    internal class GetMuseConversationUsingConversationIdV1RequestBuilder
+    {
+        internal readonly string ConversationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Conversation
+        /// Create builder to call /v1/muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public GetMuseConversationUsingConversationIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+        }
+
+        public GetMuseConversationUsingConversationIdV1Request Build() => new GetMuseConversationUsingConversationIdV1Request(this);
+
+
+        public async Task<ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseConversationUsingConversationIdV1Request
+    {
+        Task<ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseConversationUsingConversationIdV1Request : IGetMuseConversationUsingConversationIdV1Request
+    {
+        GetMuseConversationUsingConversationIdV1RequestBuilder m_Builder;
+
+        public GetMuseConversationUsingConversationIdV1Request(GetMuseConversationUsingConversationIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseConversationUsingConversationIdV1Async(m_Builder.ConversationId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponseGetMuseConversationUsingConversationIdV1)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> GetMuseConversationUsingConversationIdV1WithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Conversations
-        /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of List&lt;ConversationInfo&gt;</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<ConversationInfo>>> GetMuseConversationV1Async(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> GetMuseConversationUsingConversationIdV1Async(string conversationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseConversationUsingConversationIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<ResponseGetMuseConversationUsingConversationIdV1>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversation
+    /// </summary>
+    internal class GetMuseConversationV1RequestBuilder
+    {
+        internal int? Limit;
+        internal int? Skip;
+        internal bool? SkipProjectTag;
+        internal string Tags;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Conversations
+        /// Create builder to call /v1/muse/conversation
         /// </summary>
-        /// <remarks>
-        /// Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
+        public GetMuseConversationV1RequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseConversationV1RequestBuilder SetLimit(int? value)
+        {
+            Limit = value;
+            return this;
+        }
+
+        public GetMuseConversationV1RequestBuilder SetSkip(int? value)
+        {
+            Skip = value;
+            return this;
+        }
+
+        public GetMuseConversationV1RequestBuilder SetSkipProjectTag(bool? value)
+        {
+            SkipProjectTag = value;
+            return this;
+        }
+
+        public GetMuseConversationV1RequestBuilder SetTags(string value)
+        {
+            Tags = value;
+            return this;
+        }
+
+        public GetMuseConversationV1Request Build() => new GetMuseConversationV1Request(this);
+
+
+        public async Task<ApiResponse<List<ConversationInfo>>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseConversationV1Request
+    {
+        Task<ApiResponse<List<ConversationInfo>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseConversationV1Request : IGetMuseConversationV1Request
+    {
+        GetMuseConversationV1RequestBuilder m_Builder;
+
+        public GetMuseConversationV1Request(GetMuseConversationV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<List<ConversationInfo>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseConversationV1Async(m_Builder.Limit, m_Builder.Skip, m_Builder.SkipProjectTag, m_Builder.Tags, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="limit"> (optional, default to 100)</param>
         /// <param name="skip"> (optional, default to 0)</param>
+        /// <param name="skipProjectTag"> (optional)</param>
+        /// <param name="tags"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (List&lt;ConversationInfo&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<ConversationInfo>>> GetMuseConversationV1WithHttpInfoAsync(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Inspirations
-        /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseInspiration</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseInspiration>> GetMuseInspirationAsync(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<List<ConversationInfo>>> GetMuseConversationV1Async(int? limit = default(int?), int? skip = default(int?), bool? skipProjectTag = default(bool?), string tags = default(string), CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (limit != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "limit", limit));
+            }
+            if (skip != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "skip", skip));
+            }
+            if (skipProjectTag != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "skip_project_tag", skipProjectTag));
+            }
+            if (tags != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "tags", tags));
+            }
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<List<ConversationInfo>>("/v1/muse/conversation", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/inspiration/
+    /// </summary>
+    internal class GetMuseInspirationRequestBuilder
+    {
+        internal int? Limit;
+        internal string Mode;
+        internal int? Skip;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Inspirations
+        /// Create builder to call /muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
+        public GetMuseInspirationRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseInspirationRequestBuilder SetLimit(int? value)
+        {
+            Limit = value;
+            return this;
+        }
+
+        public GetMuseInspirationRequestBuilder SetMode(string value)
+        {
+            Mode = value;
+            return this;
+        }
+
+        public GetMuseInspirationRequestBuilder SetSkip(int? value)
+        {
+            Skip = value;
+            return this;
+        }
+
+        public GetMuseInspirationRequest Build() => new GetMuseInspirationRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ResponseGetMuseInspiration>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseInspirationRequest
+    {
+        Task<ApiResponse<ResponseGetMuseInspiration>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseInspirationRequest : IGetMuseInspirationRequest
+    {
+        GetMuseInspirationRequestBuilder m_Builder;
+
+        public GetMuseInspirationRequest(GetMuseInspirationRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ResponseGetMuseInspiration>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseInspirationAsync(m_Builder.Limit, m_Builder.Mode, m_Builder.Skip, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="limit"> (optional, default to 100)</param>
+        /// <param name="mode">Filter inspirations by mode (optional)</param>
         /// <param name="skip"> (optional, default to 0)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponseGetMuseInspiration)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseInspiration>> GetMuseInspirationWithHttpInfoAsync(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Inspirations
-        /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseInspirationV1</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseInspirationV1>> GetMuseInspirationV1Async(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ResponseGetMuseInspiration>> GetMuseInspirationAsync(int? limit = default(int?), string mode = default(string), int? skip = default(int?), CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (limit != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "limit", limit));
+            }
+            if (mode != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "mode", mode));
+            }
+            if (skip != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "skip", skip));
+            }
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<ResponseGetMuseInspiration>("/muse/inspiration/", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/inspiration/
+    /// </summary>
+    internal class GetMuseInspirationV1RequestBuilder
+    {
+        internal int? Limit;
+        internal string Mode;
+        internal int? Skip;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Inspirations
+        /// Create builder to call /v1/muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
+        public GetMuseInspirationV1RequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseInspirationV1RequestBuilder SetLimit(int? value)
+        {
+            Limit = value;
+            return this;
+        }
+
+        public GetMuseInspirationV1RequestBuilder SetMode(string value)
+        {
+            Mode = value;
+            return this;
+        }
+
+        public GetMuseInspirationV1RequestBuilder SetSkip(int? value)
+        {
+            Skip = value;
+            return this;
+        }
+
+        public GetMuseInspirationV1Request Build() => new GetMuseInspirationV1Request(this);
+
+
+        public async Task<ApiResponse<ResponseGetMuseInspirationV1>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseInspirationV1Request
+    {
+        Task<ApiResponse<ResponseGetMuseInspirationV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseInspirationV1Request : IGetMuseInspirationV1Request
+    {
+        GetMuseInspirationV1RequestBuilder m_Builder;
+
+        public GetMuseInspirationV1Request(GetMuseInspirationV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ResponseGetMuseInspirationV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseInspirationV1Async(m_Builder.Limit, m_Builder.Mode, m_Builder.Skip, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="limit"> (optional, default to 100)</param>
+        /// <param name="mode">Filter inspirations by mode (optional)</param>
         /// <param name="skip"> (optional, default to 0)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponseGetMuseInspirationV1)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponseGetMuseInspirationV1>> GetMuseInspirationV1WithHttpInfoAsync(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Opt
-        /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Dictionary&lt;string, OptDecision&gt;</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ResponseGetMuseInspirationV1>> GetMuseInspirationV1Async(int? limit = default(int?), string mode = default(string), int? skip = default(int?), CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (limit != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "limit", limit));
+            }
+            if (mode != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "mode", mode));
+            }
+            if (skip != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "skip", skip));
+            }
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<ResponseGetMuseInspirationV1>("/v1/muse/inspiration/", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/opt
+    /// </summary>
+    internal class GetMuseOptRequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Opt
+        /// Create builder to call /muse/opt
         /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public GetMuseOptRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseOptRequest Build() => new GetMuseOptRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Dictionary<string, OptDecision>>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseOptRequest
+    {
+        Task<ApiResponse<Dictionary<string, OptDecision>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseOptRequest : IGetMuseOptRequest
+    {
+        GetMuseOptRequestBuilder m_Builder;
+
+        public GetMuseOptRequest(GetMuseOptRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Dictionary<string, OptDecision>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseOptAsync(cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Dictionary&lt;string, OptDecision&gt;)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Opt
-        /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Dictionary&lt;string, OptDecision&gt;</returns>
-        System.Threading.Tasks.Task<ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptV1Async(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<Dictionary<string, OptDecision>>("/muse/opt", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/opt
+    /// </summary>
+    internal class GetMuseOptV1RequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Opt
+        /// Create builder to call /v1/muse/opt
         /// </summary>
-        /// <remarks>
-        /// Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public GetMuseOptV1RequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetMuseOptV1Request Build() => new GetMuseOptV1Request(this);
+
+
+        public async Task<ApiResponse<Dictionary<string, OptDecision>>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseOptV1Request
+    {
+        Task<ApiResponse<Dictionary<string, OptDecision>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseOptV1Request : IGetMuseOptV1Request
+    {
+        GetMuseOptV1RequestBuilder m_Builder;
+
+        public GetMuseOptV1Request(GetMuseOptV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Dictionary<string, OptDecision>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseOptV1Async(cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Dictionary&lt;string, OptDecision&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptV1WithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Topic
-        /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of string</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<string>> GetMuseTopicUsingConversationIdAsync(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptV1Async(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<Dictionary<string, OptDecision>>("/v1/muse/opt", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/topic/{conversation_id}
+    /// </summary>
+    internal class GetMuseTopicUsingConversationIdRequestBuilder
+    {
+        internal readonly string ConversationId;
+        internal readonly string OrganizationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Get Topic
+        /// Create builder to call /muse/topic/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (string)</returns>
+        public GetMuseTopicUsingConversationIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, string organizationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            OrganizationId = organizationId;
+        }
+
+        public GetMuseTopicUsingConversationIdRequest Build() => new GetMuseTopicUsingConversationIdRequest(this);
+
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<string>> GetMuseTopicUsingConversationIdWithHttpInfoAsync(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Get Topic
-        /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of string</returns>
-        System.Threading.Tasks.Task<ApiResponse<string>> GetMuseTopicUsingConversationIdV1Async(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public async Task<ApiResponse<string>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseTopicUsingConversationIdRequest
+    {
+        Task<ApiResponse<string>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseTopicUsingConversationIdRequest : IGetMuseTopicUsingConversationIdRequest
+    {
+        GetMuseTopicUsingConversationIdRequestBuilder m_Builder;
+
+        public GetMuseTopicUsingConversationIdRequest(GetMuseTopicUsingConversationIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<string>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseTopicUsingConversationIdAsync(m_Builder.ConversationId, m_Builder.OrganizationId, cancellationToken, callbacks);
+        }
 
         /// <summary>
-        /// Get Topic
+        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
         /// </summary>
-        /// <remarks>
-        /// Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="organizationId"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (string)</returns>
-        System.Threading.Tasks.Task<ApiResponse<string>> GetMuseTopicUsingConversationIdV1WithHttpInfoAsync(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        [Obsolete]
+         async Task<ApiResponse<string>> GetMuseTopicUsingConversationIdAsync(string conversationId, string organizationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationId");
+
+            // verify the required parameter 'organizationId' is set
+            if (organizationId == null)
+                throw new ApiException(400, "Missing required parameter 'organizationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "organization_id", organizationId));
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<string>("/muse/topic/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/topic/{conversation_id}
+    /// </summary>
+    internal class GetMuseTopicUsingConversationIdV1RequestBuilder
+    {
+        internal readonly string ConversationId;
+        internal readonly string OrganizationId;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /v1/muse/topic/{conversation_id}
+        /// </summary>
+        public GetMuseTopicUsingConversationIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, string organizationId)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            OrganizationId = organizationId;
+        }
+
+        public GetMuseTopicUsingConversationIdV1Request Build() => new GetMuseTopicUsingConversationIdV1Request(this);
+
+
+        public async Task<ApiResponse<string>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetMuseTopicUsingConversationIdV1Request
+    {
+        Task<ApiResponse<string>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetMuseTopicUsingConversationIdV1Request : IGetMuseTopicUsingConversationIdV1Request
+    {
+        GetMuseTopicUsingConversationIdV1RequestBuilder m_Builder;
+
+        public GetMuseTopicUsingConversationIdV1Request(GetMuseTopicUsingConversationIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<string>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetMuseTopicUsingConversationIdV1Async(m_Builder.ConversationId, m_Builder.OrganizationId, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="conversationId"></param>
+        /// <param name="organizationId"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (string)</returns>
+         async Task<ApiResponse<string>> GetMuseTopicUsingConversationIdV1Async(string conversationId, string organizationId, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationIdV1");
+
+            // verify the required parameter 'organizationId' is set
+            if (organizationId == null)
+                throw new ApiException(400, "Missing required parameter 'organizationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "organization_id", organizationId));
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<string>("/v1/muse/topic/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /versions/
+    /// </summary>
+    internal class GetVersionsRequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /versions/
+        /// </summary>
+        public GetVersionsRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public GetVersionsRequest Build() => new GetVersionsRequest(this);
+
+
+        public async Task<ApiResponse<List<VersionSupportInfo>>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IGetVersionsRequest
+    {
+        Task<ApiResponse<List<VersionSupportInfo>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class GetVersionsRequest : IGetVersionsRequest
+    {
+        GetVersionsRequestBuilder m_Builder;
+
+        public GetVersionsRequest(GetVersionsRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<List<VersionSupportInfo>>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await GetVersionsAsync(cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Get supported route versions Before calling any routes provided by this backend, clients should check the supported route versions to ensure compatibility.  If the current route used is deprecated, a warning should be displayed to the user that they should consider upgrading.  If the current route is unsupported, the client should display an error message to the user that tool is non functional and they should upgrade.  Routes may need to be deprecated for a variety of reasons including:  * Security vulnerabilities * Performance improvements (both result performance, cost performance and latency performance) * Business model changes * New versions are released and we do not have the resources to maintain the many older versions  Full design doc here: https://docs.google.com/document/d/1vKRnsuiTgBXDdt82w9fTkwm6QTMts65OepqT3mIKzjE/edit?tab&#x3D;t.tj5ninp3m6j4
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (List&lt;VersionSupportInfo&gt;)</returns>
+         async Task<ApiResponse<List<VersionSupportInfo>>> GetVersionsAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+
+            // make the HTTP request
+            var task = m_Builder.Client.GetAsync<List<VersionSupportInfo>>("/versions/", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /health
+    /// </summary>
+    internal class HeadHealthRequestBuilder
+    {
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /health
+        /// </summary>
+        public HeadHealthRequestBuilder(IReadableConfiguration config, IClient apiClient)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+        }
+
+        public HeadHealthRequest Build() => new HeadHealthRequest(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IHeadHealthRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class HeadHealthRequest : IHeadHealthRequest
+    {
+        HeadHealthRequestBuilder m_Builder;
+
+        public HeadHealthRequest(HeadHealthRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await HeadHealthAsync(cancellationToken, callbacks);
+        }
+
         /// <summary>
         /// Health Head
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> HeadHealthAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
+         async Task<ApiResponse<Object>> HeadHealthAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+
+
+            // make the HTTP request
+            var task = m_Builder.Client.HeadAsync<Object>("/health", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/conversation/{conversation_id}/fragment/{fragment_id}
+    /// </summary>
+    internal class PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder
+    {
+        internal readonly string ConversationId;
+        internal readonly string FragmentId;
+        internal readonly ConversationFragmentPatch ConversationFragmentPatch;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Health Head
+        /// Create builder to call /muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> HeadHealthWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, string fragmentId, ConversationFragmentPatch requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            FragmentId = fragmentId;
+            ConversationFragmentPatch = requestBody;
+        }
+
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequest Build() => new PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequest
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequest : IPatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequest
+    {
+        PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder m_Builder;
+
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequest(PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PatchMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(m_Builder.ConversationId, m_Builder.FragmentId, m_Builder.ConversationFragmentPatch, cancellationToken, callbacks);
+        }
+
         /// <summary>
-        /// Patch Conversation Fragment Preference
+        /// Patch Conversation Fragment Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
         /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="fragmentId"></param>
         /// <param name="conversationFragmentPatch"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
+
+            // verify the required parameter 'fragmentId' is set
+            if (fragmentId == null)
+                throw new ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
+
+            // verify the required parameter 'conversationFragmentPatch' is set
+            if (conversationFragmentPatch == null)
+                throw new ApiException(400, "Missing required parameter 'conversationFragmentPatch' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("fragment_id", ClientUtils.ParameterToString(fragmentId)); // path parameter
+            localVarRequestOptions.Data = conversationFragmentPatch;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PatchAsync<ErrorResponse>("/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversation/{conversation_id}/fragment/{fragment_id}
+    /// </summary>
+    internal class PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder
+    {
+        internal readonly string ConversationId;
+        internal readonly string FragmentId;
+        internal readonly ConversationFragmentPatch ConversationFragmentPatch;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Patch Conversation Fragment Preference
+        /// Create builder to call /v1/muse/conversation/{conversation_id}/fragment/{fragment_id}
         /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, string fragmentId, ConversationFragmentPatch requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            FragmentId = fragmentId;
+            ConversationFragmentPatch = requestBody;
+        }
+
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request Build() => new PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request(this);
+
+
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request : IPatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request
+    {
+        PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder m_Builder;
+
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Request(PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(m_Builder.ConversationId, m_Builder.FragmentId, m_Builder.ConversationFragmentPatch, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Patch Conversation Fragment Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="fragmentId"></param>
         /// <param name="conversationFragmentPatch"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfoAsync(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Patch Conversation Fragment Preference
-        /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
+
+            // verify the required parameter 'fragmentId' is set
+            if (fragmentId == null)
+                throw new ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
+
+            // verify the required parameter 'conversationFragmentPatch' is set
+            if (conversationFragmentPatch == null)
+                throw new ApiException(400, "Missing required parameter 'conversationFragmentPatch' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("fragment_id", ClientUtils.ParameterToString(fragmentId)); // path parameter
+            localVarRequestOptions.Data = conversationFragmentPatch;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PatchAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/conversation/{conversation_id}
+    /// </summary>
+    internal class PatchMuseConversationUsingConversationIdRequestBuilder
+    {
+        internal readonly string ConversationId;
+        internal readonly ConversationPatchRequest ConversationPatchRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Patch Conversation Fragment Preference
+        /// Create builder to call /muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfoAsync(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public PatchMuseConversationUsingConversationIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, ConversationPatchRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            ConversationPatchRequest = requestBody;
+        }
+
+        public PatchMuseConversationUsingConversationIdRequest Build() => new PatchMuseConversationUsingConversationIdRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPatchMuseConversationUsingConversationIdRequest
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PatchMuseConversationUsingConversationIdRequest : IPatchMuseConversationUsingConversationIdRequest
+    {
+        PatchMuseConversationUsingConversationIdRequestBuilder m_Builder;
+
+        public PatchMuseConversationUsingConversationIdRequest(PatchMuseConversationUsingConversationIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PatchMuseConversationUsingConversationIdAsync(m_Builder.ConversationId, m_Builder.ConversationPatchRequest, cancellationToken, callbacks);
+        }
+
         /// <summary>
-        /// Patch Conversation
+        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
         /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="conversationPatchRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdAsync(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Patch Conversation
-        /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdWithHttpInfoAsync(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Patch Conversation
-        /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdV1Async(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdAsync(string conversationId, ConversationPatchRequest conversationPatchRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationId");
+
+            // verify the required parameter 'conversationPatchRequest' is set
+            if (conversationPatchRequest == null)
+                throw new ApiException(400, "Missing required parameter 'conversationPatchRequest' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.Data = conversationPatchRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PatchAsync<ErrorResponse>("/muse/conversation/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversation/{conversation_id}
+    /// </summary>
+    internal class PatchMuseConversationUsingConversationIdV1RequestBuilder
+    {
+        internal readonly string ConversationId;
+        internal readonly ConversationPatchRequest ConversationPatchRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Patch Conversation
+        /// Create builder to call /v1/muse/conversation/{conversation_id}
         /// </summary>
-        /// <remarks>
-        /// Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PatchMuseConversationUsingConversationIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string conversationId, ConversationPatchRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ConversationId = conversationId;
+            ConversationPatchRequest = requestBody;
+        }
+
+        public PatchMuseConversationUsingConversationIdV1Request Build() => new PatchMuseConversationUsingConversationIdV1Request(this);
+
+
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPatchMuseConversationUsingConversationIdV1Request
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PatchMuseConversationUsingConversationIdV1Request : IPatchMuseConversationUsingConversationIdV1Request
+    {
+        PatchMuseConversationUsingConversationIdV1RequestBuilder m_Builder;
+
+        public PatchMuseConversationUsingConversationIdV1Request(PatchMuseConversationUsingConversationIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PatchMuseConversationUsingConversationIdV1Async(m_Builder.ConversationId, m_Builder.ConversationPatchRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="conversationId"></param>
         /// <param name="conversationPatchRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdV1WithHttpInfoAsync(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdV1Async(string conversationId, ConversationPatchRequest conversationPatchRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'conversationId' is set
+            if (conversationId == null)
+                throw new ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationIdV1");
+
+            // verify the required parameter 'conversationPatchRequest' is set
+            if (conversationPatchRequest == null)
+                throw new ApiException(400, "Missing required parameter 'conversationPatchRequest' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("conversation_id", ClientUtils.ParameterToString(conversationId)); // path parameter
+            localVarRequestOptions.Data = conversationPatchRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PatchAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/agent/action
+    /// </summary>
+    internal class PostMuseAgentActionRequestBuilder
+    {
+        internal readonly ActionRequest ActionRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
         /// <summary>
-        /// Action
+        /// Create builder to call /muse/agent/action
         /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseAgentActionRequestBuilder(IReadableConfiguration config, IClient apiClient, ActionRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ActionRequest = requestBody;
+        }
+
+        public PostMuseAgentActionRequest Build() => new PostMuseAgentActionRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseAgentActionRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseAgentActionRequest : IPostMuseAgentActionRequest
+    {
+        PostMuseAgentActionRequestBuilder m_Builder;
+
+        public PostMuseAgentActionRequest(PostMuseAgentActionRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseAgentActionAsync(m_Builder.ActionRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Action Agent action route for performing actions in the editor.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="actionRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentActionAsync(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseAgentActionAsync(ActionRequest actionRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'actionRequest' is set
+            if (actionRequest == null)
+                throw new ApiException(400, "Missing required parameter 'actionRequest' when calling MuseChatBackendApi->PostMuseAgentAction");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = actionRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/muse/agent/action", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/agent/action
+    /// </summary>
+    internal class PostMuseAgentActionV1RequestBuilder
+    {
+        internal readonly ActionRequest ActionRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Action
+        /// Create builder to call /v1/muse/agent/action
         /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseAgentActionV1RequestBuilder(IReadableConfiguration config, IClient apiClient, ActionRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ActionRequest = requestBody;
+        }
+
+        public PostMuseAgentActionV1Request Build() => new PostMuseAgentActionV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseAgentActionV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseAgentActionV1Request : IPostMuseAgentActionV1Request
+    {
+        PostMuseAgentActionV1RequestBuilder m_Builder;
+
+        public PostMuseAgentActionV1Request(PostMuseAgentActionV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseAgentActionV1Async(m_Builder.ActionRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Action Agent action route for performing actions in the editor.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="actionRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentActionWithHttpInfoAsync(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Action
-        /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentActionV1Async(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseAgentActionV1Async(ActionRequest actionRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'actionRequest' is set
+            if (actionRequest == null)
+                throw new ApiException(400, "Missing required parameter 'actionRequest' when calling MuseChatBackendApi->PostMuseAgentActionV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = actionRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/v1/muse/agent/action", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/agent/code_repair
+    /// </summary>
+    internal class PostMuseAgentCodeRepairRequestBuilder
+    {
+        internal readonly ActionCodeRepairRequest ActionCodeRepairRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Action
+        /// Create builder to call /muse/agent/code_repair
         /// </summary>
-        /// <remarks>
-        /// Agent action route for performing actions in the editor.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentActionV1WithHttpInfoAsync(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public PostMuseAgentCodeRepairRequestBuilder(IReadableConfiguration config, IClient apiClient, ActionCodeRepairRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ActionCodeRepairRequest = requestBody;
+        }
+
+        public PostMuseAgentCodeRepairRequest Build() => new PostMuseAgentCodeRepairRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseAgentCodeRepairRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseAgentCodeRepairRequest : IPostMuseAgentCodeRepairRequest
+    {
+        PostMuseAgentCodeRepairRequestBuilder m_Builder;
+
+        public PostMuseAgentCodeRepairRequest(PostMuseAgentCodeRepairRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseAgentCodeRepairAsync(m_Builder.ActionCodeRepairRequest, cancellationToken, callbacks);
+        }
+
         /// <summary>
-        /// Action Code Repair
+        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
         /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="actionCodeRepairRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodeRepairAsync(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseAgentCodeRepairAsync(ActionCodeRepairRequest actionCodeRepairRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'actionCodeRepairRequest' is set
+            if (actionCodeRepairRequest == null)
+                throw new ApiException(400, "Missing required parameter 'actionCodeRepairRequest' when calling MuseChatBackendApi->PostMuseAgentCodeRepair");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = actionCodeRepairRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/muse/agent/code_repair", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/agent/code_repair
+    /// </summary>
+    internal class PostMuseAgentCodeRepairV1RequestBuilder
+    {
+        internal readonly ActionCodeRepairRequest ActionCodeRepairRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Action Code Repair
+        /// Create builder to call /v1/muse/agent/code_repair
         /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseAgentCodeRepairV1RequestBuilder(IReadableConfiguration config, IClient apiClient, ActionCodeRepairRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ActionCodeRepairRequest = requestBody;
+        }
+
+        public PostMuseAgentCodeRepairV1Request Build() => new PostMuseAgentCodeRepairV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseAgentCodeRepairV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseAgentCodeRepairV1Request : IPostMuseAgentCodeRepairV1Request
+    {
+        PostMuseAgentCodeRepairV1RequestBuilder m_Builder;
+
+        public PostMuseAgentCodeRepairV1Request(PostMuseAgentCodeRepairV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseAgentCodeRepairV1Async(m_Builder.ActionCodeRepairRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="actionCodeRepairRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodeRepairWithHttpInfoAsync(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Action Code Repair
-        /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodeRepairV1Async(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseAgentCodeRepairV1Async(ActionCodeRepairRequest actionCodeRepairRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'actionCodeRepairRequest' is set
+            if (actionCodeRepairRequest == null)
+                throw new ApiException(400, "Missing required parameter 'actionCodeRepairRequest' when calling MuseChatBackendApi->PostMuseAgentCodeRepairV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = actionCodeRepairRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/v1/muse/agent/code_repair", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/agent/codegen
+    /// </summary>
+    internal class PostMuseAgentCodegenRequestBuilder
+    {
+        internal readonly CodeGenRequest CodeGenRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Action Code Repair
+        /// Create builder to call /muse/agent/codegen
         /// </summary>
-        /// <remarks>
-        /// Agent action code repairing route for repairing generated csharp scripts.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodeRepairV1WithHttpInfoAsync(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public PostMuseAgentCodegenRequestBuilder(IReadableConfiguration config, IClient apiClient, CodeGenRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            CodeGenRequest = requestBody;
+        }
+
+        public PostMuseAgentCodegenRequest Build() => new PostMuseAgentCodegenRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseAgentCodegenRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseAgentCodegenRequest : IPostMuseAgentCodegenRequest
+    {
+        PostMuseAgentCodegenRequestBuilder m_Builder;
+
+        public PostMuseAgentCodegenRequest(PostMuseAgentCodegenRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseAgentCodegenAsync(m_Builder.CodeGenRequest, cancellationToken, callbacks);
+        }
+
         /// <summary>
-        /// Codegen
+        /// Codegen POC of CodeGen route.
         /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="codeGenRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodegenAsync(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseAgentCodegenAsync(CodeGenRequest codeGenRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'codeGenRequest' is set
+            if (codeGenRequest == null)
+                throw new ApiException(400, "Missing required parameter 'codeGenRequest' when calling MuseChatBackendApi->PostMuseAgentCodegen");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = codeGenRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/muse/agent/codegen", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/agent/codegen
+    /// </summary>
+    internal class PostMuseAgentCodegenV1RequestBuilder
+    {
+        internal readonly CodeGenRequest CodeGenRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Codegen
+        /// Create builder to call /v1/muse/agent/codegen
         /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseAgentCodegenV1RequestBuilder(IReadableConfiguration config, IClient apiClient, CodeGenRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            CodeGenRequest = requestBody;
+        }
+
+        public PostMuseAgentCodegenV1Request Build() => new PostMuseAgentCodegenV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseAgentCodegenV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseAgentCodegenV1Request : IPostMuseAgentCodegenV1Request
+    {
+        PostMuseAgentCodegenV1RequestBuilder m_Builder;
+
+        public PostMuseAgentCodegenV1Request(PostMuseAgentCodegenV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseAgentCodegenV1Async(m_Builder.CodeGenRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Codegen POC of CodeGen route.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="codeGenRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodegenWithHttpInfoAsync(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Codegen
-        /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodegenV1Async(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseAgentCodegenV1Async(CodeGenRequest codeGenRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'codeGenRequest' is set
+            if (codeGenRequest == null)
+                throw new ApiException(400, "Missing required parameter 'codeGenRequest' when calling MuseChatBackendApi->PostMuseAgentCodegenV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = codeGenRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/v1/muse/agent/codegen", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/chat
+    /// </summary>
+    internal class PostMuseChatRequestBuilder
+    {
+        internal readonly ChatRequest ChatRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Codegen
+        /// Create builder to call /muse/chat
         /// </summary>
-        /// <remarks>
-        /// POC of CodeGen route.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseAgentCodegenV1WithHttpInfoAsync(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public PostMuseChatRequestBuilder(IReadableConfiguration config, IClient apiClient, ChatRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ChatRequest = requestBody;
+        }
+
+        public PostMuseChatRequest Build() => new PostMuseChatRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseChatRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseChatRequest : IPostMuseChatRequest
+    {
+        PostMuseChatRequestBuilder m_Builder;
+
+        public PostMuseChatRequest(PostMuseChatRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseChatAsync(m_Builder.ChatRequest, cancellationToken, callbacks);
+        }
+
         /// <summary>
-        /// Chat
+        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.  Returns:     JSONResponse | ManagedStreamingResponse: Either JSONResponse or ManagedStreamingResponse.
         /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="chatRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseChatAsync(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseChatAsync(ChatRequest chatRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'chatRequest' is set
+            if (chatRequest == null)
+                throw new ApiException(400, "Missing required parameter 'chatRequest' when calling MuseChatBackendApi->PostMuseChat");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = chatRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/muse/chat", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/chat
+    /// </summary>
+    internal class PostMuseChatV1RequestBuilder
+    {
+        internal readonly ChatRequest ChatRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Chat
+        /// Create builder to call /v1/muse/chat
         /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseChatV1RequestBuilder(IReadableConfiguration config, IClient apiClient, ChatRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ChatRequest = requestBody;
+        }
+
+        public PostMuseChatV1Request Build() => new PostMuseChatV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseChatV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseChatV1Request : IPostMuseChatV1Request
+    {
+        PostMuseChatV1RequestBuilder m_Builder;
+
+        public PostMuseChatV1Request(PostMuseChatV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseChatV1Async(m_Builder.ChatRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.  Returns:     JSONResponse | ManagedStreamingResponse: Either JSONResponse or ManagedStreamingResponse.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="chatRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseChatWithHttpInfoAsync(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Chat
-        /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseChatV1Async(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseChatV1Async(ChatRequest chatRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'chatRequest' is set
+            if (chatRequest == null)
+                throw new ApiException(400, "Missing required parameter 'chatRequest' when calling MuseChatBackendApi->PostMuseChatV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = chatRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/v1/muse/chat", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/completion
+    /// </summary>
+    internal class PostMuseCompletionRequestBuilder
+    {
+        internal readonly ContextualCompletionRequest ContextualCompletionRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Chat
+        /// Create builder to call /muse/completion
         /// </summary>
-        /// <remarks>
-        /// Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseChatV1WithHttpInfoAsync(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Completion
-        /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
+        public PostMuseCompletionRequestBuilder(IReadableConfiguration config, IClient apiClient, ContextualCompletionRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ContextualCompletionRequest = requestBody;
+        }
+
+        public PostMuseCompletionRequest Build() => new PostMuseCompletionRequest(this);
+
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseCompletionAsync(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseCompletionRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseCompletionRequest : IPostMuseCompletionRequest
+    {
+        PostMuseCompletionRequestBuilder m_Builder;
+
+        public PostMuseCompletionRequest(PostMuseCompletionRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseCompletionAsync(m_Builder.ContextualCompletionRequest, cancellationToken, callbacks);
+        }
 
         /// <summary>
-        /// Completion
+        /// Completion Endpoint Endpoint for handling completion requests.
         /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="contextualCompletionRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseCompletionWithHttpInfoAsync(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Completion
-        /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseCompletionV1Async(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseCompletionAsync(ContextualCompletionRequest contextualCompletionRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'contextualCompletionRequest' is set
+            if (contextualCompletionRequest == null)
+                throw new ApiException(400, "Missing required parameter 'contextualCompletionRequest' when calling MuseChatBackendApi->PostMuseCompletion");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = contextualCompletionRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/muse/completion", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/completion/repair
+    /// </summary>
+    internal class PostMuseCompletionRepairRequestBuilder
+    {
+        internal readonly CompletionRepairRequest CompletionRepairRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Completion
+        /// Create builder to call /muse/completion/repair
         /// </summary>
-        /// <remarks>
-        /// Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
+        public PostMuseCompletionRepairRequestBuilder(IReadableConfiguration config, IClient apiClient, CompletionRepairRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            CompletionRepairRequest = requestBody;
+        }
+
+        public PostMuseCompletionRepairRequest Build() => new PostMuseCompletionRepairRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseCompletionRepairRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseCompletionRepairRequest : IPostMuseCompletionRepairRequest
+    {
+        PostMuseCompletionRepairRequestBuilder m_Builder;
+
+        public PostMuseCompletionRepairRequest(PostMuseCompletionRepairRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseCompletionRepairAsync(m_Builder.CompletionRepairRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Repair Endpoint Generic repair route for repairing generated content.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="completionRepairRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseCompletionV1WithHttpInfoAsync(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        [Obsolete]
+         async Task<ApiResponse<Object>> PostMuseCompletionRepairAsync(CompletionRepairRequest completionRepairRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'completionRepairRequest' is set
+            if (completionRepairRequest == null)
+                throw new ApiException(400, "Missing required parameter 'completionRepairRequest' when calling MuseChatBackendApi->PostMuseCompletionRepair");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = completionRepairRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/muse/completion/repair", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/completion/repair
+    /// </summary>
+    internal class PostMuseCompletionRepairV1RequestBuilder
+    {
+        internal readonly CompletionRepairRequest CompletionRepairRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /v1/muse/completion/repair
+        /// </summary>
+        public PostMuseCompletionRepairV1RequestBuilder(IReadableConfiguration config, IClient apiClient, CompletionRepairRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            CompletionRepairRequest = requestBody;
+        }
+
+        public PostMuseCompletionRepairV1Request Build() => new PostMuseCompletionRepairV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseCompletionRepairV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseCompletionRepairV1Request : IPostMuseCompletionRepairV1Request
+    {
+        PostMuseCompletionRepairV1RequestBuilder m_Builder;
+
+        public PostMuseCompletionRepairV1Request(PostMuseCompletionRepairV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseCompletionRepairV1Async(m_Builder.CompletionRepairRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Repair Endpoint Generic repair route for repairing generated content.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="completionRepairRequest"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
+         async Task<ApiResponse<Object>> PostMuseCompletionRepairV1Async(CompletionRepairRequest completionRepairRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'completionRepairRequest' is set
+            if (completionRepairRequest == null)
+                throw new ApiException(400, "Missing required parameter 'completionRepairRequest' when calling MuseChatBackendApi->PostMuseCompletionRepairV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = completionRepairRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/v1/muse/completion/repair", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/completion
+    /// </summary>
+    internal class PostMuseCompletionV1RequestBuilder
+    {
+        internal readonly ContextualCompletionRequest ContextualCompletionRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /v1/muse/completion
+        /// </summary>
+        public PostMuseCompletionV1RequestBuilder(IReadableConfiguration config, IClient apiClient, ContextualCompletionRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            ContextualCompletionRequest = requestBody;
+        }
+
+        public PostMuseCompletionV1Request Build() => new PostMuseCompletionV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseCompletionV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseCompletionV1Request : IPostMuseCompletionV1Request
+    {
+        PostMuseCompletionV1RequestBuilder m_Builder;
+
+        public PostMuseCompletionV1Request(PostMuseCompletionV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseCompletionV1Async(m_Builder.ContextualCompletionRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Completion Endpoint Endpoint for handling completion requests.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="contextualCompletionRequest"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (Object)</returns>
+         async Task<ApiResponse<Object>> PostMuseCompletionV1Async(ContextualCompletionRequest contextualCompletionRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'contextualCompletionRequest' is set
+            if (contextualCompletionRequest == null)
+                throw new ApiException(400, "Missing required parameter 'contextualCompletionRequest' when calling MuseChatBackendApi->PostMuseCompletionV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = contextualCompletionRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/v1/muse/completion", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/conversation
+    /// </summary>
+    internal class PostMuseConversationRequestBuilder
+    {
+        internal readonly CreateConversationRequest CreateConversationRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /muse/conversation
+        /// </summary>
+        public PostMuseConversationRequestBuilder(IReadableConfiguration config, IClient apiClient, CreateConversationRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            CreateConversationRequest = requestBody;
+        }
+
+        public PostMuseConversationRequest Build() => new PostMuseConversationRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Conversation>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseConversationRequest
+    {
+        Task<ApiResponse<Conversation>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseConversationRequest : IPostMuseConversationRequest
+    {
+        PostMuseConversationRequestBuilder m_Builder;
+
+        public PostMuseConversationRequest(PostMuseConversationRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Conversation>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseConversationAsync(m_Builder.CreateConversationRequest, cancellationToken, callbacks);
+        }
+
         /// <summary>
         /// Create Conversation
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Conversation</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Conversation>> PostMuseConversationAsync(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Create Conversation
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Conversation)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Conversation>> PostMuseConversationWithHttpInfoAsync(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Conversation>> PostMuseConversationAsync(CreateConversationRequest createConversationRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'createConversationRequest' is set
+            if (createConversationRequest == null)
+                throw new ApiException(400, "Missing required parameter 'createConversationRequest' when calling MuseChatBackendApi->PostMuseConversation");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = createConversationRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Conversation>("/muse/conversation", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/conversation
+    /// </summary>
+    internal class PostMuseConversationV1RequestBuilder
+    {
+        internal readonly CreateConversationRequest CreateConversationRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
         /// <summary>
-        /// Create Conversation
+        /// Create builder to call /v1/muse/conversation
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Conversation</returns>
-        System.Threading.Tasks.Task<ApiResponse<Conversation>> PostMuseConversationV1Async(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public PostMuseConversationV1RequestBuilder(IReadableConfiguration config, IClient apiClient, CreateConversationRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            CreateConversationRequest = requestBody;
+        }
+
+        public PostMuseConversationV1Request Build() => new PostMuseConversationV1Request(this);
+
+
+        public async Task<ApiResponse<Conversation>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseConversationV1Request
+    {
+        Task<ApiResponse<Conversation>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseConversationV1Request : IPostMuseConversationV1Request
+    {
+        PostMuseConversationV1RequestBuilder m_Builder;
+
+        public PostMuseConversationV1Request(PostMuseConversationV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Conversation>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseConversationV1Async(m_Builder.CreateConversationRequest, cancellationToken, callbacks);
+        }
 
         /// <summary>
         /// Create Conversation
         /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="createConversationRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Conversation)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Conversation>> PostMuseConversationV1WithHttpInfoAsync(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Feedback
-        /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PostMuseFeedbackAsync(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Conversation>> PostMuseConversationV1Async(CreateConversationRequest createConversationRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'createConversationRequest' is set
+            if (createConversationRequest == null)
+                throw new ApiException(400, "Missing required parameter 'createConversationRequest' when calling MuseChatBackendApi->PostMuseConversationV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = createConversationRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Conversation>("/v1/muse/conversation", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/feedback
+    /// </summary>
+    internal class PostMuseFeedbackRequestBuilder
+    {
+        internal readonly Feedback Feedback;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Feedback
+        /// Create builder to call /muse/feedback
         /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseFeedbackRequestBuilder(IReadableConfiguration config, IClient apiClient, Feedback requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            Feedback = requestBody;
+        }
+
+        public PostMuseFeedbackRequest Build() => new PostMuseFeedbackRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseFeedbackRequest
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseFeedbackRequest : IPostMuseFeedbackRequest
+    {
+        PostMuseFeedbackRequestBuilder m_Builder;
+
+        public PostMuseFeedbackRequest(PostMuseFeedbackRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseFeedbackAsync(m_Builder.Feedback, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="feedback"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PostMuseFeedbackWithHttpInfoAsync(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Feedback
-        /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PostMuseFeedbackV1Async(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> PostMuseFeedbackAsync(Feedback feedback, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'feedback' is set
+            if (feedback == null)
+                throw new ApiException(400, "Missing required parameter 'feedback' when calling MuseChatBackendApi->PostMuseFeedback");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = feedback;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<ErrorResponse>("/muse/feedback", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/feedback
+    /// </summary>
+    internal class PostMuseFeedbackV1RequestBuilder
+    {
+        internal readonly Feedback Feedback;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Feedback
+        /// Create builder to call /v1/muse/feedback
         /// </summary>
-        /// <remarks>
-        /// Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseFeedbackV1RequestBuilder(IReadableConfiguration config, IClient apiClient, Feedback requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            Feedback = requestBody;
+        }
+
+        public PostMuseFeedbackV1Request Build() => new PostMuseFeedbackV1Request(this);
+
+
+        public async Task<ApiResponse<ErrorResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseFeedbackV1Request
+    {
+        Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseFeedbackV1Request : IPostMuseFeedbackV1Request
+    {
+        PostMuseFeedbackV1RequestBuilder m_Builder;
+
+        public PostMuseFeedbackV1Request(PostMuseFeedbackV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ErrorResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseFeedbackV1Async(m_Builder.Feedback, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="feedback"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ErrorResponse>> PostMuseFeedbackV1WithHttpInfoAsync(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Create Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePostMuseInspiration</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponsePostMuseInspiration>> PostMuseInspirationAsync(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ErrorResponse>> PostMuseFeedbackV1Async(Feedback feedback, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'feedback' is set
+            if (feedback == null)
+                throw new ApiException(400, "Missing required parameter 'feedback' when calling MuseChatBackendApi->PostMuseFeedbackV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = feedback;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<ErrorResponse>("/v1/muse/feedback", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/inspiration/
+    /// </summary>
+    internal class PostMuseInspirationRequestBuilder
+    {
+        internal readonly Inspiration Inspiration;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Create Inspiration
+        /// Create builder to call /muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseInspirationRequestBuilder(IReadableConfiguration config, IClient apiClient, Inspiration requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            Inspiration = requestBody;
+        }
+
+        public PostMuseInspirationRequest Build() => new PostMuseInspirationRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ResponsePostMuseInspiration>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseInspirationRequest
+    {
+        Task<ApiResponse<ResponsePostMuseInspiration>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseInspirationRequest : IPostMuseInspirationRequest
+    {
+        PostMuseInspirationRequestBuilder m_Builder;
+
+        public PostMuseInspirationRequest(PostMuseInspirationRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ResponsePostMuseInspiration>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseInspirationAsync(m_Builder.Inspiration, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="inspiration"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponsePostMuseInspiration)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponsePostMuseInspiration>> PostMuseInspirationWithHttpInfoAsync(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Create Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePostMuseInspirationV1</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponsePostMuseInspirationV1>> PostMuseInspirationV1Async(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ResponsePostMuseInspiration>> PostMuseInspirationAsync(Inspiration inspiration, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'inspiration' is set
+            if (inspiration == null)
+                throw new ApiException(400, "Missing required parameter 'inspiration' when calling MuseChatBackendApi->PostMuseInspiration");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = inspiration;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<ResponsePostMuseInspiration>("/muse/inspiration/", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/inspiration/
+    /// </summary>
+    internal class PostMuseInspirationV1RequestBuilder
+    {
+        internal readonly Inspiration Inspiration;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Create Inspiration
+        /// Create builder to call /v1/muse/inspiration/
         /// </summary>
-        /// <remarks>
-        /// Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseInspirationV1RequestBuilder(IReadableConfiguration config, IClient apiClient, Inspiration requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            Inspiration = requestBody;
+        }
+
+        public PostMuseInspirationV1Request Build() => new PostMuseInspirationV1Request(this);
+
+
+        public async Task<ApiResponse<ResponsePostMuseInspirationV1>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseInspirationV1Request
+    {
+        Task<ApiResponse<ResponsePostMuseInspirationV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseInspirationV1Request : IPostMuseInspirationV1Request
+    {
+        PostMuseInspirationV1RequestBuilder m_Builder;
+
+        public PostMuseInspirationV1Request(PostMuseInspirationV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ResponsePostMuseInspirationV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseInspirationV1Async(m_Builder.Inspiration, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="inspiration"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponsePostMuseInspirationV1)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponsePostMuseInspirationV1>> PostMuseInspirationV1WithHttpInfoAsync(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Opt
-        /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseOptAsync(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ResponsePostMuseInspirationV1>> PostMuseInspirationV1Async(Inspiration inspiration, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'inspiration' is set
+            if (inspiration == null)
+                throw new ApiException(400, "Missing required parameter 'inspiration' when calling MuseChatBackendApi->PostMuseInspirationV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = inspiration;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<ResponsePostMuseInspirationV1>("/v1/muse/inspiration/", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/opt
+    /// </summary>
+    internal class PostMuseOptRequestBuilder
+    {
+        internal readonly OptRequest OptRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Opt
+        /// Create builder to call /muse/opt
         /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseOptRequestBuilder(IReadableConfiguration config, IClient apiClient, OptRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            OptRequest = requestBody;
+        }
+
+        public PostMuseOptRequest Build() => new PostMuseOptRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseOptRequest
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseOptRequest : IPostMuseOptRequest
+    {
+        PostMuseOptRequestBuilder m_Builder;
+
+        public PostMuseOptRequest(PostMuseOptRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseOptAsync(m_Builder.OptRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="optRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseOptWithHttpInfoAsync(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Opt
-        /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseOptV1Async(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseOptAsync(OptRequest optRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'optRequest' is set
+            if (optRequest == null)
+                throw new ApiException(400, "Missing required parameter 'optRequest' when calling MuseChatBackendApi->PostMuseOpt");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = optRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/muse/opt", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/opt
+    /// </summary>
+    internal class PostMuseOptV1RequestBuilder
+    {
+        internal readonly OptRequest OptRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Opt
+        /// Create builder to call /v1/muse/opt
         /// </summary>
-        /// <remarks>
-        /// Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostMuseOptV1RequestBuilder(IReadableConfiguration config, IClient apiClient, OptRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            OptRequest = requestBody;
+        }
+
+        public PostMuseOptV1Request Build() => new PostMuseOptV1Request(this);
+
+
+        public async Task<ApiResponse<Object>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostMuseOptV1Request
+    {
+        Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostMuseOptV1Request : IPostMuseOptV1Request
+    {
+        PostMuseOptV1RequestBuilder m_Builder;
+
+        public PostMuseOptV1Request(PostMuseOptV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<Object>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostMuseOptV1Async(m_Builder.OptRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="optRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (Object)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostMuseOptV1WithHttpInfoAsync(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Smart Context
-        /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of SmartContextResponse</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<SmartContextResponse>> PostSmartContextAsync(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<Object>> PostMuseOptV1Async(OptRequest optRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'optRequest' is set
+            if (optRequest == null)
+                throw new ApiException(400, "Missing required parameter 'optRequest' when calling MuseChatBackendApi->PostMuseOptV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = optRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<Object>("/v1/muse/opt", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /smart-context
+    /// </summary>
+    internal class PostSmartContextRequestBuilder
+    {
+        internal readonly SmartContextRequest SmartContextRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Smart Context
+        /// Create builder to call /smart-context
         /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (SmartContextResponse)</returns>
+        public PostSmartContextRequestBuilder(IReadableConfiguration config, IClient apiClient, SmartContextRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            SmartContextRequest = requestBody;
+        }
+
+        public PostSmartContextRequest Build() => new PostSmartContextRequest(this);
+
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<SmartContextResponse>> PostSmartContextWithHttpInfoAsync(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Smart Context
-        /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of SmartContextResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<SmartContextResponse>> PostSmartContextV1Async(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        public async Task<ApiResponse<SmartContextResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostSmartContextRequest
+    {
+        Task<ApiResponse<SmartContextResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostSmartContextRequest : IPostSmartContextRequest
+    {
+        PostSmartContextRequestBuilder m_Builder;
+
+        public PostSmartContextRequest(PostSmartContextRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<SmartContextResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostSmartContextAsync(m_Builder.SmartContextRequest, cancellationToken, callbacks);
+        }
 
         /// <summary>
-        /// Smart Context
+        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
         /// </summary>
-        /// <remarks>
-        /// Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="smartContextRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (SmartContextResponse)</returns>
-        System.Threading.Tasks.Task<ApiResponse<SmartContextResponse>> PostSmartContextV1WithHttpInfoAsync(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        [Obsolete]
+         async Task<ApiResponse<SmartContextResponse>> PostSmartContextAsync(SmartContextRequest smartContextRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'smartContextRequest' is set
+            if (smartContextRequest == null)
+                throw new ApiException(400, "Missing required parameter 'smartContextRequest' when calling MuseChatBackendApi->PostSmartContext");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = smartContextRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<SmartContextResponse>("/smart-context", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/smart-context
+    /// </summary>
+    internal class PostSmartContextV1RequestBuilder
+    {
+        internal readonly SmartContextRequest SmartContextRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
         /// <summary>
-        /// Update Inspiration
+        /// Create builder to call /v1/smart-context
         /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PostSmartContextV1RequestBuilder(IReadableConfiguration config, IClient apiClient, SmartContextRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            SmartContextRequest = requestBody;
+        }
+
+        public PostSmartContextV1Request Build() => new PostSmartContextV1Request(this);
+
+
+        public async Task<ApiResponse<SmartContextResponse>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPostSmartContextV1Request
+    {
+        Task<ApiResponse<SmartContextResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PostSmartContextV1Request : IPostSmartContextV1Request
+    {
+        PostSmartContextV1RequestBuilder m_Builder;
+
+        public PostSmartContextV1Request(PostSmartContextV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<SmartContextResponse>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PostSmartContextV1Async(m_Builder.SmartContextRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="smartContextRequest"></param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
+        /// <returns>Task of ApiResponse (SmartContextResponse)</returns>
+         async Task<ApiResponse<SmartContextResponse>> PostSmartContextV1Async(SmartContextRequest smartContextRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'smartContextRequest' is set
+            if (smartContextRequest == null)
+                throw new ApiException(400, "Missing required parameter 'smartContextRequest' when calling MuseChatBackendApi->PostSmartContextV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = smartContextRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PostAsync<SmartContextResponse>("/v1/smart-context", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /muse/inspiration/{inspiration_id}
+    /// </summary>
+    internal class PutMuseInspirationUsingInspirationIdRequestBuilder
+    {
+        internal readonly string InspirationId;
+        internal readonly UpdateInspirationRequest UpdateInspirationRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
+
+        /// <summary>
+        /// Create builder to call /muse/inspiration/{inspiration_id}
+        /// </summary>
+        public PutMuseInspirationUsingInspirationIdRequestBuilder(IReadableConfiguration config, IClient apiClient, string inspirationId, UpdateInspirationRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            InspirationId = inspirationId;
+            UpdateInspirationRequest = requestBody;
+        }
+
+        public PutMuseInspirationUsingInspirationIdRequest Build() => new PutMuseInspirationUsingInspirationIdRequest(this);
+
+        [Obsolete]
+        public async Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPutMuseInspirationUsingInspirationIdRequest
+    {
+        Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PutMuseInspirationUsingInspirationIdRequest : IPutMuseInspirationUsingInspirationIdRequest
+    {
+        PutMuseInspirationUsingInspirationIdRequestBuilder m_Builder;
+
+        public PutMuseInspirationUsingInspirationIdRequest(PutMuseInspirationUsingInspirationIdRequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+        [Obsolete]
+        public async Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PutMuseInspirationUsingInspirationIdAsync(m_Builder.InspirationId, m_Builder.UpdateInspirationRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="inspirationId"></param>
         /// <param name="updateInspirationRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePutMuseInspirationUsingInspirationId</returns>
-        [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> PutMuseInspirationUsingInspirationIdAsync(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-        /// <summary>
-        /// Update Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponsePutMuseInspirationUsingInspirationId)</returns>
         [Obsolete]
-        System.Threading.Tasks.Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> PutMuseInspirationUsingInspirationIdWithHttpInfoAsync(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        /// <summary>
-        /// Update Inspiration
-        /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePutMuseInspirationUsingInspirationIdV1</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> PutMuseInspirationUsingInspirationIdV1Async(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+         async Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> PutMuseInspirationUsingInspirationIdAsync(string inspirationId, UpdateInspirationRequest updateInspirationRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'inspirationId' is set
+            if (inspirationId == null)
+                throw new ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationId");
+
+            // verify the required parameter 'updateInspirationRequest' is set
+            if (updateInspirationRequest == null)
+                throw new ApiException(400, "Missing required parameter 'updateInspirationRequest' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationId");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("inspiration_id", ClientUtils.ParameterToString(inspirationId)); // path parameter
+            localVarRequestOptions.Data = updateInspirationRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PutAsync<ResponsePutMuseInspirationUsingInspirationId>("/muse/inspiration/{inspiration_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
+    }
+    /// <summary>
+    /// Used to build requests to call /v1/muse/inspiration/{inspiration_id}
+    /// </summary>
+    internal class PutMuseInspirationUsingInspirationIdV1RequestBuilder
+    {
+        internal readonly string InspirationId;
+        internal readonly UpdateInspirationRequest UpdateInspirationRequest;
+
+        internal readonly IReadableConfiguration Configuration;
+        internal readonly IClient Client;
 
         /// <summary>
-        /// Update Inspiration
+        /// Create builder to call /v1/muse/inspiration/{inspiration_id}
         /// </summary>
-        /// <remarks>
-        /// Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </remarks>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
+        public PutMuseInspirationUsingInspirationIdV1RequestBuilder(IReadableConfiguration config, IClient apiClient, string inspirationId, UpdateInspirationRequest requestBody)
+        {
+            Configuration = config;
+            Client = apiClient;
+
+
+            InspirationId = inspirationId;
+            UpdateInspirationRequest = requestBody;
+        }
+
+        public PutMuseInspirationUsingInspirationIdV1Request Build() => new PutMuseInspirationUsingInspirationIdV1Request(this);
+
+
+        public async Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> BuildAndSendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await Build().SendAsync(cancellationToken, callbacks);
+        }
+    }
+
+    internal interface IPutMuseInspirationUsingInspirationIdV1Request
+    {
+        Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null);
+    }
+
+    internal class PutMuseInspirationUsingInspirationIdV1Request : IPutMuseInspirationUsingInspirationIdV1Request
+    {
+        PutMuseInspirationUsingInspirationIdV1RequestBuilder m_Builder;
+
+        public PutMuseInspirationUsingInspirationIdV1Request(PutMuseInspirationUsingInspirationIdV1RequestBuilder builder)
+        {
+            m_Builder = builder;
+        }
+
+        public async Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> SendAsync(CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            return await PutMuseInspirationUsingInspirationIdV1Async(m_Builder.InspirationId, m_Builder.UpdateInspirationRequest, cancellationToken, callbacks);
+        }
+
+        /// <summary>
+        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="inspirationId"></param>
         /// <param name="updateInspirationRequest"></param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <param name="callbacks">Callbacks that allow access to UnityWebRequest mid request</param>
         /// <returns>Task of ApiResponse (ResponsePutMuseInspirationUsingInspirationIdV1)</returns>
-        System.Threading.Tasks.Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> PutMuseInspirationUsingInspirationIdV1WithHttpInfoAsync(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-        #endregion Asynchronous Operations
+         async Task<ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> PutMuseInspirationUsingInspirationIdV1Async(string inspirationId, UpdateInspirationRequest updateInspirationRequest, CancellationToken cancellationToken = default, RequestInterceptionCallbacks callbacks = null)
+        {
+            // verify the required parameter 'inspirationId' is set
+            if (inspirationId == null)
+                throw new ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationIdV1");
+
+            // verify the required parameter 'updateInspirationRequest' is set
+            if (updateInspirationRequest == null)
+                throw new ApiException(400, "Missing required parameter 'updateInspirationRequest' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationIdV1");
+
+
+            RequestOptions localVarRequestOptions = new RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "application/json"
+            };
+
+            var localVarContentType = ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.PathParameters.Add("inspiration_id", ClientUtils.ParameterToString(inspirationId)); // path parameter
+            localVarRequestOptions.Data = updateInspirationRequest;
+
+            // authentication (APIKeyHeader) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.HeaderParameters.Add("access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token"));
+            // authentication (HTTPBearer) required
+            // bearer authentication required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.AccessToken) && !localVarRequestOptions.HeaderParameters.ContainsKey("Authorization"))
+                localVarRequestOptions.HeaderParameters.Add("Authorization", "Bearer " + m_Builder.Configuration.AccessToken);
+            // authentication (APIKeyQuery) required
+            if (!string.IsNullOrEmpty(m_Builder.Configuration.GetApiKeyWithPrefix("access_token")))
+                localVarRequestOptions.QueryParameters.Add(ClientUtils.ParameterToMultiMap("", "access_token", m_Builder.Configuration.GetApiKeyWithPrefix("access_token")));
+
+            // make the HTTP request
+            var task = m_Builder.Client.PutAsync<ResponsePutMuseInspirationUsingInspirationIdV1>("/v1/muse/inspiration/{inspiration_id}", localVarRequestOptions, m_Builder.Configuration, cancellationToken, callbacks);
+
+#if UNITY_EDITOR || !UNITY_WEBGL
+            var localVarResponse = await task.ConfigureAwait(false);
+#else
+            var localVarResponse = await task;
+#endif
+
+            return localVarResponse;
+        }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    internal interface IMuseChatBackendApi : IMuseChatBackendApiSync, IMuseChatBackendApiAsync
+    internal class MuseChatBackendApi : IDisposable, IMuseChatBackendApi
     {
+        IReadableConfiguration m_Configuration;
+        IClient m_Client;
 
-    }
+        public IClient Client => m_Client;
 
-    /// <summary>
-    /// Represents a collection of functions to interact with the API endpoints
-    /// </summary>
-    internal partial class MuseChatBackendApi : IDisposable, IMuseChatBackendApi
-    {
         /// <summary>
         /// Initializes a new instance of the <see cref="MuseChatBackendApi"/> class.
         /// **IMPORTANT** This will also create an instance of HttpClient, which is less than ideal.
@@ -2262,13 +6060,11 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// <returns></returns>
         public MuseChatBackendApi(string basePath)
         {
-            this.Configuration = Unity.Muse.Chat.BackendApi.Client.Configuration.MergeConfigurations(
-                Unity.Muse.Chat.BackendApi.Client.GlobalConfiguration.Instance,
-                new Unity.Muse.Chat.BackendApi.Client.Configuration { BasePath = basePath }
+            m_Configuration = Unity.Muse.Chat.BackendApi.Client.Configuration.MergeConfigurations(
+                GlobalConfiguration.Instance,
+                new Configuration { BasePath = basePath }
             );
-            this.ApiClient = new Unity.Muse.Chat.BackendApi.Client.ApiClient(this.Configuration.BasePath);
-            this.Client =  this.ApiClient;
-            this.AsynchronousClient = this.ApiClient;
+            m_Client = new ApiClient(m_Configuration.BasePath);
         }
 
         /// <summary>
@@ -2279,60 +6075,77 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// <param name="configuration">An instance of Configuration.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns></returns>
-        public MuseChatBackendApi(Unity.Muse.Chat.BackendApi.Client.Configuration configuration)
+        public MuseChatBackendApi(Configuration configuration)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
 
-            this.Configuration = Unity.Muse.Chat.BackendApi.Client.Configuration.MergeConfigurations(
-                Unity.Muse.Chat.BackendApi.Client.GlobalConfiguration.Instance,
+            m_Configuration = Unity.Muse.Chat.BackendApi.Client.Configuration.MergeConfigurations(
+                GlobalConfiguration.Instance,
                 configuration
             );
-            this.ApiClient = new Unity.Muse.Chat.BackendApi.Client.ApiClient(this.Configuration.BasePath);
-            this.Client = this.ApiClient;
-            this.AsynchronousClient = this.ApiClient;
+            m_Client = new ApiClient(m_Configuration.BasePath);
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MuseChatBackendApi"/> class
-        /// using a Configuration object and client instance.
-        /// </summary>
-        /// <param name="client">The client interface for synchronous API access.</param>
-        /// <param name="asyncClient">The client interface for asynchronous API access.</param>
-        /// <param name="configuration">The configuration object.</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public MuseChatBackendApi(Unity.Muse.Chat.BackendApi.Client.ISynchronousClient client, Unity.Muse.Chat.BackendApi.Client.IAsynchronousClient asyncClient, Unity.Muse.Chat.BackendApi.Client.IReadableConfiguration configuration)
-        {
-            if (client == null) throw new ArgumentNullException("client");
-            if (asyncClient == null) throw new ArgumentNullException("asyncClient");
-            if (configuration == null) throw new ArgumentNullException("configuration");
-
-            this.Client = client;
-            this.AsynchronousClient = asyncClient;
-            this.Configuration = configuration;
-        }
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdBuilder(string conversationId, string fragmentId) => new(m_Configuration, m_Client, conversationId, fragmentId);
+        public DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Builder(string conversationId, string fragmentId) => new(m_Configuration, m_Client, conversationId, fragmentId);
+        public DeleteMuseConversationUsingConversationIdRequestBuilder DeleteMuseConversationUsingConversationIdBuilder(string conversationId) => new(m_Configuration, m_Client, conversationId);
+        public DeleteMuseConversationUsingConversationIdV1RequestBuilder DeleteMuseConversationUsingConversationIdV1Builder(string conversationId) => new(m_Configuration, m_Client, conversationId);
+        public DeleteMuseConversationsByTagsRequestBuilder DeleteMuseConversationsByTagsBuilder() => new(m_Configuration, m_Client);
+        public DeleteMuseConversationsByTagsV1RequestBuilder DeleteMuseConversationsByTagsV1Builder() => new(m_Configuration, m_Client);
+        public DeleteMuseInspirationUsingInspirationIdRequestBuilder DeleteMuseInspirationUsingInspirationIdBuilder(string inspirationId) => new(m_Configuration, m_Client, inspirationId);
+        public DeleteMuseInspirationUsingInspirationIdV1RequestBuilder DeleteMuseInspirationUsingInspirationIdV1Builder(string inspirationId) => new(m_Configuration, m_Client, inspirationId);
+        public GetHealthRequestBuilder GetHealthBuilder() => new(m_Configuration, m_Client);
+        public GetHealthzRequestBuilder GetHealthzBuilder() => new(m_Configuration, m_Client);
+        public GetMuseBetaCheckEntitlementRequestBuilder GetMuseBetaCheckEntitlementBuilder() => new(m_Configuration, m_Client);
+        public GetMuseBetaCheckEntitlementV1RequestBuilder GetMuseBetaCheckEntitlementV1Builder() => new(m_Configuration, m_Client);
+        public GetMuseConversationRequestBuilder GetMuseConversationBuilder() => new(m_Configuration, m_Client);
+        public GetMuseConversationUsingConversationIdRequestBuilder GetMuseConversationUsingConversationIdBuilder(string conversationId) => new(m_Configuration, m_Client, conversationId);
+        public GetMuseConversationUsingConversationIdV1RequestBuilder GetMuseConversationUsingConversationIdV1Builder(string conversationId) => new(m_Configuration, m_Client, conversationId);
+        public GetMuseConversationV1RequestBuilder GetMuseConversationV1Builder() => new(m_Configuration, m_Client);
+        public GetMuseInspirationRequestBuilder GetMuseInspirationBuilder() => new(m_Configuration, m_Client);
+        public GetMuseInspirationV1RequestBuilder GetMuseInspirationV1Builder() => new(m_Configuration, m_Client);
+        public GetMuseOptRequestBuilder GetMuseOptBuilder() => new(m_Configuration, m_Client);
+        public GetMuseOptV1RequestBuilder GetMuseOptV1Builder() => new(m_Configuration, m_Client);
+        public GetMuseTopicUsingConversationIdRequestBuilder GetMuseTopicUsingConversationIdBuilder(string conversationId, string organizationId) => new(m_Configuration, m_Client, conversationId, organizationId);
+        public GetMuseTopicUsingConversationIdV1RequestBuilder GetMuseTopicUsingConversationIdV1Builder(string conversationId, string organizationId) => new(m_Configuration, m_Client, conversationId, organizationId);
+        public GetVersionsRequestBuilder GetVersionsBuilder() => new(m_Configuration, m_Client);
+        public HeadHealthRequestBuilder HeadHealthBuilder() => new(m_Configuration, m_Client);
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdRequestBuilder PatchMuseConversationFragmentUsingConversationIdAndFragmentIdBuilder(string conversationId, string fragmentId, ConversationFragmentPatch requestBody) => new(m_Configuration, m_Client, conversationId, fragmentId, requestBody);
+        public PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1RequestBuilder PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Builder(string conversationId, string fragmentId, ConversationFragmentPatch requestBody) => new(m_Configuration, m_Client, conversationId, fragmentId, requestBody);
+        public PatchMuseConversationUsingConversationIdRequestBuilder PatchMuseConversationUsingConversationIdBuilder(string conversationId, ConversationPatchRequest requestBody) => new(m_Configuration, m_Client, conversationId, requestBody);
+        public PatchMuseConversationUsingConversationIdV1RequestBuilder PatchMuseConversationUsingConversationIdV1Builder(string conversationId, ConversationPatchRequest requestBody) => new(m_Configuration, m_Client, conversationId, requestBody);
+        public PostMuseAgentActionRequestBuilder PostMuseAgentActionBuilder(ActionRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseAgentActionV1RequestBuilder PostMuseAgentActionV1Builder(ActionRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseAgentCodeRepairRequestBuilder PostMuseAgentCodeRepairBuilder(ActionCodeRepairRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseAgentCodeRepairV1RequestBuilder PostMuseAgentCodeRepairV1Builder(ActionCodeRepairRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseAgentCodegenRequestBuilder PostMuseAgentCodegenBuilder(CodeGenRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseAgentCodegenV1RequestBuilder PostMuseAgentCodegenV1Builder(CodeGenRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseChatRequestBuilder PostMuseChatBuilder(ChatRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseChatV1RequestBuilder PostMuseChatV1Builder(ChatRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseCompletionRequestBuilder PostMuseCompletionBuilder(ContextualCompletionRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseCompletionRepairRequestBuilder PostMuseCompletionRepairBuilder(CompletionRepairRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseCompletionRepairV1RequestBuilder PostMuseCompletionRepairV1Builder(CompletionRepairRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseCompletionV1RequestBuilder PostMuseCompletionV1Builder(ContextualCompletionRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseConversationRequestBuilder PostMuseConversationBuilder(CreateConversationRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseConversationV1RequestBuilder PostMuseConversationV1Builder(CreateConversationRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseFeedbackRequestBuilder PostMuseFeedbackBuilder(Feedback requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseFeedbackV1RequestBuilder PostMuseFeedbackV1Builder(Feedback requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseInspirationRequestBuilder PostMuseInspirationBuilder(Inspiration requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseInspirationV1RequestBuilder PostMuseInspirationV1Builder(Inspiration requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseOptRequestBuilder PostMuseOptBuilder(OptRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostMuseOptV1RequestBuilder PostMuseOptV1Builder(OptRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostSmartContextRequestBuilder PostSmartContextBuilder(SmartContextRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PostSmartContextV1RequestBuilder PostSmartContextV1Builder(SmartContextRequest requestBody) => new(m_Configuration, m_Client, requestBody);
+        public PutMuseInspirationUsingInspirationIdRequestBuilder PutMuseInspirationUsingInspirationIdBuilder(string inspirationId, UpdateInspirationRequest requestBody) => new(m_Configuration, m_Client, inspirationId, requestBody);
+        public PutMuseInspirationUsingInspirationIdV1RequestBuilder PutMuseInspirationUsingInspirationIdV1Builder(string inspirationId, UpdateInspirationRequest requestBody) => new(m_Configuration, m_Client, inspirationId, requestBody);
 
         /// <summary>
         /// Disposes resources if they were created by us
         /// </summary>
         public void Dispose()
         {
-            this.ApiClient?.Dispose();
+            m_Client?.Dispose();
         }
-
-        /// <summary>
-        /// Holds the ApiClient if created
-        /// </summary>
-        public Unity.Muse.Chat.BackendApi.Client.ApiClient ApiClient { get; set; } = null;
-
-        /// <summary>
-        /// The client for accessing this underlying API asynchronously.
-        /// </summary>
-        public Unity.Muse.Chat.BackendApi.Client.IAsynchronousClient AsynchronousClient { get; set; }
-
-        /// <summary>
-        /// The client for accessing this underlying API synchronously.
-        /// </summary>
-        public Unity.Muse.Chat.BackendApi.Client.ISynchronousClient Client { get; set; }
 
         /// <summary>
         /// Gets the base path of the API client.
@@ -2340,6570 +6153,311 @@ namespace Unity.Muse.Chat.BackendApi.Api
         /// <value>The base path</value>
         public string GetBasePath()
         {
-            return this.Configuration.BasePath;
+            return m_Configuration.BasePath;
         }
 
         /// <summary>
         /// Gets or sets the configuration object
         /// </summary>
         /// <value>An instance of the Configuration</value>
-        public Unity.Muse.Chat.BackendApi.Client.IReadableConfiguration Configuration { get; set; }
+        public IReadableConfiguration Configuration { get; set; }
+    }
+}
+
+namespace Unity.Muse.Chat.BackendApi.Utilities
+{
+    internal interface IUnityWebRequest : IDisposable
+    {
+        // Basic properties
+        string url { get; set; }
+        string method { get; set; }
+        string error { get; }
+        bool isDone { get; }
+        bool isNetworkError { get; }
+        bool isHttpError { get; }
+        long responseCode { get; }
+
+        // Upload/Download properties
+        float uploadProgress { get; }
+        float downloadProgress { get; }
+        ulong uploadedBytes { get; }
+        ulong downloadedBytes { get; }
+
+        // Handlers
+        IUploadHandler uploadHandler { get; set; }
+        IDownloadHandler downloadHandler { get; set; }
+        ICertificateHandler certificateHandler { get; set; }
+
+        // Configuration
+        int timeout { get; set; }
+        int redirectLimit { get; set; }
+        bool useHttpContinue { get; set; }
+        bool disposeDownloadHandlerOnDispose { get; set; }
+        bool disposeUploadHandlerOnDispose { get; set; }
+
+        // Methods
+        void SetRequestHeader(string name, string value);
+        string GetRequestHeader(string name);
+        string GetResponseHeader(string name);
+        Dictionary<string, string> GetResponseHeaders();
+
+        UnityWebRequestAsyncOperation SendWebRequest();
+        void Abort();
+    }
+
+    internal interface IDownloadHandler : IDisposable
+    {
+        byte[] data { get; }
+        string text { get; }
+        NativeArray<byte>.ReadOnly nativeData { get; }
+        bool isDone { get; }
+        string error { get; }
+    }
 
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        public ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentId(string conversationId, string fragmentId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfo(conversationId, fragmentId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfo(string conversationId, string fragmentId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Delete<ErrorResponse>("/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfoAsync(conversationId, fragmentId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfoAsync(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.DeleteAsync<ErrorResponse>("/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ErrorResponse</returns>
-        public ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1(string conversationId, string fragmentId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfo(conversationId, fragmentId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfo(string conversationId, string fragmentId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Delete<ErrorResponse>("/v1/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfoAsync(conversationId, fragmentId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Fragment Delete conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfoAsync(string conversationId, string fragmentId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.DeleteAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        public ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationId(string conversationId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = DeleteMuseConversationUsingConversationIdWithHttpInfo(conversationId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationIdWithHttpInfo(string conversationId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationUsingConversationId");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Delete<ErrorResponse>("/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = DeleteMuseConversationUsingConversationIdWithHttpInfoAsync(conversationId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdWithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationUsingConversationId");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.DeleteAsync<ErrorResponse>("/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ErrorResponse</returns>
-        public ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationIdV1(string conversationId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = DeleteMuseConversationUsingConversationIdV1WithHttpInfo(conversationId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> DeleteMuseConversationUsingConversationIdV1WithHttpInfo(string conversationId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationUsingConversationIdV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Delete<ErrorResponse>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdV1Async(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = DeleteMuseConversationUsingConversationIdV1WithHttpInfoAsync(conversationId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversation Delete conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationUsingConversationIdV1WithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->DeleteMuseConversationUsingConversationIdV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.DeleteAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        public ApiResponse<ErrorResponse> DeleteMuseConversationsByTags(List<string> tags = default(List<string>))
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = DeleteMuseConversationsByTagsWithHttpInfo(tags);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> DeleteMuseConversationsByTagsWithHttpInfo(List<string> tags = default(List<string>))
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Delete<ErrorResponse>("/muse/conversations/by-tags", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsAsync(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = DeleteMuseConversationsByTagsWithHttpInfoAsync(tags, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsWithHttpInfoAsync(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.DeleteAsync<ErrorResponse>("/muse/conversations/by-tags", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ErrorResponse</returns>
-        public ApiResponse<ErrorResponse> DeleteMuseConversationsByTagsV1(List<string> tags = default(List<string>))
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = DeleteMuseConversationsByTagsV1WithHttpInfo(tags);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> DeleteMuseConversationsByTagsV1WithHttpInfo(List<string> tags = default(List<string>))
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Delete<ErrorResponse>("/v1/muse/conversations/by-tags", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsV1Async(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = DeleteMuseConversationsByTagsV1WithHttpInfoAsync(tags, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Delete Conversations By Tags Delete conversations by tags.  Args:     request (Request): FastAPI request object.     tags (list[str])): list of tags.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags">List of tags to delete conversations by. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> DeleteMuseConversationsByTagsV1WithHttpInfoAsync(List<string> tags = default(List<string>), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("multi", "tags", tags));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.DeleteAsync<ErrorResponse>("/v1/muse/conversations/by-tags", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> GetHealth()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = GetHealthWithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> GetHealthWithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/health", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetHealthAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetHealthWithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetHealthWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Object>("/health", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Healthz 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> GetHealthz()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = GetHealthzWithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Healthz 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> GetHealthzWithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/healthz", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Healthz 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetHealthzAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetHealthzWithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Healthz 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetHealthzWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Object>("/healthz", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> GetMuseBetaCheckEntitlement()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = GetMuseBetaCheckEntitlementWithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> GetMuseBetaCheckEntitlementWithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseBetaCheckEntitlementWithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Object>("/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> GetMuseBetaCheckEntitlementV1()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = GetMuseBetaCheckEntitlementV1WithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> GetMuseBetaCheckEntitlementV1WithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/v1/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementV1Async(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseBetaCheckEntitlementV1WithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Check Entitlement Checks the user for beta entitlement.  Args:     request (Request): The Starlette request.     user_info (UserInfo): The UserInfo.     user_genesis_token (str): The genesis token.  Returns: 200 if user is entitled, 404 otherwise.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> GetMuseBetaCheckEntitlementV1WithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Object>("/v1/muse/beta/check_entitlement", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>List&lt;ConversationInfo&gt;</returns>
-        [Obsolete]
-        public ApiResponse<List<ConversationInfo>> GetMuseConversation(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> localVarResponse = GetMuseConversationWithHttpInfo(tags, skipProjectTag, limit, skip);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of List&lt;ConversationInfo&gt;</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> GetMuseConversationWithHttpInfo(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "tags", tags));
-            }
-            if (skipProjectTag != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip_project_tag", skipProjectTag));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<List<ConversationInfo>>("/muse/conversation", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of List&lt;ConversationInfo&gt;</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>>> GetMuseConversationAsync(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseConversationWithHttpInfoAsync(tags, skipProjectTag, limit, skip, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (List&lt;ConversationInfo&gt;)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>>> GetMuseConversationWithHttpInfoAsync(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "tags", tags));
-            }
-            if (skipProjectTag != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip_project_tag", skipProjectTag));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<List<ConversationInfo>>("/muse/conversation", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ResponseGetMuseConversationUsingConversationId</returns>
-        [Obsolete]
-        public ApiResponse<ResponseGetMuseConversationUsingConversationId> GetMuseConversationUsingConversationId(string conversationId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationId> localVarResponse = GetMuseConversationUsingConversationIdWithHttpInfo(conversationId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ResponseGetMuseConversationUsingConversationId</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationId> GetMuseConversationUsingConversationIdWithHttpInfo(string conversationId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseConversationUsingConversationId");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<ResponseGetMuseConversationUsingConversationId>("/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseConversationUsingConversationId</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationId>> GetMuseConversationUsingConversationIdAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseConversationUsingConversationIdWithHttpInfoAsync(conversationId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationId> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationId> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponseGetMuseConversationUsingConversationId)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationId>> GetMuseConversationUsingConversationIdWithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseConversationUsingConversationId");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<ResponseGetMuseConversationUsingConversationId>("/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ResponseGetMuseConversationUsingConversationIdV1</returns>
-        public ApiResponse<ResponseGetMuseConversationUsingConversationIdV1> GetMuseConversationUsingConversationIdV1(string conversationId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationIdV1> localVarResponse = GetMuseConversationUsingConversationIdV1WithHttpInfo(conversationId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <returns>ApiResponse of ResponseGetMuseConversationUsingConversationIdV1</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationIdV1> GetMuseConversationUsingConversationIdV1WithHttpInfo(string conversationId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseConversationUsingConversationIdV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<ResponseGetMuseConversationUsingConversationIdV1>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseConversationUsingConversationIdV1</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> GetMuseConversationUsingConversationIdV1Async(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseConversationUsingConversationIdV1WithHttpInfoAsync(conversationId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationIdV1> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationIdV1> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversation Get conversation by conversation ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     ClientConversation | JSONResponse:         ClientConversation corresponding to ID if it exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponseGetMuseConversationUsingConversationIdV1)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseConversationUsingConversationIdV1>> GetMuseConversationUsingConversationIdV1WithHttpInfoAsync(string conversationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseConversationUsingConversationIdV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<ResponseGetMuseConversationUsingConversationIdV1>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>List&lt;ConversationInfo&gt;</returns>
-        public ApiResponse<List<ConversationInfo>> GetMuseConversationV1(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> localVarResponse = GetMuseConversationV1WithHttpInfo(tags, skipProjectTag, limit, skip);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of List&lt;ConversationInfo&gt;</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> GetMuseConversationV1WithHttpInfo(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "tags", tags));
-            }
-            if (skipProjectTag != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip_project_tag", skipProjectTag));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<List<ConversationInfo>>("/v1/muse/conversation", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of List&lt;ConversationInfo&gt;</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>>> GetMuseConversationV1Async(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseConversationV1WithHttpInfoAsync(tags, skipProjectTag, limit, skip, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Conversations Get conversation summaries for user conversations.  Args:     request (Request): FastAPI request object.     user_info (UserInfo): User information extracted from bearer token.     tags (Optional[str], optional): Project ID to filter conversations by. Defaults to None.     skip_project_tag (bool, optional): Whether to skip conversations with a project tag.     limit (int, optional): Number of conversations to return. Defaults to 100.     skip (int, optional): Number of conversations to skip. Defaults to 0.  Returns:     list[ConversationInfo]: List of conversation summaries for user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="tags"> (optional)</param>
-        /// <param name="skipProjectTag"> (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (List&lt;ConversationInfo&gt;)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<List<ConversationInfo>>> GetMuseConversationV1WithHttpInfoAsync(string tags = default(string), bool? skipProjectTag = default(bool?), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (tags != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "tags", tags));
-            }
-            if (skipProjectTag != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip_project_tag", skipProjectTag));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<List<ConversationInfo>>("/v1/muse/conversation", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ResponseGetMuseInspiration</returns>
-        [Obsolete]
-        public ApiResponse<ResponseGetMuseInspiration> GetMuseInspiration(string mode = default(string), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspiration> localVarResponse = GetMuseInspirationWithHttpInfo(mode, limit, skip);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of ResponseGetMuseInspiration</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspiration> GetMuseInspirationWithHttpInfo(string mode = default(string), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (mode != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "mode", mode));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<ResponseGetMuseInspiration>("/muse/inspiration/", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseInspiration</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspiration>> GetMuseInspirationAsync(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseInspirationWithHttpInfoAsync(mode, limit, skip, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspiration> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspiration> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponseGetMuseInspiration)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspiration>> GetMuseInspirationWithHttpInfoAsync(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (mode != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "mode", mode));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<ResponseGetMuseInspiration>("/muse/inspiration/", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ResponseGetMuseInspirationV1</returns>
-        public ApiResponse<ResponseGetMuseInspirationV1> GetMuseInspirationV1(string mode = default(string), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspirationV1> localVarResponse = GetMuseInspirationV1WithHttpInfo(mode, limit, skip);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <returns>ApiResponse of ResponseGetMuseInspirationV1</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspirationV1> GetMuseInspirationV1WithHttpInfo(string mode = default(string), int? limit = default(int?), int? skip = default(int?))
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (mode != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "mode", mode));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<ResponseGetMuseInspirationV1>("/v1/muse/inspiration/", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponseGetMuseInspirationV1</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspirationV1>> GetMuseInspirationV1Async(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseInspirationV1WithHttpInfoAsync(mode, limit, skip, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspirationV1> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspirationV1> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Inspirations Get inspirations from the database.  Args:     request: FastAPI request object.     mode: Filter inspirations by mode.     limit: Number of inspirations to return.     skip: Number of inspirations to skip.  Returns: List of inspirations or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="mode">Filter inspirations by mode (optional)</param>
-        /// <param name="limit"> (optional, default to 100)</param>
-        /// <param name="skip"> (optional, default to 0)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponseGetMuseInspirationV1)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponseGetMuseInspirationV1>> GetMuseInspirationV1WithHttpInfoAsync(string mode = default(string), int? limit = default(int?), int? skip = default(int?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            if (mode != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "mode", mode));
-            }
-            if (limit != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
-            }
-            if (skip != null)
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "skip", skip));
-            }
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<ResponseGetMuseInspirationV1>("/v1/muse/inspiration/", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Dictionary&lt;string, OptDecision&gt;</returns>
-        [Obsolete]
-        public ApiResponse<Dictionary<string, OptDecision>> GetMuseOpt()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> localVarResponse = GetMuseOptWithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Dictionary&lt;string, OptDecision&gt;</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> GetMuseOptWithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Dictionary<string, OptDecision>>("/muse/opt", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Dictionary&lt;string, OptDecision&gt;</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseOptWithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Dictionary&lt;string, OptDecision&gt;)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Dictionary<string, OptDecision>>("/muse/opt", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Dictionary&lt;string, OptDecision&gt;</returns>
-        public ApiResponse<Dictionary<string, OptDecision>> GetMuseOptV1()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> localVarResponse = GetMuseOptV1WithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Dictionary&lt;string, OptDecision&gt;</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> GetMuseOptV1WithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<Dictionary<string, OptDecision>>("/v1/muse/opt", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Dictionary&lt;string, OptDecision&gt;</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptV1Async(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseOptV1WithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Opt Get the current opt status of the requesting user.  Args:     request (Request): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).  Returns:     dict[OptType, OptDecision]: Opt status of the user.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Dictionary&lt;string, OptDecision&gt;)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Dictionary<string, OptDecision>>> GetMuseOptV1WithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<Dictionary<string, OptDecision>>("/v1/muse/opt", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>string</returns>
-        [Obsolete]
-        public ApiResponse<string> GetMuseTopicUsingConversationId(string conversationId, string organizationId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> localVarResponse = GetMuseTopicUsingConversationIdWithHttpInfo(conversationId, organizationId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>ApiResponse of string</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> GetMuseTopicUsingConversationIdWithHttpInfo(string conversationId, string organizationId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationId");
-
-            // verify the required parameter 'organizationId' is set
-            if (organizationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'organizationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationId");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "organization_id", organizationId));
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<string>("/muse/topic/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of string</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<string>> GetMuseTopicUsingConversationIdAsync(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseTopicUsingConversationIdWithHttpInfoAsync(conversationId, organizationId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (string)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<string>> GetMuseTopicUsingConversationIdWithHttpInfoAsync(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationId");
-
-            // verify the required parameter 'organizationId' is set
-            if (organizationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'organizationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationId");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "organization_id", organizationId));
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<string>("/muse/topic/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>string</returns>
-        public ApiResponse<string> GetMuseTopicUsingConversationIdV1(string conversationId, string organizationId)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> localVarResponse = GetMuseTopicUsingConversationIdV1WithHttpInfo(conversationId, organizationId);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <returns>ApiResponse of string</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> GetMuseTopicUsingConversationIdV1WithHttpInfo(string conversationId, string organizationId)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationIdV1");
-
-            // verify the required parameter 'organizationId' is set
-            if (organizationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'organizationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationIdV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "organization_id", organizationId));
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Get<string>("/v1/muse/topic/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of string</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<string>> GetMuseTopicUsingConversationIdV1Async(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = GetMuseTopicUsingConversationIdV1WithHttpInfoAsync(conversationId, organizationId, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<string> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Get Topic Get topic title for conversation.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     organization_id (str): Organization ID.     user_info (UserInfo): User information extracted from bearer token.  Returns:     str | JSONResponse:         Plain-text topic if conversation exists, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="organizationId"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (string)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<string>> GetMuseTopicUsingConversationIdV1WithHttpInfoAsync(string conversationId, string organizationId, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationIdV1");
-
-            // verify the required parameter 'organizationId' is set
-            if (organizationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'organizationId' when calling MuseChatBackendApi->GetMuseTopicUsingConversationIdV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "organization_id", organizationId));
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.GetAsync<string>("/v1/muse/topic/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health Head 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> HeadHealth()
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = HeadHealthWithHttpInfo();
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health Head 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> HeadHealthWithHttpInfo()
-        {
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Head<Object>("/health", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health Head 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> HeadHealthAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = HeadHealthWithHttpInfoAsync(cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Health Head 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> HeadHealthWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.HeadAsync<Object>("/health", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        public ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentId(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = PatchMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfo(conversationId, fragmentId, conversationFragmentPatch);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfo(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            // verify the required parameter 'conversationFragmentPatch' is set
-            if (conversationFragmentPatch == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationFragmentPatch' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-            localVarRequestOptions.Data = conversationFragmentPatch;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Patch<ErrorResponse>("/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdAsync(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PatchMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfoAsync(conversationId, fragmentId, conversationFragmentPatch, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdWithHttpInfoAsync(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-            // verify the required parameter 'conversationFragmentPatch' is set
-            if (conversationFragmentPatch == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationFragmentPatch' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentId");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-            localVarRequestOptions.Data = conversationFragmentPatch;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PatchAsync<ErrorResponse>("/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ErrorResponse</returns>
-        public ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfo(conversationId, fragmentId, conversationFragmentPatch);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfo(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            // verify the required parameter 'conversationFragmentPatch' is set
-            if (conversationFragmentPatch == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationFragmentPatch' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-            localVarRequestOptions.Data = conversationFragmentPatch;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Patch<ErrorResponse>("/v1/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfoAsync(conversationId, fragmentId, conversationFragmentPatch, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Fragment Preference Update conversation fragment by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     fragment_id (str): Conversation fragment ID.     body (ConversationPatchRequest): Patch request for changing conversation fragment.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="fragmentId"></param>
-        /// <param name="conversationFragmentPatch"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1WithHttpInfoAsync(string conversationId, string fragmentId, ConversationFragmentPatch conversationFragmentPatch, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            // verify the required parameter 'fragmentId' is set
-            if (fragmentId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'fragmentId' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-            // verify the required parameter 'conversationFragmentPatch' is set
-            if (conversationFragmentPatch == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationFragmentPatch' when calling MuseChatBackendApi->PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("fragment_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(fragmentId)); // path parameter
-            localVarRequestOptions.Data = conversationFragmentPatch;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PatchAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}/fragment/{fragment_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        public ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationId(string conversationId, ConversationPatchRequest conversationPatchRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = PatchMuseConversationUsingConversationIdWithHttpInfo(conversationId, conversationPatchRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationIdWithHttpInfo(string conversationId, ConversationPatchRequest conversationPatchRequest)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationId");
-
-            // verify the required parameter 'conversationPatchRequest' is set
-            if (conversationPatchRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationPatchRequest' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationId");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.Data = conversationPatchRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Patch<ErrorResponse>("/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdAsync(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PatchMuseConversationUsingConversationIdWithHttpInfoAsync(conversationId, conversationPatchRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdWithHttpInfoAsync(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationId");
-
-            // verify the required parameter 'conversationPatchRequest' is set
-            if (conversationPatchRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationPatchRequest' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationId");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.Data = conversationPatchRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PatchAsync<ErrorResponse>("/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ErrorResponse</returns>
-        public ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationIdV1(string conversationId, ConversationPatchRequest conversationPatchRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = PatchMuseConversationUsingConversationIdV1WithHttpInfo(conversationId, conversationPatchRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> PatchMuseConversationUsingConversationIdV1WithHttpInfo(string conversationId, ConversationPatchRequest conversationPatchRequest)
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationIdV1");
-
-            // verify the required parameter 'conversationPatchRequest' is set
-            if (conversationPatchRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationPatchRequest' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationIdV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.Data = conversationPatchRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Patch<ErrorResponse>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdV1Async(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PatchMuseConversationUsingConversationIdV1WithHttpInfoAsync(conversationId, conversationPatchRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Patch Conversation Update conversation by ID.  Args:     request (Request): FastAPI request object.     conversation_id (str): Conversation ID.     body (ConversationPatchRequest): Patch request for changing conversation.     user_info (UserInfo): User information extracted from bearer token.  Returns:     None | JSONResponse: None if successful, otherwise ErrorResponse.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="conversationId"></param>
-        /// <param name="conversationPatchRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PatchMuseConversationUsingConversationIdV1WithHttpInfoAsync(string conversationId, ConversationPatchRequest conversationPatchRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'conversationId' is set
-            if (conversationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationId' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationIdV1");
-
-            // verify the required parameter 'conversationPatchRequest' is set
-            if (conversationPatchRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'conversationPatchRequest' when calling MuseChatBackendApi->PatchMuseConversationUsingConversationIdV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("conversation_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(conversationId)); // path parameter
-            localVarRequestOptions.Data = conversationPatchRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PatchAsync<ErrorResponse>("/v1/muse/conversation/{conversation_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> PostMuseAgentAction(ActionRequest actionRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseAgentActionWithHttpInfo(actionRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseAgentActionWithHttpInfo(ActionRequest actionRequest)
-        {
-            // verify the required parameter 'actionRequest' is set
-            if (actionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionRequest' when calling MuseChatBackendApi->PostMuseAgentAction");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/muse/agent/action", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentActionAsync(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseAgentActionWithHttpInfoAsync(actionRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentActionWithHttpInfoAsync(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'actionRequest' is set
-            if (actionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionRequest' when calling MuseChatBackendApi->PostMuseAgentAction");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/muse/agent/action", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> PostMuseAgentActionV1(ActionRequest actionRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseAgentActionV1WithHttpInfo(actionRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseAgentActionV1WithHttpInfo(ActionRequest actionRequest)
-        {
-            // verify the required parameter 'actionRequest' is set
-            if (actionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionRequest' when calling MuseChatBackendApi->PostMuseAgentActionV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/v1/muse/agent/action", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentActionV1Async(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseAgentActionV1WithHttpInfoAsync(actionRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Agent action route for performing actions in the editor.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentActionV1WithHttpInfoAsync(ActionRequest actionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'actionRequest' is set
-            if (actionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionRequest' when calling MuseChatBackendApi->PostMuseAgentActionV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/v1/muse/agent/action", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> PostMuseAgentCodeRepair(ActionCodeRepairRequest actionCodeRepairRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseAgentCodeRepairWithHttpInfo(actionCodeRepairRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseAgentCodeRepairWithHttpInfo(ActionCodeRepairRequest actionCodeRepairRequest)
-        {
-            // verify the required parameter 'actionCodeRepairRequest' is set
-            if (actionCodeRepairRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionCodeRepairRequest' when calling MuseChatBackendApi->PostMuseAgentCodeRepair");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionCodeRepairRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/muse/agent/code_repair", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodeRepairAsync(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseAgentCodeRepairWithHttpInfoAsync(actionCodeRepairRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodeRepairWithHttpInfoAsync(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'actionCodeRepairRequest' is set
-            if (actionCodeRepairRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionCodeRepairRequest' when calling MuseChatBackendApi->PostMuseAgentCodeRepair");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionCodeRepairRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/muse/agent/code_repair", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> PostMuseAgentCodeRepairV1(ActionCodeRepairRequest actionCodeRepairRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseAgentCodeRepairV1WithHttpInfo(actionCodeRepairRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseAgentCodeRepairV1WithHttpInfo(ActionCodeRepairRequest actionCodeRepairRequest)
-        {
-            // verify the required parameter 'actionCodeRepairRequest' is set
-            if (actionCodeRepairRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionCodeRepairRequest' when calling MuseChatBackendApi->PostMuseAgentCodeRepairV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionCodeRepairRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/v1/muse/agent/code_repair", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodeRepairV1Async(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseAgentCodeRepairV1WithHttpInfoAsync(actionCodeRepairRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Action Code Repair Agent action code repairing route for repairing generated csharp scripts.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="actionCodeRepairRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodeRepairV1WithHttpInfoAsync(ActionCodeRepairRequest actionCodeRepairRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'actionCodeRepairRequest' is set
-            if (actionCodeRepairRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'actionCodeRepairRequest' when calling MuseChatBackendApi->PostMuseAgentCodeRepairV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = actionCodeRepairRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/v1/muse/agent/code_repair", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> PostMuseAgentCodegen(CodeGenRequest codeGenRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseAgentCodegenWithHttpInfo(codeGenRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseAgentCodegenWithHttpInfo(CodeGenRequest codeGenRequest)
-        {
-            // verify the required parameter 'codeGenRequest' is set
-            if (codeGenRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'codeGenRequest' when calling MuseChatBackendApi->PostMuseAgentCodegen");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = codeGenRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/muse/agent/codegen", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodegenAsync(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseAgentCodegenWithHttpInfoAsync(codeGenRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodegenWithHttpInfoAsync(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'codeGenRequest' is set
-            if (codeGenRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'codeGenRequest' when calling MuseChatBackendApi->PostMuseAgentCodegen");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = codeGenRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/muse/agent/codegen", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> PostMuseAgentCodegenV1(CodeGenRequest codeGenRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseAgentCodegenV1WithHttpInfo(codeGenRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseAgentCodegenV1WithHttpInfo(CodeGenRequest codeGenRequest)
-        {
-            // verify the required parameter 'codeGenRequest' is set
-            if (codeGenRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'codeGenRequest' when calling MuseChatBackendApi->PostMuseAgentCodegenV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = codeGenRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/v1/muse/agent/codegen", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodegenV1Async(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseAgentCodegenV1WithHttpInfoAsync(codeGenRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Codegen POC of CodeGen route.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="codeGenRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseAgentCodegenV1WithHttpInfoAsync(CodeGenRequest codeGenRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'codeGenRequest' is set
-            if (codeGenRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'codeGenRequest' when calling MuseChatBackendApi->PostMuseAgentCodegenV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = codeGenRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/v1/muse/agent/codegen", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> PostMuseChat(ChatRequest chatRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseChatWithHttpInfo(chatRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseChatWithHttpInfo(ChatRequest chatRequest)
-        {
-            // verify the required parameter 'chatRequest' is set
-            if (chatRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'chatRequest' when calling MuseChatBackendApi->PostMuseChat");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = chatRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/muse/chat", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseChatAsync(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseChatWithHttpInfoAsync(chatRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseChatWithHttpInfoAsync(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'chatRequest' is set
-            if (chatRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'chatRequest' when calling MuseChatBackendApi->PostMuseChat");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = chatRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/muse/chat", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> PostMuseChatV1(ChatRequest chatRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseChatV1WithHttpInfo(chatRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseChatV1WithHttpInfo(ChatRequest chatRequest)
-        {
-            // verify the required parameter 'chatRequest' is set
-            if (chatRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'chatRequest' when calling MuseChatBackendApi->PostMuseChatV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = chatRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/v1/muse/chat", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseChatV1Async(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseChatV1WithHttpInfoAsync(chatRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Chat Chat with Muse.  Args:     request (Request): FastAPI request object.     body (ChatRequest): Chat request body.     user_info (UserInfo): User information extracted from bearer token.     conversation (Conversation): Conversation to chat in.     classification_or_deny (ClassificationModel | UnsafeQueryResponse): Classification model or         unsafe query response.  Returns:     StreamingResponse | ChatResponse | JSONResponse:         Either streaming response, at-once chat response, or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="chatRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseChatV1WithHttpInfoAsync(ChatRequest chatRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'chatRequest' is set
-            if (chatRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'chatRequest' when calling MuseChatBackendApi->PostMuseChatV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = chatRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/v1/muse/chat", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> PostMuseCompletion(CompletionRequest completionRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseCompletionWithHttpInfo(completionRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseCompletionWithHttpInfo(CompletionRequest completionRequest)
-        {
-            // verify the required parameter 'completionRequest' is set
-            if (completionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'completionRequest' when calling MuseChatBackendApi->PostMuseCompletion");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = completionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/muse/completion", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseCompletionAsync(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseCompletionWithHttpInfoAsync(completionRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseCompletionWithHttpInfoAsync(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'completionRequest' is set
-            if (completionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'completionRequest' when calling MuseChatBackendApi->PostMuseCompletion");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = completionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/muse/completion", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> PostMuseCompletionV1(CompletionRequest completionRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseCompletionV1WithHttpInfo(completionRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseCompletionV1WithHttpInfo(CompletionRequest completionRequest)
-        {
-            // verify the required parameter 'completionRequest' is set
-            if (completionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'completionRequest' when calling MuseChatBackendApi->PostMuseCompletionV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = completionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/v1/muse/completion", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseCompletionV1Async(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseCompletionV1WithHttpInfoAsync(completionRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Completion Handles completion requests for a conversational AI model and manages associated user conversations and analytics.  Args:     request (Request): The request object, which provides access to all request-specific data.     body (CompletionRequest): The request body containing data necessary for completion request.     user_info (UserInfo): User information extracted from bearer token.     background_tasks: BackgroundTasks: FastAPI background tasks object.  Returns:     Union[StreamingResponse, ChatResponse, JSONResponse]: Based on the &#x60;stream_response&#x60; flag in the request body,     this could be either a directly returned chat response, a streaming response,     or a JSON response containing the chat output.  Raises:     HTTPException: An error response with status code 500 in case of a failure during chat handling operations.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="completionRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseCompletionV1WithHttpInfoAsync(CompletionRequest completionRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'completionRequest' is set
-            if (completionRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'completionRequest' when calling MuseChatBackendApi->PostMuseCompletionV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = completionRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/v1/muse/completion", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>Conversation</returns>
-        [Obsolete]
-        public ApiResponse<Conversation> PostMuseConversation(CreateConversationRequest createConversationRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> localVarResponse = PostMuseConversationWithHttpInfo(createConversationRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>ApiResponse of Conversation</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> PostMuseConversationWithHttpInfo(CreateConversationRequest createConversationRequest)
-        {
-            // verify the required parameter 'createConversationRequest' is set
-            if (createConversationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'createConversationRequest' when calling MuseChatBackendApi->PostMuseConversation");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = createConversationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Conversation>("/muse/conversation", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Conversation</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation>> PostMuseConversationAsync(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseConversationWithHttpInfoAsync(createConversationRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Conversation)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation>> PostMuseConversationWithHttpInfoAsync(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'createConversationRequest' is set
-            if (createConversationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'createConversationRequest' when calling MuseChatBackendApi->PostMuseConversation");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = createConversationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Conversation>("/muse/conversation", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>Conversation</returns>
-        public ApiResponse<Conversation> PostMuseConversationV1(CreateConversationRequest createConversationRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> localVarResponse = PostMuseConversationV1WithHttpInfo(createConversationRequest);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <returns>ApiResponse of Conversation</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> PostMuseConversationV1WithHttpInfo(CreateConversationRequest createConversationRequest)
-        {
-            // verify the required parameter 'createConversationRequest' is set
-            if (createConversationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'createConversationRequest' when calling MuseChatBackendApi->PostMuseConversationV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = createConversationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Conversation>("/v1/muse/conversation", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Conversation</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation>> PostMuseConversationV1Async(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseConversationV1WithHttpInfoAsync(createConversationRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Conversation 
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createConversationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Conversation)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Conversation>> PostMuseConversationV1WithHttpInfoAsync(CreateConversationRequest createConversationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'createConversationRequest' is set
-            if (createConversationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'createConversationRequest' when calling MuseChatBackendApi->PostMuseConversationV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = createConversationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Conversation>("/v1/muse/conversation", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ErrorResponse</returns>
-        [Obsolete]
-        public ApiResponse<ErrorResponse> PostMuseFeedback(Feedback feedback)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = PostMuseFeedbackWithHttpInfo(feedback);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> PostMuseFeedbackWithHttpInfo(Feedback feedback)
-        {
-            // verify the required parameter 'feedback' is set
-            if (feedback == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'feedback' when calling MuseChatBackendApi->PostMuseFeedback");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = feedback;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<ErrorResponse>("/muse/feedback", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PostMuseFeedbackAsync(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseFeedbackWithHttpInfoAsync(feedback, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PostMuseFeedbackWithHttpInfoAsync(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'feedback' is set
-            if (feedback == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'feedback' when calling MuseChatBackendApi->PostMuseFeedback");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = feedback;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<ErrorResponse>("/muse/feedback", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ErrorResponse</returns>
-        public ApiResponse<ErrorResponse> PostMuseFeedbackV1(Feedback feedback)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = PostMuseFeedbackV1WithHttpInfo(feedback);
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <returns>ApiResponse of ErrorResponse</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> PostMuseFeedbackV1WithHttpInfo(Feedback feedback)
-        {
-            // verify the required parameter 'feedback' is set
-            if (feedback == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'feedback' when calling MuseChatBackendApi->PostMuseFeedbackV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = feedback;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<ErrorResponse>("/v1/muse/feedback", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ErrorResponse</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PostMuseFeedbackV1Async(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseFeedbackV1WithHttpInfoAsync(feedback, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Feedback Provide feedback.  Args:     request (Request): FastAPI request object.     body (Feedback): Feedback request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     Optional[JSONResponse]: Nothing if successful, otherwise JSONResponse with error.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="feedback"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ErrorResponse)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ErrorResponse>> PostMuseFeedbackV1WithHttpInfoAsync(Feedback feedback, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'feedback' is set
-            if (feedback == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'feedback' when calling MuseChatBackendApi->PostMuseFeedbackV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = feedback;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<ErrorResponse>("/v1/muse/feedback", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
+    internal interface IUploadHandler : IDisposable
+    {
+        string contentType { get; set; }
+        byte[] data { get; }
+        float progress { get; }
+    }
+
+    internal interface ICertificateHandler : IDisposable { }
+
+    internal class UnityWebRequestWrapper : IUnityWebRequest
+    {
+        private readonly UnityWebRequest _request;
+        private IDownloadHandler _downloadHandlerWrapper;
+        private IUploadHandler _uploadHandlerWrapper;
+        private ICertificateHandler _certificateHandlerWrapper;
 
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ResponsePostMuseInspiration</returns>
-        [Obsolete]
-        public ApiResponse<ResponsePostMuseInspiration> PostMuseInspiration(Inspiration inspiration)
+        public UnityWebRequestWrapper(UnityWebRequest request)
         {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspiration> localVarResponse = PostMuseInspirationWithHttpInfo(inspiration);
-            return localVarResponse;
+            _request = request;
+            WrapHandlers();
         }
 
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ApiResponse of ResponsePostMuseInspiration</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspiration> PostMuseInspirationWithHttpInfo(Inspiration inspiration)
+        private void WrapHandlers()
         {
-            // verify the required parameter 'inspiration' is set
-            if (inspiration == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspiration' when calling MuseChatBackendApi->PostMuseInspiration");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = inspiration;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<ResponsePostMuseInspiration>("/muse/inspiration/", localVarRequestOptions, this.Configuration);
+            if (_request.downloadHandler != null)
+                _downloadHandlerWrapper = new DownloadHandlerWrapper(_request.downloadHandler);
 
-            return localVarResponse;
-        }
+            if (_request.uploadHandler != null)
+                _uploadHandlerWrapper = new UploadHandlerWrapper(_request.uploadHandler);
 
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePostMuseInspiration</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspiration>> PostMuseInspirationAsync(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostMuseInspirationWithHttpInfoAsync(inspiration, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspiration> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspiration> localVarResponse = await task;
-#endif
-            return localVarResponse;
+            if (_request.certificateHandler != null)
+                _certificateHandlerWrapper = new CertificateHandlerWrapper(_request.certificateHandler);
         }
 
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponsePostMuseInspiration)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspiration>> PostMuseInspirationWithHttpInfoAsync(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        // Basic properties
+        public string url
         {
-            // verify the required parameter 'inspiration' is set
-            if (inspiration == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspiration' when calling MuseChatBackendApi->PostMuseInspiration");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = inspiration;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<ResponsePostMuseInspiration>("/muse/inspiration/", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
+            get => _request.url;
+            set => _request.url = value;
         }
 
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ResponsePostMuseInspirationV1</returns>
-        public ApiResponse<ResponsePostMuseInspirationV1> PostMuseInspirationV1(Inspiration inspiration)
+        public string method
         {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspirationV1> localVarResponse = PostMuseInspirationV1WithHttpInfo(inspiration);
-            return localVarResponse;
+            get => _request.method;
+            set => _request.method = value;
         }
-
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <returns>ApiResponse of ResponsePostMuseInspirationV1</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspirationV1> PostMuseInspirationV1WithHttpInfo(Inspiration inspiration)
-        {
-            // verify the required parameter 'inspiration' is set
-            if (inspiration == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspiration' when calling MuseChatBackendApi->PostMuseInspirationV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
 
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
+        public string error => _request.error;
+        public bool isDone => _request.isDone;
+        public bool isNetworkError => _request.isNetworkError;
+        public bool isHttpError => _request.isHttpError;
+        public long responseCode => (long)_request.responseCode;
 
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
+        // Upload/Download properties
+        public float uploadProgress => _request.uploadProgress;
+        public float downloadProgress => _request.downloadProgress;
+        public ulong uploadedBytes => _request.uploadedBytes;
+        public ulong downloadedBytes => _request.downloadedBytes;
 
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = inspiration;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
+        // Handlers using interfaces
+        public IUploadHandler uploadHandler
+        {
+            get => _uploadHandlerWrapper;
+            set
             {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
+                if (value is UploadHandlerWrapper wrapper)
+                {
+                    _uploadHandlerWrapper = wrapper;
+                    _request.uploadHandler = wrapper.UploadHandler;
+                }
+                else
+                {
+                    throw new System.ArgumentException("Upload handler must be of type UploadHandlerWrapper");
+                }
             }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<ResponsePostMuseInspirationV1>("/v1/muse/inspiration/", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
         }
 
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePostMuseInspirationV1</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspirationV1>> PostMuseInspirationV1Async(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public IDownloadHandler downloadHandler
         {
-            var task = PostMuseInspirationV1WithHttpInfoAsync(inspiration, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspirationV1> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspirationV1> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Create Inspiration Create a new inspiration in the database.  Args:     request: FastAPI request object.     body: Inspiration object to create.  Returns: Created inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspiration"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponsePostMuseInspirationV1)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePostMuseInspirationV1>> PostMuseInspirationV1WithHttpInfoAsync(Inspiration inspiration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            // verify the required parameter 'inspiration' is set
-            if (inspiration == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspiration' when calling MuseChatBackendApi->PostMuseInspirationV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = inspiration;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
+            get => _downloadHandlerWrapper;
+            set
             {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
+                if (value is DownloadHandlerWrapper wrapper)
+                {
+                    _downloadHandlerWrapper = wrapper;
+                    _request.downloadHandler = wrapper.DownloadHandler;
+                }
+                else
+                {
+                    throw new System.ArgumentException("Download handler must be of type DownloadHandlerWrapper");
+                }
             }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<ResponsePostMuseInspirationV1>("/v1/muse/inspiration/", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>Object</returns>
-        [Obsolete]
-        public ApiResponse<Object> PostMuseOpt(OptRequest optRequest)
-        {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseOptWithHttpInfo(optRequest);
-            return localVarResponse;
         }
 
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseOptWithHttpInfo(OptRequest optRequest)
+        public ICertificateHandler certificateHandler
         {
-            // verify the required parameter 'optRequest' is set
-            if (optRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'optRequest' when calling MuseChatBackendApi->PostMuseOpt");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = optRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
+            get => _certificateHandlerWrapper;
+            set
             {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
+                if (value is CertificateHandlerWrapper wrapper)
+                {
+                    _certificateHandlerWrapper = wrapper;
+                    _request.certificateHandler = wrapper.CertificateHandler;
+                }
+                else
+                {
+                    throw new System.ArgumentException("Certificate handler must be of type CertificateHandlerWrapper");
+                }
             }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/muse/opt", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
         }
 
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseOptAsync(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        // Configuration
+        public int timeout
         {
-            var task = PostMuseOptWithHttpInfoAsync(optRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
+            get => _request.timeout;
+            set => _request.timeout = value;
         }
 
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseOptWithHttpInfoAsync(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public int redirectLimit
         {
-            // verify the required parameter 'optRequest' is set
-            if (optRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'optRequest' when calling MuseChatBackendApi->PostMuseOpt");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = optRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/muse/opt", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
+            get => _request.redirectLimit;
+            set => _request.redirectLimit = value;
         }
 
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>Object</returns>
-        public ApiResponse<Object> PostMuseOptV1(OptRequest optRequest)
+        public bool useHttpContinue
         {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = PostMuseOptV1WithHttpInfo(optRequest);
-            return localVarResponse;
+            get => _request.useHttpContinue;
+            set => _request.useHttpContinue = value;
         }
 
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <returns>ApiResponse of Object</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> PostMuseOptV1WithHttpInfo(OptRequest optRequest)
+        public bool disposeDownloadHandlerOnDispose
         {
-            // verify the required parameter 'optRequest' is set
-            if (optRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'optRequest' when calling MuseChatBackendApi->PostMuseOptV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = optRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/v1/muse/opt", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
+            get => _request.disposeDownloadHandlerOnDispose;
+            set => _request.disposeDownloadHandlerOnDispose = value;
         }
 
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of Object</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseOptV1Async(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public bool disposeUploadHandlerOnDispose
         {
-            var task = PostMuseOptV1WithHttpInfoAsync(optRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object> localVarResponse = await task;
-#endif
-            return localVarResponse;
+            get => _request.disposeUploadHandlerOnDispose;
+            set => _request.disposeUploadHandlerOnDispose = value;
         }
 
-        /// <summary>
-        /// Opt Opt in or out of model training.  Notes:     This is ideally a temporary solution. :)  Args:     request (Request): _description_     body (OptRequest): _description_     user_info (UserInfo, optional): _description_. Defaults to Depends(extract_user_info).
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="optRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (Object)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<Object>> PostMuseOptV1WithHttpInfoAsync(OptRequest optRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        // Methods
+        public void SetRequestHeader(string name, string value)
         {
-            // verify the required parameter 'optRequest' is set
-            if (optRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'optRequest' when calling MuseChatBackendApi->PostMuseOptV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = optRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<Object>("/v1/muse/opt", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
+            _request.SetRequestHeader(name, value);
         }
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>SmartContextResponse</returns>
-        [Obsolete]
-        public ApiResponse<SmartContextResponse> PostSmartContext(SmartContextRequest smartContextRequest)
+        public string GetRequestHeader(string name)
         {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> localVarResponse = PostSmartContextWithHttpInfo(smartContextRequest);
-            return localVarResponse;
+            return _request.GetRequestHeader(name);
         }
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>ApiResponse of SmartContextResponse</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> PostSmartContextWithHttpInfo(SmartContextRequest smartContextRequest)
+        public string GetResponseHeader(string name)
         {
-            // verify the required parameter 'smartContextRequest' is set
-            if (smartContextRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'smartContextRequest' when calling MuseChatBackendApi->PostSmartContext");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = smartContextRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<SmartContextResponse>("/smart-context", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
+            return _request.GetResponseHeader(name);
         }
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of SmartContextResponse</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse>> PostSmartContextAsync(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Dictionary<string, string> GetResponseHeaders()
         {
-            var task = PostSmartContextWithHttpInfoAsync(smartContextRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
+            return _request.GetResponseHeaders();
         }
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (SmartContextResponse)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse>> PostSmartContextWithHttpInfoAsync(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public UnityWebRequestAsyncOperation SendWebRequest()
         {
-            // verify the required parameter 'smartContextRequest' is set
-            if (smartContextRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'smartContextRequest' when calling MuseChatBackendApi->PostSmartContext");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = smartContextRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PostAsync<SmartContextResponse>("/smart-context", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
+            return _request.SendWebRequest();
         }
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>SmartContextResponse</returns>
-        public ApiResponse<SmartContextResponse> PostSmartContextV1(SmartContextRequest smartContextRequest)
+        public void Abort()
         {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> localVarResponse = PostSmartContextV1WithHttpInfo(smartContextRequest);
-            return localVarResponse;
+            _request.Abort();
         }
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <returns>ApiResponse of SmartContextResponse</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> PostSmartContextV1WithHttpInfo(SmartContextRequest smartContextRequest)
+        public void Dispose()
         {
-            // verify the required parameter 'smartContextRequest' is set
-            if (smartContextRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'smartContextRequest' when calling MuseChatBackendApi->PostSmartContextV1");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = smartContextRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Post<SmartContextResponse>("/v1/smart-context", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
+            _downloadHandlerWrapper?.Dispose();
+            _uploadHandlerWrapper?.Dispose();
+            _certificateHandlerWrapper?.Dispose();
+            _request.Dispose();
         }
+    }
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of SmartContextResponse</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse>> PostSmartContextV1Async(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
-        {
-            var task = PostSmartContextV1WithHttpInfoAsync(smartContextRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse> localVarResponse = await task;
-#endif
-            return localVarResponse;
-        }
+    // Handler Wrappers
+    internal class DownloadHandlerWrapper : IDownloadHandler
+    {
+        private readonly DownloadHandler _handler;
+        public DownloadHandler DownloadHandler => _handler;
 
-        /// <summary>
-        /// Smart Context Handle smart context requests.  Args:     request (Request): FastAPI request object.     body (SmartContextRequest): Smart context request body.     user_info (UserInfo): User information extracted from bearer token.  Returns:     SmartContextResponse | JSONResponse:         Either smart context response or JSON error message.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="smartContextRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (SmartContextResponse)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<SmartContextResponse>> PostSmartContextV1WithHttpInfoAsync(SmartContextRequest smartContextRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public DownloadHandlerWrapper(DownloadHandler handler)
         {
-            // verify the required parameter 'smartContextRequest' is set
-            if (smartContextRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'smartContextRequest' when calling MuseChatBackendApi->PostSmartContextV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.Data = smartContextRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
+            _handler = handler;
+        }
 
-            var task = this.AsynchronousClient.PostAsync<SmartContextResponse>("/v1/smart-context", localVarRequestOptions, this.Configuration, cancellationToken);
+        public byte[] data => _handler.data;
+        public string text => _handler.text;
 
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
+        public NativeArray<byte>.ReadOnly nativeData => _handler.nativeData;
+        public bool isDone => _handler.isDone;
 
-            return localVarResponse;
-        }
+        public string error => _handler.error;
 
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ResponsePutMuseInspirationUsingInspirationId</returns>
-        [Obsolete]
-        public ApiResponse<ResponsePutMuseInspirationUsingInspirationId> PutMuseInspirationUsingInspirationId(string inspirationId, UpdateInspirationRequest updateInspirationRequest)
+        public void Dispose()
         {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationId> localVarResponse = PutMuseInspirationUsingInspirationIdWithHttpInfo(inspirationId, updateInspirationRequest);
-            return localVarResponse;
+            _handler.Dispose();
         }
-
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ApiResponse of ResponsePutMuseInspirationUsingInspirationId</returns>
-        [Obsolete]
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationId> PutMuseInspirationUsingInspirationIdWithHttpInfo(string inspirationId, UpdateInspirationRequest updateInspirationRequest)
-        {
-            // verify the required parameter 'inspirationId' is set
-            if (inspirationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationId");
-
-            // verify the required parameter 'updateInspirationRequest' is set
-            if (updateInspirationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'updateInspirationRequest' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationId");
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
+    }
 
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
+    internal class UploadHandlerWrapper : IUploadHandler
+    {
+        private readonly UploadHandler _handler;
+        public UploadHandler UploadHandler => _handler;
 
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("inspiration_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(inspirationId)); // path parameter
-            localVarRequestOptions.Data = updateInspirationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Put<ResponsePutMuseInspirationUsingInspirationId>("/muse/inspiration/{inspiration_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePutMuseInspirationUsingInspirationId</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> PutMuseInspirationUsingInspirationIdAsync(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public UploadHandlerWrapper(UploadHandler handler)
         {
-            var task = PutMuseInspirationUsingInspirationIdWithHttpInfoAsync(inspirationId, updateInspirationRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationId> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationId> localVarResponse = await task;
-#endif
-            return localVarResponse;
+            _handler = handler;
         }
 
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponsePutMuseInspirationUsingInspirationId)</returns>
-        [Obsolete]
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationId>> PutMuseInspirationUsingInspirationIdWithHttpInfoAsync(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public string contentType
         {
-            // verify the required parameter 'inspirationId' is set
-            if (inspirationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationId");
-
-            // verify the required parameter 'updateInspirationRequest' is set
-            if (updateInspirationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'updateInspirationRequest' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationId");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("inspiration_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(inspirationId)); // path parameter
-            localVarRequestOptions.Data = updateInspirationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PutAsync<ResponsePutMuseInspirationUsingInspirationId>("/muse/inspiration/{inspiration_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
+            get => _handler.contentType;
+            set => _handler.contentType = value;
         }
+        public byte[] data => _handler.data;
+        public float progress => _handler.progress;
 
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ResponsePutMuseInspirationUsingInspirationIdV1</returns>
-        public ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1> PutMuseInspirationUsingInspirationIdV1(string inspirationId, UpdateInspirationRequest updateInspirationRequest)
+        public void Dispose()
         {
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1> localVarResponse = PutMuseInspirationUsingInspirationIdV1WithHttpInfo(inspirationId, updateInspirationRequest);
-            return localVarResponse;
+            _handler.Dispose();
         }
-
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <returns>ApiResponse of ResponsePutMuseInspirationUsingInspirationIdV1</returns>
-        public Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1> PutMuseInspirationUsingInspirationIdV1WithHttpInfo(string inspirationId, UpdateInspirationRequest updateInspirationRequest)
-        {
-            // verify the required parameter 'inspirationId' is set
-            if (inspirationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationIdV1");
+    }
 
-            // verify the required parameter 'updateInspirationRequest' is set
-            if (updateInspirationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'updateInspirationRequest' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationIdV1");
+    internal class CertificateHandlerWrapper : ICertificateHandler
+    {
+        private readonly CertificateHandler _handler;
+        public CertificateHandler CertificateHandler => _handler;
 
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("inspiration_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(inspirationId)); // path parameter
-            localVarRequestOptions.Data = updateInspirationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-            var localVarResponse = this.Client.Put<ResponsePutMuseInspirationUsingInspirationIdV1>("/v1/muse/inspiration/{inspiration_id}", localVarRequestOptions, this.Configuration);
-
-            return localVarResponse;
-        }
-
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ResponsePutMuseInspirationUsingInspirationIdV1</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> PutMuseInspirationUsingInspirationIdV1Async(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public CertificateHandlerWrapper(CertificateHandler handler)
         {
-            var task = PutMuseInspirationUsingInspirationIdV1WithHttpInfoAsync(inspirationId, updateInspirationRequest, cancellationToken);
-#if UNITY_EDITOR || !UNITY_WEBGL
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1> localVarResponse = await task.ConfigureAwait(false);
-#else
-            Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1> localVarResponse = await task;
-#endif
-            return localVarResponse;
+            _handler = handler;
         }
 
-        /// <summary>
-        /// Update Inspiration Update an existing inspiration in the database.  Args:     request: FastAPI request object.     inspiration_id: ID of the inspiration to update.     body: Updated inspiration object.  Returns: Updated inspiration or error response.
-        /// </summary>
-        /// <exception cref="Unity.Muse.Chat.BackendApi.Client.ApiException">Thrown when fails to make API call</exception>
-        /// <param name="inspirationId"></param>
-        /// <param name="updateInspirationRequest"></param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (ResponsePutMuseInspirationUsingInspirationIdV1)</returns>
-        public async System.Threading.Tasks.Task<Unity.Muse.Chat.BackendApi.Client.ApiResponse<ResponsePutMuseInspirationUsingInspirationIdV1>> PutMuseInspirationUsingInspirationIdV1WithHttpInfoAsync(string inspirationId, UpdateInspirationRequest updateInspirationRequest, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public void Dispose()
         {
-            // verify the required parameter 'inspirationId' is set
-            if (inspirationId == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'inspirationId' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationIdV1");
-
-            // verify the required parameter 'updateInspirationRequest' is set
-            if (updateInspirationRequest == null)
-                throw new Unity.Muse.Chat.BackendApi.Client.ApiException(400, "Missing required parameter 'updateInspirationRequest' when calling MuseChatBackendApi->PutMuseInspirationUsingInspirationIdV1");
-
-
-            Unity.Muse.Chat.BackendApi.Client.RequestOptions localVarRequestOptions = new Unity.Muse.Chat.BackendApi.Client.RequestOptions();
-
-            string[] _contentTypes = new string[] {
-                "application/json"
-            };
-
-            // to determine the Accept header
-            string[] _accepts = new string[] {
-                "application/json"
-            };
-
-
-            var localVarContentType = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
-            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
-
-            var localVarAccept = Unity.Muse.Chat.BackendApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-
-            localVarRequestOptions.PathParameters.Add("inspiration_id", Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToString(inspirationId)); // path parameter
-            localVarRequestOptions.Data = updateInspirationRequest;
-
-            // authentication (APIKeyHeader) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.HeaderParameters.Add("access_token", this.Configuration.GetApiKeyWithPrefix("access_token"));
-            }
-            // authentication (APIKeyQuery) required
-            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("access_token")))
-            {
-                localVarRequestOptions.QueryParameters.Add(Unity.Muse.Chat.BackendApi.Client.ClientUtils.ParameterToMultiMap("", "access_token", this.Configuration.GetApiKeyWithPrefix("access_token")));
-            }
-
-            // make the HTTP request
-
-            var task = this.AsynchronousClient.PutAsync<ResponsePutMuseInspirationUsingInspirationIdV1>("/v1/muse/inspiration/{inspiration_id}", localVarRequestOptions, this.Configuration, cancellationToken);
-
-#if UNITY_EDITOR || !UNITY_WEBGL
-            var localVarResponse = await task.ConfigureAwait(false);
-#else
-            var localVarResponse = await task;
-#endif
-
-            return localVarResponse;
+            _handler.Dispose();
         }
-
     }
 }

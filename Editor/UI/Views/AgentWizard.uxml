@@ -3,7 +3,7 @@
          noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement class="mui-wizard-root">
         <ui:ScrollView class="mui-wizard-scrollview">
- 
+
         </ui:ScrollView>
     </ui:VisualElement>
 </ui:UXML>

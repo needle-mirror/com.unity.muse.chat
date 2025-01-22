@@ -17,23 +17,20 @@ using Newtonsoft.Json.Serialization;
 using ErrorEventArgs = Newtonsoft.Json.Serialization.ErrorEventArgs;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Unity.Muse.Chat.BackendApi.Utilities;
 using UnityEngine.Networking;
 using UnityEngine;
 
 namespace Unity.Muse.Chat.BackendApi.Client
 {
-    delegate void RequestInterceptDelegate(UnityWebRequest request, string path, RequestOptions ops, IReadableConfiguration config);
-
-    delegate void ResponseInterceptDelegate(UnityWebRequest request, string path, RequestOptions ops, IReadableConfiguration config, object obj);
-
     /// <summary>
     /// To Serialize/Deserialize JSON using our custom logic, but only when ContentType is JSON.
     /// </summary>
     internal class CustomJsonCodec
     {
-        private readonly IReadableConfiguration _configuration;
-        private static readonly string _contentType = "application/json";
-        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+        readonly IReadableConfiguration _configuration;
+        static readonly string _contentType = "application/json";
+        readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
         {
             // OpenAPI generated types generally hide default constructors.
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
@@ -166,10 +163,7 @@ namespace Unity.Muse.Chat.BackendApi.Client
                 }
                 catch
                 {
-                    if (request.downloadHandler != null)
-                    {
-                        return request.downloadHandler.text;
-                    }
+                    return request.downloadHandler.text;
                 }
             }
 
@@ -194,12 +188,9 @@ namespace Unity.Muse.Chat.BackendApi.Client
     /// <remarks>
     /// The Dispose method will manage the HttpClient lifecycle when not passed by constructor.
     /// </remarks>
-    internal partial class ApiClient : IDisposable, ISynchronousClient, IAsynchronousClient
+    internal partial class ApiClient : IClient
     {
-        private readonly string _baseUrl;
-
-        public event RequestInterceptDelegate OnRequestIntercepted;
-        public event ResponseInterceptDelegate OnResponseIntercepted;
+        readonly string _baseUrl;
 
         /// <summary>
         /// Specifies the settings on a <see cref="JsonSerializer" /> object.
@@ -255,9 +246,9 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// <param name="options">The additional request options.</param>
         /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
         /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>[private] A new UnityWebRequest instance.</returns>
+        /// <returns> A new UnityWebRequest instance.</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        private UnityWebRequest NewRequest<T>(
+        UnityWebRequest NewRequest<T>(
             string method,
             string path,
             RequestOptions options,
@@ -371,7 +362,7 @@ namespace Unity.Muse.Chat.BackendApi.Client
 
         }
 
-        private ApiResponse<T> ToApiResponse<T>(UnityWebRequest request, object responseData)
+        ApiResponse<T> ToApiResponse<T>(UnityWebRequest request, object responseData)
         {
             T result = responseData == default ? default : (T) responseData;
 
@@ -394,12 +385,13 @@ namespace Unity.Muse.Chat.BackendApi.Client
             return transformed;
         }
 
-        private async Task<ApiResponse<T>> ExecAsync<T>(
+        async Task<ApiResponse<T>> ExecAsync<T>(
             UnityWebRequest request,
             string path,
             RequestOptions options,
             IReadableConfiguration configuration,
-            System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+            System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken),
+            RequestInterceptionCallbacks callbacks = null)
         {
             var deserializer = new CustomJsonCodec(SerializerSettings, configuration);
 
@@ -425,8 +417,9 @@ namespace Unity.Muse.Chat.BackendApi.Client
                     // See: https://docs.unity3d.com/ScriptReference/Networking.CertificateHandler.html
                     throw new InvalidOperationException("Configuration `ClientCertificates` not supported by UnityWebRequest on all platforms");
                 }
-
-                OnRequestIntercepted?.Invoke(request, path, options, configuration);
+                
+                IUnityWebRequest wrappedRequest = new UnityWebRequestWrapper(request);
+                callbacks?.OnAfterRequestSend?.Invoke(wrappedRequest);
 
                 var asyncOp = request.SendWebRequest();
 
@@ -456,18 +449,11 @@ namespace Unity.Muse.Chat.BackendApi.Client
                     responseData = responseData == default ? default : (T) (object) new MemoryStream(request.downloadHandler.data);
                 }
 
-                OnResponseIntercepted?.Invoke(request, path, options, configuration, responseData);
-                var res = ToApiResponse<T>(request, responseData);
-
-                // Disposing of the UnityWebRequest here should only be done if no external interception has occured
-                if(OnRequestIntercepted == null && OnResponseIntercepted == null)
-                    request.Dispose();
-
-                return res;
+                callbacks?.OnAfterResponseReceived?.Invoke(wrappedRequest);
+                return ToApiResponse<T>(request, responseData);
             }
         }
 
-        #region IAsynchronousClient
         /// <summary>
         /// Make a HTTP GET request (async).
         /// </summary>
@@ -477,10 +463,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// GlobalConfiguration has been done before calling this method.</param>
         /// <param name="cancellationToken">Token that enables callers to cancel the request.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> GetAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Task<ApiResponse<T>> GetAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), RequestInterceptionCallbacks callbacks = null)
         {
             var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest<T>("GET", path, options, config), path, options, config, cancellationToken);
+            return ExecAsync<T>(NewRequest<T>("GET", path, options, config), path, options, config, cancellationToken, callbacks);
         }
 
         /// <summary>
@@ -492,10 +478,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// GlobalConfiguration has been done before calling this method.</param>
         /// <param name="cancellationToken">Token that enables callers to cancel the request.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> PostAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Task<ApiResponse<T>> PostAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), RequestInterceptionCallbacks callbacks = null)
         {
             var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest<T>("POST", path, options, config), path, options, config, cancellationToken);
+            return ExecAsync<T>(NewRequest<T>("POST", path, options, config), path, options, config, cancellationToken, callbacks);
         }
 
         /// <summary>
@@ -507,10 +493,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// GlobalConfiguration has been done before calling this method.</param>
         /// <param name="cancellationToken">Token that enables callers to cancel the request.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> PutAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Task<ApiResponse<T>> PutAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), RequestInterceptionCallbacks callbacks = null)
         {
             var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest<T>("PUT", path, options, config), path, options, config, cancellationToken);
+            return ExecAsync<T>(NewRequest<T>("PUT", path, options, config), path, options, config, cancellationToken, callbacks);
         }
 
         /// <summary>
@@ -522,10 +508,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// GlobalConfiguration has been done before calling this method.</param>
         /// <param name="cancellationToken">Token that enables callers to cancel the request.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> DeleteAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Task<ApiResponse<T>> DeleteAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), RequestInterceptionCallbacks callbacks = null)
         {
             var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest<T>("DELETE", path, options, config), path, options, config, cancellationToken);
+            return ExecAsync<T>(NewRequest<T>("DELETE", path, options, config), path, options, config, cancellationToken, callbacks);
         }
 
         /// <summary>
@@ -537,10 +523,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// GlobalConfiguration has been done before calling this method.</param>
         /// <param name="cancellationToken">Token that enables callers to cancel the request.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> HeadAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Task<ApiResponse<T>> HeadAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), RequestInterceptionCallbacks callbacks = null)
         {
             var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest<T>("HEAD", path, options, config), path, options, config, cancellationToken);
+            return ExecAsync<T>(NewRequest<T>("HEAD", path, options, config), path, options, config, cancellationToken, callbacks);
         }
 
         /// <summary>
@@ -552,10 +538,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// GlobalConfiguration has been done before calling this method.</param>
         /// <param name="cancellationToken">Token that enables callers to cancel the request.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> OptionsAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Task<ApiResponse<T>> OptionsAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), RequestInterceptionCallbacks callbacks = null)
         {
             var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest<T>("OPTIONS", path, options, config), path, options, config, cancellationToken);
+            return ExecAsync<T>(NewRequest<T>("OPTIONS", path, options, config), path, options, config, cancellationToken, callbacks);
         }
 
         /// <summary>
@@ -567,104 +553,10 @@ namespace Unity.Muse.Chat.BackendApi.Client
         /// GlobalConfiguration has been done before calling this method.</param>
         /// <param name="cancellationToken">Token that enables callers to cancel the request.</param>
         /// <returns>A Task containing ApiResponse</returns>
-        public Task<ApiResponse<T>> PatchAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public Task<ApiResponse<T>> PatchAsync<T>(string path, RequestOptions options, IReadableConfiguration configuration = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken), RequestInterceptionCallbacks callbacks = null)
         {
             var config = configuration ?? GlobalConfiguration.Instance;
-            return ExecAsync<T>(NewRequest<T>("PATCH", path, options, config), path, options, config, cancellationToken);
+            return ExecAsync<T>(NewRequest<T>("PATCH", path, options, config), path, options, config, cancellationToken, callbacks);
         }
-        #endregion IAsynchronousClient
-
-        #region ISynchronousClient
-        /// <summary>
-        /// Make a HTTP GET request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Get<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            throw new System.NotImplementedException("UnityWebRequest does not support synchronous operation");
-        }
-
-        /// <summary>
-        /// Make a HTTP POST request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Post<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            throw new System.NotImplementedException("UnityWebRequest does not support synchronous operation");
-        }
-
-        /// <summary>
-        /// Make a HTTP PUT request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Put<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            throw new System.NotImplementedException("UnityWebRequest does not support synchronous operation");
-        }
-
-        /// <summary>
-        /// Make a HTTP DELETE request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Delete<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            throw new System.NotImplementedException("UnityWebRequest does not support synchronous operation");
-        }
-
-        /// <summary>
-        /// Make a HTTP HEAD request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Head<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            throw new System.NotImplementedException("UnityWebRequest does not support synchronous operation");
-        }
-
-        /// <summary>
-        /// Make a HTTP OPTION request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Options<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            throw new System.NotImplementedException("UnityWebRequest does not support synchronous operation");
-        }
-
-        /// <summary>
-        /// Make a HTTP PATCH request (synchronous).
-        /// </summary>
-        /// <param name="path">The target path (or resource).</param>
-        /// <param name="options">The additional request options.</param>
-        /// <param name="configuration">A per-request configuration object. It is assumed that any merge with
-        /// GlobalConfiguration has been done before calling this method.</param>
-        /// <returns>A Task containing ApiResponse</returns>
-        public ApiResponse<T> Patch<T>(string path, RequestOptions options, IReadableConfiguration configuration = null)
-        {
-            throw new System.NotImplementedException("UnityWebRequest does not support synchronous operation");
-        }
-        #endregion ISynchronousClient
     }
 }

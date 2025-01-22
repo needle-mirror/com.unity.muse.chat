@@ -37,16 +37,26 @@ namespace Unity.Muse.Chat
             Configuration configuration = CreateConfig();
             MuseChatBackendApi api = new(configuration);
 
-            m_CurrentContextualConvosRequest = api.GetMuseConversationV1Async(limit: MuseChatConstants.MaxConversationHistory, tags: $"{UnityDataUtils.GetProjectId()}");
-            m_CurrentContextlessConvosRequest = api.GetMuseConversationV1Async(skipProjectTag: true, limit: MuseChatConstants.MaxConversationHistory);
-            m_CurrentConversationsRequest = Task.WhenAll(m_CurrentContextualConvosRequest, m_CurrentContextlessConvosRequest);
+            m_CurrentContextualConvosRequest = api.GetMuseConversationV1Builder()
+                .SetLimit(MuseChatConstants.MaxConversationHistory)
+                .SetTags($"{UnityDataUtils.GetProjectId()}")
+                .BuildAndSendAsync();
+
+
+            m_CurrentContextlessConvosRequest = api.GetMuseConversationV1Builder()
+                .SetSkipProjectTag(true)
+                .SetLimit(MuseChatConstants.MaxConversationHistory)
+                .BuildAndSendAsync();
+
+            m_CurrentConversationsRequest =
+                Task.WhenAll(m_CurrentContextualConvosRequest, m_CurrentContextlessConvosRequest);
 
             loop.Register(RequestTick);
 
             void RequestTick()
             {
                 // If request is in progress, conversations are empty
-                if (m_CurrentConversationsRequest is {IsCompleted: false})
+                if (m_CurrentConversationsRequest is { IsCompleted: false })
                     return;
 
                 loop.Unregister(RequestTick);
@@ -80,7 +90,7 @@ namespace Unity.Muse.Chat
                             infos.AddRange(deduplicatedInfos);
                         }
                     }
-                    else if(contextlessInfos != null)
+                    else if (contextlessInfos != null)
                     {
                         infos.AddRange(contextlessInfos
                             .Select(c => new ContextIndicatedConversationInfo(false, c)));
@@ -134,7 +144,7 @@ namespace Unity.Muse.Chat
                 return;
 
             // Noop if a request with the conversation id is already in flight
-            if(m_CurrentConversationRequestId == conversationId)
+            if (m_CurrentConversationRequestId == conversationId)
                 return;
 
             // If there is another request will a different conversation id just cancel it. The RequestTick will
@@ -147,11 +157,8 @@ namespace Unity.Muse.Chat
             MuseChatBackendApi api = new(configuration);
             m_CurrentConversationCancellationTokenSource = new();
             m_CurrentConversationRequestId = conversationId;
-            m_CurrentConversationRequest =
-                api.GetMuseConversationUsingConversationIdV1Async(
-                    conversationId,
-                    m_CurrentConversationCancellationTokenSource.Token
-                );
+            m_CurrentConversationRequest = api.GetMuseConversationUsingConversationIdV1Builder(conversationId)
+                .BuildAndSendAsync(m_CurrentConversationCancellationTokenSource.Token);
 
             loop.Register(RequestTick);
 
@@ -165,7 +172,7 @@ namespace Unity.Muse.Chat
                 }
 
                 // If request is in progress, conversations are empty
-                if (m_CurrentConversationRequest is {IsCompleted: false})
+                if (m_CurrentConversationRequest is { IsCompleted: false })
                     return;
 
                 loop.Unregister(RequestTick);
@@ -210,14 +217,15 @@ namespace Unity.Muse.Chat
             Configuration configuration = CreateConfig();
             MuseChatBackendApi api = new(configuration);
             Task<ApiResponse<ErrorResponse>> tsc =
-                api.DeleteMuseConversationUsingConversationIdV1Async(conversationId, CancellationToken.None);
+                api.DeleteMuseConversationUsingConversationIdV1Builder(conversationId)
+                    .BuildAndSendAsync(CancellationToken.None);
 
             loop.Register(RequestTick);
 
             void RequestTick()
             {
                 // If request is in progress, conversations are empty
-                if (tsc is {IsCompleted: false})
+                if (tsc is { IsCompleted: false })
                     return;
 
                 loop.Unregister(RequestTick);
@@ -259,10 +267,11 @@ namespace Unity.Muse.Chat
             // Send the request
             Configuration configuration = CreateConfig();
             MuseChatBackendApi api = new(configuration);
-            return await api.PostMuseConversationV1Async(
-                    new CreateConversationRequest(organizationId, functions),
-                    m_CurrentConversationCancellationTokenSource.Token
-                );
+
+
+            return await api.PostMuseConversationV1Builder(
+                    new CreateConversationRequest(organizationId) { FunctionCatalog = functions })
+                .BuildAndSendAsync(m_CurrentConversationCancellationTokenSource.Token);
         }
 
         /// <summary>
@@ -271,7 +280,8 @@ namespace Unity.Muse.Chat
         /// <remarks>
         /// if <see cref="conversationId"/> is null or empty, function returns.
         /// </remarks>
-        public void GetConversationTitle(string conversationId, ILoopRegistration loop, Action<string> onComplete, Action<Exception> onError)
+        public void GetConversationTitle(string conversationId, ILoopRegistration loop, Action<string> onComplete,
+            Action<Exception> onError)
         {
             var configuration = CreateConfig();
             if (!GetOrganizationID(out string organizationId))
@@ -280,13 +290,14 @@ namespace Unity.Muse.Chat
             }
 
             MuseChatBackendApi api = new(configuration);
-            var tsc = api.GetMuseTopicUsingConversationIdV1Async(conversationId, organizationId);
+            var tsc = api.GetMuseTopicUsingConversationIdV1Builder(conversationId, organizationId)
+                .BuildAndSendAsync();
 
             loop.Register(RequestTick);
 
             void RequestTick()
             {
-                if (tsc is {IsCompleted: false})
+                if (tsc is { IsCompleted: false })
                     return;
 
                 loop.Unregister(RequestTick);
@@ -307,16 +318,17 @@ namespace Unity.Muse.Chat
                 return;
 
             var configuration = CreateConfig();
-            var payload = new ConversationPatchRequest(isFavorite: favoriteState);
+            var payload = new ConversationPatchRequest { IsFavorite = favoriteState };
             MuseChatBackendApi api = new(configuration);
-            var tsc = api.PatchMuseConversationUsingConversationIdV1Async(conversationId, payload);
+            var tsc = api.PatchMuseConversationUsingConversationIdV1Builder(conversationId, payload)
+                .BuildAndSendAsync();
 
             loop.Register(RequestTick);
 
             void RequestTick()
             {
                 // If request is in progress, conversations are empty
-                if (tsc is {IsCompleted: false})
+                if (tsc is { IsCompleted: false })
                     return;
 
                 loop.Unregister(RequestTick);
@@ -344,16 +356,17 @@ namespace Unity.Muse.Chat
                 return;
 
             var configuration = CreateConfig();
-            var payload = new ConversationPatchRequest(newName);
+            var payload = new ConversationPatchRequest() { Title = newName };
             MuseChatBackendApi api = new(configuration);
-            var tsc = api.PatchMuseConversationUsingConversationIdV1Async(conversationId, payload);
+            var tsc = api.PatchMuseConversationUsingConversationIdV1Builder(conversationId, payload)
+                .BuildAndSendAsync();
 
             loop.Register(RequestTick);
 
             void RequestTick()
             {
                 // If request is in progress, conversations are empty
-                if (tsc is {IsCompleted: false})
+                if (tsc is { IsCompleted: false })
                     return;
 
                 loop.Unregister(RequestTick);
@@ -374,7 +387,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-       public Task DeleteConversationFragment(
+        public Task DeleteConversationFragment(
             MuseConversationId conversationId,
             string fragmentId)
         {
@@ -387,7 +400,10 @@ namespace Unity.Muse.Chat
             Configuration configuration = CreateConfig();
             MuseChatBackendApi api = new(configuration);
 
-            var tsc = api.DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Async(conversationId.Value, fragmentId, CancellationToken.None);
+            var tsc = api
+                .DeleteMuseConversationFragmentUsingConversationIdAndFragmentIdV1Builder(conversationId.Value,
+                    fragmentId)
+                .BuildAndSendAsync(CancellationToken.None);
 
             return tsc;
         }

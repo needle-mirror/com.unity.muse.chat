@@ -10,10 +10,10 @@ namespace Unity.Muse.Chat.Context.SmartContext
 {
     internal static partial class ContextRetrievalTools
     {
-        internal class ProjectHierarchyInfo
+        internal class ProjectHierarchyInfo : IParentable<ProjectHierarchyInfo>
         {
             public readonly string FileInfoName;
-            public readonly ProjectHierarchyInfo Parent;
+            public ProjectHierarchyInfo Parent { get; }
 
             public ProjectHierarchyInfo(string fileInfoName, ProjectHierarchyInfo parent)
             {
@@ -31,11 +31,6 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 return FileInfoName == other.FileInfoName && Parent == other.Parent;
             }
 
-            protected bool Equals(ProjectHierarchyInfo other)
-            {
-                return FileInfoName == other.FileInfoName && Equals(Parent, other.Parent);
-            }
-
             public override int GetHashCode()
             {
                 return HashCode.Combine(FileInfoName, Parent);
@@ -48,31 +43,23 @@ namespace Unity.Muse.Chat.Context.SmartContext
             {
             }
 
-            protected override ProjectHierarchyInfo GetParent(ProjectHierarchyInfo obj)
-            {
-                return obj.Parent;
-            }
+            public override string ObjectName => k_ObjectRef?.FileInfoName;
 
-            protected override string GetName(ProjectHierarchyInfo obj)
-            {
-                return obj.FileInfoName;
-            }
-
-            protected override HierarchyMapEntry<ProjectHierarchyInfo> CreateInstance(ProjectHierarchyInfo obj)
+            protected override HierarchyMapEntry<ProjectHierarchyInfo> CreateInstance(ProjectHierarchyInfo obj, HierarchyMapEntry<ProjectHierarchyInfo> parent)
             {
                 return new ProjectHierarchyMapEntry(obj);
             }
-
-            protected override bool NeedsCollapsing => false;
         }
 
         [ContextProvider("Returns the file structure under the Assets/ folder.")]
-        internal static string ProjectStructureExtractor(
-            [Parameter("Filter to specify which files or assets to include.")]
+        internal static SmartContextToolbox.ExtractedContext ProjectStructureExtractor(
+            [Parameter("Filter to specify which files or assets to include. Use an empty string if the full project hierarchy is needed.")]
             string assetNameFilter = null)
         {
-            string resultPrefix = "Project structure:\n";
-            ProjectHierarchyMapEntry.SmartContextLimit = SmartContextToolbox.SmartContextLimit - resultPrefix.Length;
+            var resultPrefix = string.Empty;
+            var result = new SmartContextToolbox.ExtractedContext();
+
+            ProjectHierarchyMapEntry.SmartContextLimit = SmartContextToolbox.SmartContextLimit;
 
             // Store all objects in a tree structure first, then serialize it:
             var hierarchyMap = new ProjectHierarchyMapEntry(null);
@@ -81,7 +68,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             Dictionary<string, ProjectHierarchyInfo> parentMap = new();
 
-            int length = 0;
+            ProjectHierarchyMapEntry.Reset();
 
             // If there is no filter given, extract everything:
             if (string.IsNullOrEmpty(assetNameFilter))
@@ -93,8 +80,9 @@ namespace Unity.Muse.Chat.Context.SmartContext
                     var subDir = directoriesToProcess.Dequeue();
                     ProcessDirectory(subDir);
 
-                    if (length > ProjectHierarchyMapEntry.SmartContextLimit)
+                    if (ProjectHierarchyMapEntry.EstimatedSerializedLength > ProjectHierarchyMapEntry.SmartContextLimit)
                     {
+                        result.Truncated = true;
                         break;
                     }
 
@@ -112,7 +100,11 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
                             hierarchyMap.Insert(info);
 
-                            length += info.FileInfoName.Length;
+                            if (ProjectHierarchyMapEntry.EstimatedSerializedLength > ProjectHierarchyMapEntry.SmartContextLimit)
+                            {
+                                result.Truncated = true;
+                                break;
+                            }
                         }
 
                         foreach (var subDir in dir.GetDirectories())
@@ -121,34 +113,52 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
                             hierarchyMap.Insert(info);
 
-                            length += info.FileInfoName.Length;
-
                             directoriesToProcess.Enqueue(subDir);
+
+                            if (ProjectHierarchyMapEntry.EstimatedSerializedLength > ProjectHierarchyMapEntry.SmartContextLimit)
+                            {
+                                result.Truncated = true;
+                                break;
+                            }
                         }
                     }
                 }
             }
             else
             {
+                if (assetNameFilter.StartsWith("*."))
+                {
+                    assetNameFilter = assetNameFilter[2..];
+                }
+
                 // For specific searches, include entire project directory.
                 // We'll need to think about this more, it leads to a lof of false positives:
-                // assetPath = assetPath.Parent;
+                const bool includeOnlyAssetPath = true;
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                if (!includeOnlyAssetPath)
+#pragma warning disable CS0162 // Unreachable code detected
+                {
+                    assetPath = assetPath.Parent;
+                }
+#pragma warning restore CS0162 // Unreachable code detected
 
-                resultPrefix = $"Project structure matching '{assetNameFilter}':\n";
+                result.Truncated = true;
+
+                resultPrefix = $"Filter:'{assetNameFilter}':\n";
 
                 // Add all paths that fuzzy match the pattern:
                 var assetPathsToAdd =
                     ContextRetrievalHelpers.FuzzySearchAssetsByName(
                             assetNameFilter,
                             AssetDatabase.GetAllAssetPaths()
-                                .Where(path => path.StartsWith("Assets")))
+                                .Where(path => path.StartsWith("Assets") || (!includeOnlyAssetPath && path.StartsWith("Packages"))))
                         .ToList();
 
                 // Also add all asset db matches for searches by type, duplicates are handled by the hierarchyMap:
                 assetPathsToAdd.AddRange(
                     AssetDatabase.FindAssets(assetNameFilter)
                         .Select(AssetDatabase.GUIDToAssetPath)
-                        .Where(path => path.StartsWith("Assets")));
+                        .Where(path => path.StartsWith("Assets") || (!includeOnlyAssetPath && path.StartsWith("Packages"))));
 
                 foreach (var file in assetPathsToAdd)
                 {
@@ -157,8 +167,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
                     hierarchyMap.Insert(info);
 
-                    length += info.FileInfoName.Length;
-                    if (length > ProjectHierarchyMapEntry.SmartContextLimit)
+                    if (ProjectHierarchyMapEntry.EstimatedSerializedLength > ProjectHierarchyMapEntry.SmartContextLimit)
                     {
                         break;
                     }
@@ -167,10 +176,13 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             if (hierarchyMap.Children.Count == 0)
             {
-                return "";
+                return null;
             }
 
-            return resultPrefix + hierarchyMap.Serialized();
+            result.ContextType = "project structure";
+            result.Payload = resultPrefix + hierarchyMap.Serialized();
+
+            return result;
 
             bool IsDirectoryInside(DirectoryInfo dir1, DirectoryInfo dir2)
             {

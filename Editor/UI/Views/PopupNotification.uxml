@@ -1,7 +1,9 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement name="back" color="001100ff">
-        <appui:Icon name="icon"  />
-        <appui:Text tabindex="-1" text="message" name="messageField" />
-        <appui:Button name="dismissButton" trailing-icon="mui-icon-close" flex-direction="row-reverse" />
-    </VisualElement>
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="back" color="001100ff">
+        <ui:Image name="icon" />
+        <ui:Label tabindex="-1" text="message" name="messageField" class="mui-chat-label"/>
+        <ui:Button name="dismissButton" flex-direction="row-reverse">
+            <ui:Image class="mui-action-button-image mui-icon-close"/>
+        </ui:Button>
+    </ui:VisualElement>
 </UXML>

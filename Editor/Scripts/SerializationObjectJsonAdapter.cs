@@ -1,9 +1,13 @@
+using System;
 using UnityEditor;
 using Unity.Serialization.Json;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Muse.Chat.Serialization;
+using Unity.Serialization;
 using UnityEngine;
+using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace Unity.Muse.Chat
 {
@@ -13,17 +17,35 @@ namespace Unity.Muse.Chat
     /// </summary>
     class SerializationObjectJsonAdapter : IJsonAdapter<SerializedObject>
     {
+        public class SerializationException : Exception
+        {
+            public int Depth;
+        }
+
         int m_ObjectDepth = 0;
         int m_MaxObjectDepth = -1;
         int m_CurrentDepth;
+        int m_MaxPropertyDepth = -1;    // Limits how deep to go into properties.
+        int MaxDepth = -1;            // Keeps track how deep the deepest property is.
         Stack<int> m_Depths = new Stack<int>();
         HashSet<long> m_VisitedObjects = new HashSet<long>();
         HashSet<long> m_VisitedNodes = new HashSet<long>();
+
+        static Dictionary<int, int> s_DeduplicatedObjectsCopyToOriginal = new();
+        public static int JsonOutputLimit = 0;
+
+        // Fields to ignore when comparing and serializing components, they can be inferred from the parent object:
+        public static readonly string[] ComponentFieldsToIgnore = { "m_GameObject", "m_PrefabAsset" };
 
         /// <summary>
         /// If the type of the variable should be included when writing the key, which is otherwise just the name of the object
         /// </summary>
         public bool OutputType { get; set; } = false;
+
+        /// <summary>
+        /// If OutputType is false, types that are not clear from the field name are output if this is true.
+        /// </summary>
+        public bool OutputNonObviousTypes { get; set; } = false;
 
         /// <summary>
         /// If a tooltip related to the variable should be included when writing the key
@@ -33,6 +55,7 @@ namespace Unity.Muse.Chat
         public bool OutputDirectory { get; set; } = false;
 
         public int MaxObjectDepth { get => m_MaxObjectDepth; set => m_MaxObjectDepth = value; }
+        public int MaxPropertyDepth { get => m_MaxPropertyDepth; set => m_MaxPropertyDepth = value; }
 
         public string[] RootParameters { get; set; }
 
@@ -43,18 +66,58 @@ namespace Unity.Muse.Chat
 
         public ISerializationOverrideProvider OverrideProvider { get; set; }
 
+        public static void AddDeduplicatedObject(int originalInstanceID, int copiedInstanceID)
+        {
+            s_DeduplicatedObjectsCopyToOriginal[originalInstanceID] = originalInstanceID;
+            s_DeduplicatedObjectsCopyToOriginal[copiedInstanceID] = originalInstanceID;
+        }
+
+        public static void RemoveDeduplicatedObject(int instanceID)
+        {
+            var keys = s_DeduplicatedObjectsCopyToOriginal.Where(kvp => kvp.Value == instanceID).Select(kvp => kvp.Key).ToArray();
+            foreach (var key in keys)
+            {
+                s_DeduplicatedObjectsCopyToOriginal.Remove(key);
+            }
+        }
+
+        public static void ClearDeduplicatedObjects()
+        {
+            s_DeduplicatedObjectsCopyToOriginal.Clear();
+        }
+
+        public static bool HasDeduplicatedObjects => s_DeduplicatedObjectsCopyToOriginal.Count > 0;
+
         /// <summary>
         /// Returns the key for the top level object
         /// </summary>
         /// <param name="value">A serialized object to retrieve the name from</param>
         /// <returns>The name for the serialized object, which includes the type and tooltip</returns>
-        public string GetObjectKey(SerializedObject value)
+        public string GetObjectKey(SerializedObject value, bool includeInstanceID)
         {
-            var name = OutputType
-                ? $"{value.targetObject.name} \n- Type: {value.targetObject.GetType().Name}"
-                : value.targetObject.name;
+            var instanceID = includeInstanceID ? $"(Instance ID: {value.targetObject.GetInstanceID()})" : string.Empty;
+
+            string name;
+            if (OutputType)
+            {
+                name = $"{value.targetObject.name} {instanceID}\n- Type: {value.targetObject.GetType().Name}";
+            }
+            else
+            {
+                // If the target is a deduplicated object, don't include the main object name as that may be different across references:
+                if (s_DeduplicatedObjectsCopyToOriginal.Values.Contains(value.targetObject.GetInstanceID()))
+                {
+                    name = instanceID;
+                }
+                else
+                {
+                    var space = instanceID.Length > 0 ? " " : string.Empty;
+                    name = $"{value.targetObject.name}{space}{instanceID}";
+                }
+            }
+
             var directory = AssetDatabase.GetAssetPath(value.targetObject);
-            return string.IsNullOrEmpty(directory) || !OutputDirectory ? name : $"{name} \n- Path: {directory}";
+            return string.IsNullOrEmpty(directory) || !OutputDirectory ? name : $"{name}\n- Path: {directory}";
         }
 
         void IJsonAdapter<SerializedObject>.Serialize(in JsonSerializationContext<SerializedObject> context, SerializedObject value)
@@ -118,13 +181,48 @@ namespace Unity.Muse.Chat
 
             return;
 
-            bool Validate(SerializedProperty property) =>
-                RootObject != property.serializedObject || RootParameters is null
-                || RootParameters.Contains(property.name);
+            bool Validate(SerializedProperty property)
+            {
+                if(m_MaxPropertyDepth >= 0 && m_ObjectDepth + property.depth > m_MaxPropertyDepth)
+                    return false;
+
+                MaxDepth = Math.Max(MaxDepth, m_ObjectDepth + property.depth);
+
+                // We never want to serialize the m_GameObject field on components, it just leads to duplication:
+                if (property.serializedObject.targetObject is Component &&
+                    ComponentFieldsToIgnore.Contains(property.name))
+                {
+                    return false;
+                }
+
+                // Don't output everything from these types, it's too much data and will be in the file contents we send:
+                if (RootObject.targetObject is VisualTreeAsset or Shader && !property.editable)
+                {
+                    return false;
+                }
+
+                // Never serialize massive arrays:
+                if (property.isArray && property.arraySize > 1000)
+                {
+                    return false;
+                }
+
+                return RootObject != property.serializedObject || RootParameters is null
+                                                               || RootParameters.Contains(property.name);
+            }
         }
 
         void ProcessSerializedPropertyInner(in JsonSerializationContext<SerializedObject> context, SerializedProperty current, bool writeKey = false)
         {
+            // If the output becomes really long, abort:
+            if (JsonOutputLimit > 0 && context.Writer.AsUnsafe().Length > JsonOutputLimit)
+            {
+                m_ObjectDepth = 0;
+                m_VisitedNodes.Clear();
+                m_VisitedObjects.Clear();
+                throw new SerializationException { Depth = MaxDepth };
+            }
+
             if (current.depth < m_CurrentDepth)
             {
                 return;
@@ -135,7 +233,10 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            if (current.name == "m_PrefabInstance" && IgnorePrefabInstance)
+            // Current.name is slow, get it once only:
+            var currentName = current.name;
+
+            if (currentName == "m_PrefabInstance" && IgnorePrefabInstance)
             {
                 return;
             }
@@ -143,18 +244,34 @@ namespace Unity.Muse.Chat
             var writer = context.Writer;
             if (writeKey)
             {
-                var key = UseDisplayName ? current.displayName : current.name;
+                var key = UseDisplayName ? current.displayName : currentName;
                 var type = current.propertyType.ToString();
 
                 if (current.propertyType == SerializedPropertyType.Generic && current.isArray)
                 {
                     type = $"Array({PrettifyString(current.arrayElementType)})";
                 }
-                if (current.propertyType == SerializedPropertyType.ObjectReference || current.propertyType == SerializedPropertyType.ExposedReference)
+
+                var shouldOutputType = OutputType;
+                var useTypeAsKey = false;
+                if (current.propertyType is SerializedPropertyType.ObjectReference
+                    or SerializedPropertyType.ExposedReference)
                 {
                     if (current.objectReferenceValue != null)
                     {
-                        type = current.objectReferenceValue.GetType().Name;
+                        var referenceType = current.objectReferenceValue.GetType();
+                        type = referenceType.Name;
+
+                        if (!shouldOutputType && OutputNonObviousTypes)
+                        {
+                            shouldOutputType = referenceType != typeof(object) &&
+                                               referenceType != typeof(Object) &&
+                                               !currentName.ToLowerInvariant().Contains(type.ToLowerInvariant());
+
+                            // For components, avoid writing things like "component - Transform" inside component arrays, just write the type:
+                            if (shouldOutputType && current.propertyPath.Contains("Array") && referenceType.IsSubclassOf(typeof(Component)))
+                                useTypeAsKey = true;
+                        }
                     }
                     else
                     {
@@ -162,7 +279,9 @@ namespace Unity.Muse.Chat
                     }
                 }
 
-                if (OutputType)
+                if (useTypeAsKey)
+                    key = type;
+                else if (shouldOutputType)
                     key += $" - {type}";
 
                 if (OutputTooltip && !string.IsNullOrEmpty(current.tooltip))
@@ -178,7 +297,7 @@ namespace Unity.Muse.Chat
             m_CurrentDepth++;
 
             var serializationOverride = OverrideProvider.Find(
-                current.serializedObject.targetObject.GetType().FullName, current.name);
+                current.serializedObject.targetObject.GetType().FullName, currentName);
 
             if (serializationOverride is not null)
             {
@@ -249,7 +368,7 @@ namespace Unity.Muse.Chat
                         writer.WriteValue(current.intValue);
                         break;
                     case SerializedPropertyType.Boolean:
-                        writer.WriteValue(current.boolValue);
+                        writer.WriteValue(current.boolValue ? 1 : 0);
                         break;
                     case SerializedPropertyType.Float:
                         SafeNumberWrite(writer, current.floatValue);
@@ -263,10 +382,17 @@ namespace Unity.Muse.Chat
                     case SerializedPropertyType.ObjectReference:
                     {
                         var objectReference = current.objectReferenceValue;
+
                         if (objectReference != null)
                         {
                             var instanceID = objectReference.GetInstanceID();
-                            if (!m_VisitedObjects.Contains(instanceID))
+
+                            if (s_DeduplicatedObjectsCopyToOriginal.TryGetValue(instanceID, out var originalID))
+                            {
+                                context.SerializeValue(
+                                    $"See extracted_context: - Instance ID: {originalID}");
+                            }
+                            else if (!m_VisitedObjects.Contains(instanceID))
                             {
                                 if (m_MaxObjectDepth > -1 && m_ObjectDepth > m_MaxObjectDepth)
                                 {
@@ -282,9 +408,8 @@ namespace Unity.Muse.Chat
                             }
                             else
                             {
-
                                 context.SerializeValue(
-                                    $"Already serialized - {objectReference.name}");
+                                    $"Already serialized - {objectReference.name} ({objectReference.GetInstanceID()})");
                             }
                         }
                         else
@@ -309,13 +434,13 @@ namespace Unity.Muse.Chat
                     }
                         break;
                     case SerializedPropertyType.Vector2:
-                        writer.WriteValue(current.vector2Value.ToString());
+                        writer.WriteValue(current.vector2Value.ToString("F2"));
                         break;
                     case SerializedPropertyType.Vector3:
-                        writer.WriteValue(current.vector3Value.ToString());
+                        writer.WriteValue(current.vector3Value.ToString("F2"));
                         break;
                     case SerializedPropertyType.Vector4:
-                        writer.WriteValue(current.vector4Value.ToString());
+                        writer.WriteValue(current.vector4Value.ToString("F2"));
                         break;
                     case SerializedPropertyType.Rect:
                         writer.WriteValue(current.rectValue.ToString());
@@ -339,7 +464,7 @@ namespace Unity.Muse.Chat
                         writer.WriteValue($"Gradient - {current.gradientValue}");
                         break;
                     case SerializedPropertyType.Quaternion:
-                        writer.WriteValue(current.quaternionValue.ToString());
+                        writer.WriteValue(current.quaternionValue.ToString("F2"));
                         break;
                     case SerializedPropertyType.ExposedReference:
                     {
@@ -364,7 +489,7 @@ namespace Unity.Muse.Chat
                             else
                             {
                                 context.SerializeValue(
-                                    $"Already serialized  - {objectReference.name}");
+                                    $"Already serialized - {objectReference.name} ({objectReference.GetInstanceID()})");
                             }
                         }
                         else

@@ -1,17 +1,20 @@
-<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
     <ui:VisualElement name="notificationBanner" class="mui-chat-content">
         <ui:VisualElement class="mui-notification-banner-content">
             <ui:VisualElement name="notificationBannerContainer">
                 <ui:VisualElement class="mui-notification-banner-title-content">
-                    <appui:Icon class="mui-notification-banner-warning-icon" icon-name="mui-icon-warn" />
-                    <appui:Text name="notificationBannerTitle" class="mui-header-label" />
+                    <ui:Image class="mui-icon-warn mui-notification-banner-warning-icon" />
+                    <ui:Label name="notificationBannerTitle" class="mui-chat-label mui-header-label" />
                 </ui:VisualElement>
-                <appui:Text name="notificationBannerMessage" class="mui-header-label" />
+                <Label name="notificationBannerMessage" class="mui-chat-label mui-header-label" />
                 <ui:VisualElement class="mui-notification-action-area">
-                    <appui:Button name="notificationBannerActionButton" trailing-icon="arrow-square-in"/>
+                    <ui:Button name="notificationBannerActionButton">
+                        <ui:Image class="mui-action-button-image mui-icon-arrow-square-in"/>
+                        <ui:Label class="mui-action-button-label" name="notificationBannerActionButtonLabel"/>
+                    </ui:Button>
                 </ui:VisualElement>
             </ui:VisualElement>
-            <appui:Button name="notificationBannerDismissButton" leading-icon="mui-icon-close" flex-direction="row-reverse"/>
+            <ui:Button name="notificationBannerDismissButton" class="mui-icon-close" flex-direction="row-reverse"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </UXML>

@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace Unity.Muse.Chat
 {
-    internal class ValidatorUtils 
+    internal class ValidatorUtils
     {
         public static string HandleValidatorMarkup(string message)
         {

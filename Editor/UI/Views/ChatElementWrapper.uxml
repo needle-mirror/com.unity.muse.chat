@@ -1,5 +1,5 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns="UnityEngine.UIElements" xmlns:appui="Unity.Muse.AppUI.UI" editor-extension-mode="False">
-    <VisualElement name="wrapperRoot">
-        <appui:Text name="indexDebugText"/>
-    </VisualElement>
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="wrapperRoot">
+        <ui:Label name="indexDebugText" class="mui-chat-label"/>
+    </ui:VisualElement>
 </ui:UXML>

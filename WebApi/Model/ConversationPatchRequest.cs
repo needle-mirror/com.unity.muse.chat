@@ -20,24 +20,10 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "ConversationPatchRequest")]
     internal partial class ConversationPatchRequest
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConversationPatchRequest" /> class.
-        /// </summary>
-        /// <param name="title">title</param>
-        /// <param name="context">context</param>
-        /// <param name="isFavorite">isFavorite</param>
-        public ConversationPatchRequest(string title = default(string), string context = default(string), bool? isFavorite = default(bool?))
-        {
-            this.Title = title;
-            this.Context = context;
-            this.IsFavorite = isFavorite;
-        }
 
-        /// <summary>
-        /// Gets or Sets Title
-        /// </summary>
-        [DataMember(Name = "title", EmitDefaultValue = true)]
-        public string Title { get; set; }
+        public ConversationPatchRequest()
+        {
+        }
 
         /// <summary>
         /// Gets or Sets Context
@@ -52,6 +38,12 @@ namespace Unity.Muse.Chat.BackendApi.Model
         public bool? IsFavorite { get; set; }
 
         /// <summary>
+        /// Gets or Sets Title
+        /// </summary>
+        [DataMember(Name = "title", EmitDefaultValue = true)]
+        public string Title { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -59,9 +51,9 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class ConversationPatchRequest {\n");
-            sb.Append("  Title: ").Append(Title).Append("\n");
             sb.Append("  Context: ").Append(Context).Append("\n");
             sb.Append("  IsFavorite: ").Append(IsFavorite).Append("\n");
+            sb.Append("  Title: ").Append(Title).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -74,7 +66,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

@@ -33,7 +33,7 @@ namespace Unity.Muse.Chat.FunctionCalling
                     s = s.TrimStart('[').TrimEnd(']');
 
                     // s is a comma separated string:
-                    var elements = s.Replace("[","").Replace("]","").Replace("'","").Split(',');
+                    var elements = s.Replace("[", "").Replace("]", "").Replace("'", "").Split(',');
 
                     // Trim " " and " ' " from the elements:
                     for (int i = 0; i < elements.Length; i++)
@@ -70,7 +70,18 @@ namespace Unity.Muse.Chat.FunctionCalling
 
             return csharpType switch
             {
-                "String" => s => s.TrimStart('\'').TrimEnd('\''),
+                "String" => s =>
+                {
+                    var output = s.TrimStart('\'').TrimEnd('\'');
+
+                    // If the string is an empty array, treat it as an empty string:
+                    if (output == "[]")
+                    {
+                        output = string.Empty;
+                    }
+
+                    return output;
+                },
                 "Int32" => ConverterFactory(int.Parse),
                 "Int64" => ConverterFactory(long.Parse),
                 "Single" => ConverterFactory(float.Parse),
@@ -118,10 +129,12 @@ namespace Unity.Muse.Chat.FunctionCalling
                 parameterType = $"List[{elementType}]"; // Convert to Python list
             }
 
-            return new ParameterDefinition(parameter.Name, parameterType, parameterAttribute.Description)
+            var def = new ParameterDefinition(parameterAttribute.Description, parameter.Name, parameterType)
             {
                 Optional = parameter.IsDefined(typeof(ParamArrayAttribute), false) || parameter.HasDefaultValue
             };
+
+            return def;
         }
 
         internal static string GetTagForAttribute(Attribute attribute)
@@ -144,7 +157,8 @@ namespace Unity.Muse.Chat.FunctionCalling
         /// <param name="description">The user written description destined for the LLM</param>
         /// <param name="tags">Any tags associated with the function</param>
         /// <returns></returns>
-        internal static FunctionDefinition GetFunctionDefinition(MethodInfo method, string description, params string[] tags)
+        internal static FunctionDefinition GetFunctionDefinition(MethodInfo method, string description,
+            params string[] tags)
         {
             var parameters = method.GetParameters();
 
@@ -170,7 +184,11 @@ namespace Unity.Muse.Chat.FunctionCalling
                 return null;
             }
 
-            return new FunctionDefinition(method.Name, description, toolParameters, tags.ToList());
+            return new FunctionDefinition(description, method.Name)
+            {
+                Parameters = toolParameters,
+                Tags = tags.ToList()
+            };
         }
     }
 }

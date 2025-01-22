@@ -9,7 +9,7 @@
 }
 
 #historyPanelHeaderText {
-    color: var(--appui-alias-text-disabled);
+    color: var(--muse-chat-text-disabled);
     -unity-font-style: bold;
 }
 
@@ -25,7 +25,7 @@
     margin-right: 4px;
 }
 
-#historyPanelFavoriteStateButton:hover .appui-icon {
+#historyPanelFavoriteStateButton:hover .muse-chat-icon {
     --unity-image-tint-color: white;
 }
 
@@ -50,7 +50,7 @@
 }
 
 .mui-history-panel-entry-selected {
-    background-color: var(--appui-accent-50);
+    background-color: var(--muse-chat-accent-50);
 }
 
 .mui-history-panel-entry-controls {

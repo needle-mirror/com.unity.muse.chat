@@ -1,5 +1,6 @@
 .mui-agent-execute-button {
-    height: 16px;
+    min-height: 16px;
+    padding: 2px;
     border-width: 0;
     background-color: var(--muse-chat-color-pink);
     display: flex;
@@ -11,12 +12,8 @@
     font-size: 12px;
 }
 
-.mui-agent-execute-button  .appui-icon{
-   --unity-image-tint-color: white;
-}
-
 .mui-agent-execute-button:disabled {
-    background-color: var(--appui-backgrounds-50);
+    background-color: var(--muse-chat-backgrounds-50);
 }
 
 .mui-agent-debug-button  {
@@ -31,7 +28,7 @@
 }
 
 .mui-agent-debug-button:hover {
-    background-color: var(--appui-foregrounds-25);
+    background-color: var(--muse-chat-foregrounds-25);
 }
 
 .mui-agent-debug-button:disabled {
@@ -40,10 +37,11 @@
 
 .mui-agent-code-preview--monospaced-text {
     padding: 4px;
-    margin: 0px;
-    background-color: var(--appui-backgrounds-100);
+    margin: 0;
+    background-color: var(--muse-chat-backgrounds-100);
     border-radius: 0 0 8px 8px;
     -unity-font-definition: resource("Fonts/RobotoMono/RobotoMono-Regular SDF.asset");
+    white-space: normal;
 }
 
 .mui-agent-header-label {
@@ -58,23 +56,19 @@
     color: var(--muse-chat-header-text-color);
 }
 
+.mui-agent-warning-text {
+    white-space: normal;
+}
+
 .top-line-divider {
-    border-top-color: var(--appui-backgrounds-100);
+    border-top-color: var(--muse-chat-backgrounds-100);
     border-top-width: 1px;
 }
 
 .command-detail-foldout {
     margin: 0px;
     padding: 4px 0px 4px 0px;
-    color: var(--appui-alias-text-primary);
-}
-
-.command-detail-foldout .appui-accordionitem__header {
-   padding-left: 4px;
-}
-
-.command-detail-foldout .appui-accordionitem__headertext {
-   -unity-font-style: normal;
+    color: var(--muse-chat-foregrounds-100);
 }
 
 #previewContainer
@@ -86,10 +80,27 @@
 .notification-warning-content {
     align-self: center;
     margin: 2px;
-    background-color: var(--appui-backgrounds-50);
+    background-color: var(--muse-chat-backgrounds-50);
     border-width: 1px;
     border-color: #cd9f14;
     border-radius: 4px;
     padding: 4px;
     width: 100%;
+}
+
+#warningText {
+    white-space: normal;
+}
+
+.mui-agent-edit-code-button {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-right: 4px;
+    border-width: 0;
+    background-color: var(--muse-chat-backgrounds-200);
+}
+
+.mui-agent-edit-code-button:hover {
+    background-color: var(--muse-chat-backgrounds-300);
 }

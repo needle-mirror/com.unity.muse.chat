@@ -1,26 +1,30 @@
-<UXML xmlns="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns:appui="Unity.Muse.AppUI.UI">
-    <VisualElement name="chatRoot" class="mui-chat-root -muse-chat-panel mui-chat-user-message">
-        <VisualElement class="mui-chat-message-content">
-            <VisualElement class="mui-chat-element-avatar-area">
-                <appui:Avatar class="mui-chat-avatar" variant="Square" name="userIcon"/>
-                <appui:Text text="User Name" name="userName" class="mui-textbox mui-chat-username" />
-            </VisualElement>
-            <VisualElement class="mui-chat-element-text-area">
-                <VisualElement name="userMessageTextFieldRoot">
-                </VisualElement>
-            </VisualElement>
-            <VisualElement>
-                <appui:Accordion name="contextFoldout" class="mui-chat-context-foldout">
-                    <appui:AccordionItem title="Context" value="false" class="mui-chat-context-accordion-entry">
-                        <VisualElement name="contextContent">
-                        </VisualElement>
-                    </appui:AccordionItem>
-                </appui:Accordion>
-            </VisualElement>
-            <VisualElement name="editControls" class="mui-user-edit-controls">
-                <appui:Button name="editButton" class="-muse-chat-button" leading-icon="pen--regular" />
-                <appui:Button name="editCancelButton" class="-muse-chat-button" leading-icon="mui-icon-cancel" />
-            </VisualElement>
-        </VisualElement>
-    </VisualElement>
+<UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xmlns="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="chatRoot" class="mui-chat-root -muse-chat-panel mui-chat-user-message">
+        <ui:VisualElement class="mui-chat-message-content">
+            <ui:VisualElement class="mui-chat-element-avatar-area">
+                <ui:VisualElement class="mui-chat-avatar-frame" name="userIconFrame">
+                    <ui:Image class="mui-chat-avatar" name="userIcon"/>
+                </ui:VisualElement>
+                <ui:Label text="User Name" name="userName" class="mui-chat-label mui-chat-username" />
+            </ui:VisualElement>
+            <ui:VisualElement class="mui-chat-element-text-area">
+                <ui:VisualElement name="userMessageTextFieldRoot">
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement>
+                <ui:Foldout name="contextFoldout" class="mui-chat-foldout mui-chat-context-foldout" text="Context">
+                    <ui:VisualElement name="contextContent">
+                    </ui:VisualElement>
+                </ui:Foldout>
+            </ui:VisualElement>
+            <ui:VisualElement name="editControls" class="mui-user-edit-controls">
+                <ui:Button name="editButton" class="-muse-chat-button mui-user-edit-control-button">
+                    <ui:Image class="mui-action-button-image mui-icon-pen"/>
+                </ui:Button>
+                <ui:Button name="editCancelButton" class="-muse-chat-button mui-user-edit-control-button">
+                    <ui:Image class="mui-action-button-image mui-icon-cancel"/>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
 </UXML>

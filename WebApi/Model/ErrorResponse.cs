@@ -20,23 +20,15 @@ namespace Unity.Muse.Chat.BackendApi.Model
     [DataContract(Name = "ErrorResponse")]
     internal partial class ErrorResponse
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorResponse" /> class.
         /// </summary>
         [JsonConstructorAttribute]
         protected ErrorResponse() { }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorResponse" /> class.
-        /// </summary>
-        /// <param name="message">Error message. (required)</param>
-        public ErrorResponse(string message = default(string))
+        public ErrorResponse(string message)
         {
-            // to ensure "message" is required (not null)
-            if (message == null)
-            {
-                throw new ArgumentNullException("message is a required property for ErrorResponse and cannot be null");
-            }
-            this.Message = message;
+            Message = message;
         }
 
         /// <summary>
@@ -67,7 +59,6 @@ namespace Unity.Muse.Chat.BackendApi.Model
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
         }
-
     }
 
 }

@@ -2,51 +2,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Unity.Muse.Common.Editor.Integration;
+using UnityEngine.SceneManagement;
 
 namespace Unity.Muse.Chat.Context.SmartContext
 {
     internal static partial class ContextRetrievalTools
     {
+        internal interface IParentable<T>
+        {
+            T Parent { get; }
+        }
+
         /// <summary>
         /// Stores object hierarchy in a tree structure.
         /// </summary>
-        internal abstract class HierarchyMapEntry<T>
+        internal abstract class HierarchyMapEntry<T> where T : IParentable<T>
         {
             internal static int SmartContextLimit { get; set; }
 
-            protected abstract T GetParent(T obj);
-            protected abstract string GetName(T obj);
-            protected virtual bool NeedsCollapsing => true;
+            internal static int EstimatedSerializedLength { get; set; }
 
-            private readonly T k_ObjectRef;
-            public readonly List<HierarchyMapEntry<T>> Children = new();
-
-            public string ObjectName
+            internal static void Reset()
             {
-                get
-                {
-                    var result = k_ObjectRef != null ? GetName(k_ObjectRef) : null;
-
-                    if (result != null && m_Suffix != null)
-                    {
-                        result += m_Suffix;
-                    }
-
-                    return result;
-                }
+                EstimatedSerializedLength = 0;
             }
 
-            private string m_Suffix;
+            protected readonly T k_ObjectRef;
+            public readonly List<HierarchyMapEntry<T>> Children = new();
+
+            public abstract string ObjectName { get; }
 
             protected HierarchyMapEntry(T obj)
             {
                 k_ObjectRef = obj;
             }
 
-            protected abstract HierarchyMapEntry<T> CreateInstance(T obj);
+            protected abstract HierarchyMapEntry<T> CreateInstance(T obj, HierarchyMapEntry<T> parent);
 
             public override bool Equals(object obj)
             {
@@ -75,56 +70,66 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 return HashCode.Combine(k_ObjectRef, Children);
             }
 
-            public HierarchyMapEntry<T> Insert(T obj)
-            {
-                // Check if there already is a container for the object, if it exists, do not add it again:
-                var childContainer = GetContainerForObject(obj);
-                if (childContainer != null)
-                {
-                    return childContainer;
-                }
-
-                // Insert the parent of the object.
-                // Note: If the object has no parent, we are inserting null,
-                // this will match the root container so the parentContainer
-                // will be the root and the object will be inserted in the children of that.
-                var parentContainer = Insert(GetParent(obj));
-
-                // Add child to the parent container's children:
-                childContainer = CreateInstance(obj);
-
-                parentContainer.Children.Add(childContainer);
-
-                return childContainer;
-            }
-
-            private HierarchyMapEntry<T> GetContainerForObject(T obj)
+            protected virtual bool Matches(T obj)
             {
                 if (obj == null && ObjectName == null)
+                {
+                    return true;
+                }
+
+                return k_ObjectRef != null && k_ObjectRef.Equals(obj);
+            }
+
+            HierarchyMapEntry<T> InsertHere(T obj, int depth)
+            {
+                if (Matches(obj))
                 {
                     return this;
                 }
 
-                HierarchyMapEntry<T> result;
-                if (k_ObjectRef != null && k_ObjectRef.Equals(obj))
+                foreach (var childMap in Children)
                 {
-                    result = this;
-                }
-                else
-                {
-                    result = null;
-                    foreach (var childMap in Children)
+                    if (childMap.Matches(obj))
                     {
-                        var map = childMap.GetContainerForObject(obj);
-                        if (map != null)
-                        {
-                            result = map;
-                            break;
-                        }
+                        return childMap;
                     }
                 }
 
-                return result;
+                var container = CreateInstance(obj, this);
+                Children.Add(container);
+                EstimatedSerializedLength +=
+                    container.ObjectName.Length + depth + 1 +
+                    2; // depth+1 for `-` prefix, 1 for space and 2 for line break
+
+                return container;
+            }
+
+            readonly List<T> m_ParentsList = new();
+
+            public void Insert(T obj)
+            {
+                // Build a hierarchy of parents:
+                m_ParentsList.Clear();
+
+                var parent = obj;
+                m_ParentsList.Add(obj);
+                while (true)
+                {
+                    parent = parent.Parent;
+                    if (parent == null)
+                    {
+                        break;
+                    }
+
+                    m_ParentsList.Add(parent);
+                }
+
+                // Now we know all parents, insert the parents starting at the top of the hierarchy and then the given object:
+                var parentEntry = this;
+                for (int i = m_ParentsList.Count - 1; i >= 0; i--)
+                {
+                    parentEntry = parentEntry.InsertHere(m_ParentsList[i], m_ParentsList.Count - i - 1);
+                }
             }
 
             private void Serialize(StringBuilder sb, int depth)
@@ -163,6 +168,21 @@ namespace Unity.Muse.Chat.Context.SmartContext
                         break;
                     }
                 }
+
+                // After pruning, there may be duplicates because of truncated children, try a final collapse and serialize again if needed:
+                if (Collapse())
+                {
+                    sb.Clear();
+                    Serialize(sb, 0);
+                }
+            }
+
+            /// <summary>
+            /// Remove duplicates entries in the hierarchy.
+            /// </summary>
+            protected virtual bool Collapse()
+            {
+                return false;
             }
 
             public int GetDepth(int depth)
@@ -195,89 +215,246 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 }
             }
 
-            /// <summary>
-            /// Remove duplicates entries in the hierarchy.
-            /// </summary>
-            private void Collapse()
-            {
-                if (!NeedsCollapsing)
-                {
-                    return;
-                }
-
-                // Remove children on the same level that have the same name and child hierarchy:
-                for (var i = 0; i < Children.Count; i++)
-                {
-                    var child = Children[i];
-                    child.Collapse();
-
-                    int collapsedCount = 0;
-                    for (var j = i + 1; j < Children.Count; j++)
-                    {
-                        var otherChild = Children[j];
-                        otherChild.Collapse();
-
-                        if (child.Equals(otherChild))
-                        {
-                            Children.RemoveAt(j);
-                            j--;
-                            collapsedCount++;
-                        }
-                    }
-
-                    if (collapsedCount > 0)
-                    {
-                        child.m_Suffix = $" - There are {collapsedCount + 1} objects with this name";
-                    }
-                }
-            }
-
             public string Serialized()
             {
-                Collapse();
-
                 var sb = new StringBuilder();
+
                 PruneAndSerialize(sb);
 
                 return sb.ToString();
             }
         }
 
-        internal class GameObjectHierarchyMapEntry : HierarchyMapEntry<GameObject>
+        internal class GameObjectInfo : IParentable<GameObjectInfo>
         {
-            public GameObjectHierarchyMapEntry(GameObject obj) : base(obj)
+            public readonly GameObject Object;
+            public GameObjectInfo Parent { get; }
+            public readonly int SceneObjectCount;
+
+            public readonly string Name;
+
+            internal GameObjectInfo(GameObject obj, Scene scene = default)
+            {
+                Object = obj;
+
+                if (obj != null)
+                {
+                    Name = obj.name;
+                }
+                else if (scene.IsValid())
+                {
+                    Name = $"{scene.name} (This is a SubScene)";
+                    SceneObjectCount = scene.GetRootGameObjects().Length;
+                }
+
+                if (obj == null)
+                    return;
+
+                if (obj.transform.parent == null)
+                {
+                    // Check if obj is in the current scene or a sub scene:
+                    if (obj.scene != SceneManager.GetActiveScene())
+                    {
+                        Parent = new GameObjectInfo(null, obj.scene);
+                    }
+                }
+                else
+                {
+                    Parent = new GameObjectInfo(obj.transform.parent?.gameObject);
+                }
+            }
+        }
+
+        internal class GameObjectHierarchyMapEntry : HierarchyMapEntry<GameObjectInfo>
+        {
+            readonly HashSet<GameObject> m_Copies = new(1);
+
+            private GameObject Original { get; }
+
+            private readonly GameObjectHierarchyMapEntry m_Parent;
+
+            public GameObjectHierarchyMapEntry() : this(null, null)
             {
             }
 
-            protected override GameObject GetParent(GameObject obj)
+            private GameObjectHierarchyMapEntry(GameObjectInfo obj, GameObjectHierarchyMapEntry parent) : base(obj)
             {
-                return obj.transform.parent == null ? null : obj.transform.parent.gameObject;
+                m_Parent = parent;
+                m_Copies.Add(obj?.Object);
+                Original = obj?.Object;
             }
 
-            protected override string GetName(GameObject obj)
+            public override bool Equals(object obj)
             {
-                return obj.name;
+                if (obj is not GameObjectHierarchyMapEntry other)
+                {
+                    return false;
+                }
+
+                return k_ObjectRef?.Name == other.k_ObjectRef?.Name && TruncatedChildCount > 0 &&
+                       other.TruncatedChildCount > 0;
             }
 
-            protected override HierarchyMapEntry<GameObject> CreateInstance(GameObject obj)
+            private bool Equals(GameObjectHierarchyMapEntry other)
             {
-                return new GameObjectHierarchyMapEntry(obj);
+                return base.Equals(other) && Equals(m_Copies, other.m_Copies) && Equals(m_Parent, other.m_Parent) && Equals(Original, other.Original);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(base.GetHashCode(), m_Copies, m_Parent, Original);
+            }
+
+            public override string ObjectName
+            {
+                get
+                {
+                    var result = k_ObjectRef?.Name;
+
+                    if (m_Copies.Count > 1)
+                    {
+                        result += $" - There are {m_Copies.Count} objects with this name";
+                    }
+
+                    // Check for truncated children:
+                    var truncatedChildren = TruncatedChildCount;
+                    if (truncatedChildren > 0)
+                    {
+                        result += " - There are truncated children";
+                    }
+
+                    return result;
+                }
+            }
+
+            private int TruncatedChildCount
+            {
+                get
+                {
+                    if (k_ObjectRef == null)
+                    {
+                        return -1;
+                    }
+
+                    if (!k_ObjectRef.Object)
+                    {
+                        return k_ObjectRef.SceneObjectCount - Children.Count;
+                    }
+
+                    var childCopyCount = Children.Sum(child => ((GameObjectHierarchyMapEntry)child).m_Copies.Count);
+
+                    return k_ObjectRef.Object.transform.childCount - childCopyCount;
+                }
+            }
+
+            protected override HierarchyMapEntry<GameObjectInfo> CreateInstance(GameObjectInfo obj,
+                HierarchyMapEntry<GameObjectInfo> parent)
+            {
+                return new GameObjectHierarchyMapEntry(obj, parent as GameObjectHierarchyMapEntry);
+            }
+
+            static bool DoNamesMatch(Transform a, Transform b)
+            {
+                return a?.name.GetHashCode() == b?.name.GetHashCode();
+            }
+
+            protected override bool Matches(GameObjectInfo obj)
+            {
+                // If either of the object infos has no game object, check if both have none and their names match:
+                if (k_ObjectRef?.Object == null || obj.Object == null)
+                {
+                    return k_ObjectRef?.Object == null && obj.Object == null && k_ObjectRef?.Name == obj.Name;
+                }
+
+                if (obj == k_ObjectRef || obj.Object == k_ObjectRef?.Object)
+                {
+                    return true;
+                }
+
+                if (DoNamesMatch(k_ObjectRef.Object.transform, obj.Object.transform))
+                {
+                    if (DoChildrenMatch(k_ObjectRef.Object.transform, obj.Object.transform))
+                    {
+                        // Only add the object to the copies list if the parent is the first copy of the object:
+                        if (m_Parent == null || m_Parent.Original == obj.Object.transform.parent?.gameObject)
+                        {
+                            m_Copies.Add(obj.Object);
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+
+                    static bool DoChildrenMatch(Transform a, Transform b)
+                    {
+                        if (a.childCount != b.childCount)
+                        {
+                            return false;
+                        }
+
+                        if (!DoNamesMatch(a, b))
+                        {
+                            return false;
+                        }
+
+                        for (int childIdx = 0; childIdx < a.transform.childCount; childIdx++)
+                        {
+                            if (!DoChildrenMatch(a.GetChild(childIdx), b.GetChild(childIdx)))
+                            {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            protected override bool Collapse()
+            {
+                bool collapsed = false;
+
+                // Remove children on the same level that have the same name and child hierarchy:
+                for (var i = 0; i < Children.Count; i++)
+                {
+                    var child = (GameObjectHierarchyMapEntry)Children[i];
+                    collapsed |= child.Collapse();
+
+                    for (var j = i + 1; j < Children.Count; j++)
+                    {
+                        var otherChild = (GameObjectHierarchyMapEntry)Children[j];
+                        collapsed |= otherChild.Collapse();
+
+                        if (child.Equals(otherChild))
+                        {
+                            Children.RemoveAt(j);
+                            j--;
+                            collapsed = true;
+
+                            child.m_Copies.UnionWith(otherChild.m_Copies);
+                        }
+                    }
+                }
+
+                return collapsed;
             }
         }
 
         [ContextProvider(
             "Returns the hierarchy of gameObjects in the scene matching the given name filter." +
             "If no name filter is provided, all gameObjects in the scene are returned.")]
-        internal static string SceneHierarchyExtractor(
+        internal static SmartContextToolbox.ExtractedContext SceneHierarchyExtractor(
             [Parameter(
-                "Filters to specify which gameObjects' hierarchies to return.")]
+                "Filters to specify which gameObjects' hierarchies to return. Use an empty list if the full scene hierarchy is needed.")]
             params string[] gameObjectNameFilters)
         {
-            const string resultPrefix = "Scene hierarchy:\n";
-            GameObjectHierarchyMapEntry.SmartContextLimit = SmartContextToolbox.SmartContextLimit - resultPrefix.Length;
+            GameObjectHierarchyMapEntry.SmartContextLimit = SmartContextToolbox.SmartContextLimit;
 
             // Store all objects in a tree structure first, then serialize it:
-            var hierarchyMap = new GameObjectHierarchyMapEntry(null);
+            var hierarchyMap = new GameObjectHierarchyMapEntry();
 
             // Get all gameObjects:
             var allObjects = Object.FindObjectsByType<GameObject>(
@@ -286,6 +463,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             // Loop through all GameObjects and if their names are in the list of args, add them to the hierarchy map:
             ICollection<GameObject> objectsToSearch;
+
+            GameObjectHierarchyMapEntry.Reset();
 
             if (gameObjectNameFilters == null || gameObjectNameFilters.Length == 0 || gameObjectNameFilters[0] == "*")
             {
@@ -303,15 +482,16 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 }
             }
 
+            // Make sort faster by caching depth instead of recalculating every time:
+            Dictionary<GameObject, int> depthCache = new();
             objectsToSearch = new List<GameObject>(objectsToSearch.OrderBy(GetDepth));
 
-            var resultLength = 0;
             foreach (var obj in objectsToSearch)
             {
-                hierarchyMap.Insert(obj);
-                resultLength += obj.name.Length;
+                hierarchyMap.Insert(new GameObjectInfo(obj));
 
-                if (resultLength > GameObjectHierarchyMapEntry.SmartContextLimit)
+                if (GameObjectHierarchyMapEntry.EstimatedSerializedLength >
+                    GameObjectHierarchyMapEntry.SmartContextLimit)
                 {
                     break;
                 }
@@ -319,20 +499,30 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             if (hierarchyMap.Children.Count == 0)
             {
-                return "";
+                return null;
             }
 
-            return resultPrefix + hierarchyMap.Serialized();
+            return new SmartContextToolbox.ExtractedContext
+            {
+                Payload = hierarchyMap.Serialized(),
+                ContextType = "scene hierarchy"
+            };
 
             // Sort objects by their depth in the hierarchy:
             int GetDepth(GameObject obj)
             {
-                if (obj.transform.parent == null)
+                if (obj == null)
                 {
                     return 0;
                 }
 
-                return GetDepth(obj.transform.parent.gameObject) + 1;
+                if (!depthCache.TryGetValue(obj, out var depth))
+                {
+                    depth = GetDepth(obj.transform.parent?.gameObject) + 1;
+                    depthCache[obj] = depth;
+                }
+
+                return depth;
             }
         }
     }

@@ -19,7 +19,7 @@ namespace Unity.Muse.Chat
 
         internal async Task<string> Repair(MuseMessageId messageId, int messageIndex, string errorToRepair, string scriptToRepair)
         {
-            var repairedMessage = await MuseEditorDriver.instance.RepairScript(messageId, messageIndex, errorToRepair, scriptToRepair, ScriptType.CodeGen);
+            var repairedMessage = await Assistant.instance.RepairScript(messageId, messageIndex, errorToRepair, scriptToRepair, ScriptType.CodeGen);
 
             if (string.IsNullOrEmpty(repairedMessage))
                 return null;

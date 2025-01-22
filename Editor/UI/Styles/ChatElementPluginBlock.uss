@@ -1,9 +1,9 @@
 .mui-plugin-block-root {
     border-width: 1px;
     border-radius: 8px;
-    border-color: var(--appui-backgrounds-50);
+    border-color: var(--muse-chat-backgrounds-50);
     margin-bottom: 20px;
-    background-color: var(--appui-backgrounds-100);
+    background-color: var(--muse-chat-backgrounds-100);
     cursor: text;
     justify-content: center;
     padding-left: 12px;

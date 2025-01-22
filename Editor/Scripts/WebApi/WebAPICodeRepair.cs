@@ -20,24 +20,33 @@ namespace Unity.Muse.Chat
                 throw new Exception("No valid organization found.");
             }
 
-            var request = new ActionCodeRepairRequest(
-                conversationId: string.IsNullOrWhiteSpace(conversationID) ? null : conversationID,
-                streamResponse: true,
-                organizationId: organizationId,
-                messageIndex: messageIndex,
-                errorToRepair: errorToRepair,
-                scriptToRepair: scriptToRepair,
-                scriptType: scriptType,
-                debug: false,
-                userPrompt: userPrompt,
-                extraBody: extraBody
-            );
-
+            var request = new ActionCodeRepairRequest(errorToRepair, messageIndex, organizationId, scriptToRepair, true)
+            {
+                ConversationId = string.IsNullOrWhiteSpace(conversationID) ? null : conversationID,
+                Tags = new List<string>(new[] { UnityDataUtils.GetProjectId() }),
+                Debug = false,
+                UserPrompt = userPrompt,
+                ScriptType = scriptType,
+                ExtraBody = extraBody
+            };
             {
                 MuseChatBackendApi api = new(CreateConfig());
-                var result = await api.PostMuseAgentCodeRepairV1Async(request, cancellationToken);
+                var result = await api.PostMuseAgentCodeRepairV1Builder(request)
+                    .BuildAndSendAsync(cancellationToken);
                 return result.Data;
             }
+        }
+
+        public async Task EditContent(string conversationId, string fragmentId, string newContent)
+        {
+            if (string.IsNullOrEmpty(conversationId))
+                return;
+
+            var configuration = CreateConfig();
+            var payload = new ConversationFragmentPatch() { Preferred = true, Content = newContent};
+            MuseChatBackendApi api = new(configuration);
+
+            await api.PatchMuseConversationFragmentUsingConversationIdAndFragmentIdV1Builder(conversationId, fragmentId, payload).BuildAndSendAsync();
         }
     }
 }
