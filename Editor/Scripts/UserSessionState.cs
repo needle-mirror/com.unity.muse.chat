@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using Unity.Muse.Chat.Commands;
 
 namespace Unity.Muse.Chat
 {
@@ -7,12 +8,15 @@ namespace Unity.Muse.Chat
     {
         const string k_HistoryOpen = "MuseChatUserSession_HistoryOpen";
         const string k_LastActiveConversationId = "MuseChatUserSession_LastActiveConversationId";
-        const ChatCommandType k_DefaultCommandMode = ChatCommandType.Ask;
+        const string k_DefaultCommandMode = AskCommand.k_CommandName;
 
         [SerializeField]
-        public ChatCommandType SelectedCommandMode = k_DefaultCommandMode;
+        public string SelectedCommandMode = k_DefaultCommandMode;
 
         public bool HasActiveSession => IsHistoryOpen || LastActiveConversationId != null;
+
+        public ServerCompatibility.CompatibilityStatus CompatibilityStatus
+            = ServerCompatibility.CompatibilityStatus.Undetermined;
 
         public bool IsHistoryOpen
         {

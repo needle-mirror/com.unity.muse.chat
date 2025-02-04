@@ -9,3 +9,8 @@
 #conversationRoot .unity-base-slider__dragger {
     background-color: var(--muse-chat-backgrounds-200);
 }
+
+.mui-text-field-popup-container {
+    position: absolute;
+    bottom: 70px;
+}

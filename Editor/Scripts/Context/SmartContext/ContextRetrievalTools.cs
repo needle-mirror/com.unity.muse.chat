@@ -16,15 +16,15 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 gameObject.GetComponents<Component>().Select(c => c != null ? c.GetType().Name : "<Missing Script>"));
         }
 
-        [ContextProvider("Returns the serialized data of the object or asset (GameObject, prefab, script, etc.)")]
+        [ContextProvider("Returns the serialized data of the object or asset (GameObject, prefab, script, etc.). Only to be used with a non-empty objectName.")]
         internal static SmartContextToolbox.ExtractedContext ObjectDataExtractor(
             [Parameter("Name of the object or asset to extract data from.")]
             string objectName,
             [Parameter(
-                "Optional: Filter to specify the NAME of a particular component on the object IF it’s a GameObject or prefab")]
+                "Optional: Filter to specify the NAME of a particular component or script on the object IF it’s a GameObject or prefab. If we use this filter we don't filter for any optional assetType.")]
             string componentFilter = null,
             [Parameter(
-                "Optional: Filter to specify an asset type, from the following asset types: script, mesh, texture, material, audioclip, sprite, model, and prefab.")]
+                "Optional: Filter to specify an asset type, from the following asset types: script, mesh, texture, material, audioclip, sprite, model, and prefab. If we use this filter we don't filter for any optional componentFilter.")]
             string assetType = null)
         {
             if (string.IsNullOrEmpty(objectName))

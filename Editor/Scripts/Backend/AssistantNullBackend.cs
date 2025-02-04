@@ -1,101 +1,107 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.BackendApi.Model;
 
 namespace Unity.Muse.Chat
 {
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-    internal class AssistantNullBackend : IAssistantBackend
+    class AssistantNullBackend : IAssistantBackend
     {
         public bool SessionStatusTrackingEnabled => false;
 
-        public bool RequestInProgress => false;
-
-        public void Cancel()
+        public Task<IEnumerable<MuseConversationInfo>> ConversationRefresh(CancellationToken ct = default)
         {
+            return Task.FromResult<IEnumerable<MuseConversationInfo>>(new MuseConversationInfo[]{});
         }
 
-        public void ConversationRefresh(Action<IEnumerable<MuseConversationInfo>> callback)
+        public Task<MuseConversation> ConversationLoad(MuseConversationId conversationId, CancellationToken ct = default)
         {
+            return Task.FromResult<MuseConversation>(null);
         }
 
-        public void ConversationLoad(MuseConversationId conversationId, Action<MuseConversation> callback)
+        public Task ConversationFavoriteToggle(MuseConversationId conversationId, bool isFavorite, CancellationToken ct = default)
         {
-        }
-
-        public void ConversationFavoriteToggle(MuseConversationId conversationId, bool isFavorite)
-        {
+            return Task.CompletedTask;
         }
 
 
-        public async Task<MuseConversationId> ConversationCreate()
+        public Task<MuseConversationId> ConversationCreate(CancellationToken ct = default)
         {
-            return MuseConversationId.GetNextInternalId();
+            return Task.FromResult(MuseConversationId.GetNextInternalId());
         }
 
-        public void ConversationRename(MuseConversationId conversationId, string newName, Action onComplete)
+        public Task ConversationRename(MuseConversationId conversationId, string newName, CancellationToken ct = default)
         {
-            onComplete?.Invoke();
+            return Task.CompletedTask;
         }
 
-        public void ConversationSetAutoTitle(MuseConversationId id, Action onComplete)
+        public Task ConversationSetAutoTitle(MuseConversationId id, CancellationToken ct = default)
         {
-            onComplete?.Invoke();
+            return Task.CompletedTask;
         }
 
-        public void ConversationDelete(MuseConversationInfo conversation, Action onComplete)
+        public Task ConversationDelete(MuseConversationInfo conversation, CancellationToken ct = default)
         {
-            onComplete?.Invoke();
+            return Task.CompletedTask;
         }
 
-        public async Task ConversationDeleteFragment(MuseConversationId conversationId, string fragment)
+        public Task ConversationDeleteFragment(MuseConversationId conversationId, string fragment, CancellationToken ct = default)
         {
+            return Task.CompletedTask;
         }
 
-        public void InspirationRefresh(Action<IEnumerable<MuseChatInspiration>> callback)
+        public Task<IEnumerable<MuseChatInspiration>> InspirationRefresh(CancellationToken ct = default)
         {
-            callback?.Invoke(new List<MuseChatInspiration>());
+            return Task.FromResult<IEnumerable<MuseChatInspiration>>(new MuseChatInspiration[]{});
         }
 
-        public void InspirationUpdate(MuseChatInspiration inspiration)
+        public Task InspirationUpdate(MuseChatInspiration inspiration, CancellationToken ct = default)
         {
+            return Task.CompletedTask;
         }
 
-        public void InspirationDelete(MuseChatInspiration inspiration)
+        public Task InspirationDelete(MuseChatInspiration inspiration, CancellationToken ct = default)
         {
+            return Task.CompletedTask;
         }
 
-        public void SendFeedback(MuseConversationId conversationId, MessageFeedback feedback)
+        public Task SendFeedback(MuseConversationId conversationId, MessageFeedback feedback, CancellationToken ct = default)
         {
+            return Task.CompletedTask;
         }
 
-        public void CheckEntitlement(Action<bool> callback)
+        public Task<bool> CheckEntitlement(CancellationToken ct = default)
         {
-            callback?.Invoke(false);
+            return Task.FromResult(false);
         }
 
-        public async Task<SmartContextResponse> SendSmartContext(MuseConversationId conversationId, string prompt, EditorContextReport context)
+        public Task<SmartContextResponse> SendSmartContext(MuseConversationId conversationId, string prompt, EditorContextReport context, CancellationToken ct = default)
         {
-            return new SmartContextResponse(new List<FunctionCall>());
+            return Task.FromResult(new SmartContextResponse(new()));
         }
 
-        public async Task<MuseChatStreamHandler> SendPrompt(MuseConversationId conversationId, string prompt, EditorContextReport context,
-            ChatCommandType commandType, List<MuseChatContextEntry> selectionContext)
+        public Task<MuseChatStreamHandler> SendPrompt(MuseConversationId conversationId, string prompt, EditorContextReport context,
+            string commandType, List<MuseChatContextEntry> selectionContext, CancellationToken ct = default)
+        {
+            return Task.FromResult<MuseChatStreamHandler>(null);
+        }
+
+        public Task<object> RepairCode(MuseConversationId conversationId, int messageIndex, string errorToRepair, string scriptToRepair,
+            ScriptType scriptType, CancellationToken ct = default)
+        {
+            return Task.FromResult<object>(null);
+        }
+
+        public Task<object> RepairCompletion(MuseConversationId conversationId, int messageIndex, string errorToRepair, string itemToRepair,
+            ProductEnum product, CancellationToken ct = default)
         {
             return null;
         }
 
-        public async Task<object> RepairCode(MuseConversationId conversationId, int messageIndex, string errorToRepair, string scriptToRepair,
-            ScriptType scriptType)
+        public Task<List<VersionSupportInfo>> GetVersionSupportInfo(string version, CancellationToken ct = default)
         {
-            return null;
-        }
-
-        public Task<List<VersionSupportInfo>> GetVersionSupportInfo(string version)
-        {
-            return null;
+            return Task.FromResult<List<VersionSupportInfo>>(null);
         }
     }
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 }

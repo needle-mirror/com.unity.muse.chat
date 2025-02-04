@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Unity.Muse.Chat.Context.SmartContext;
 using Unity.Muse.Chat.BackendApi.Client;
 using Unity.Muse.Chat.BackendApi.Model;
 using Unity.Muse.Chat.Plugins;
 using Unity.Muse.Chat.UI;
+using Unity.Muse.Chat.UI.Components;
 using Unity.Muse.Common;
 using UnityEditor;
 using UnityEngine;
@@ -50,7 +53,7 @@ namespace Unity.Muse.Chat
         /// <summary>
         /// Agent that can executes actions in the project
         /// </summary>
-        public MuseAgent Agent { get; } = new();
+        public RunCommandInterpreter Agent { get; } = new();
 
         /// <summary>
         /// Validator for generated script files
@@ -75,10 +78,11 @@ namespace Unity.Muse.Chat
             ServerCompatibility.SetBackend(backend);
         }
 
-        public MuseMessage AddInternalMessage(string text, string role = null, bool musing = true, bool sendUpdate = true)
+        public MuseMessage AddInternalMessage(string text, string role = null, bool musing = true, bool sendUpdate = true, string author = null)
         {
             var message = new MuseMessage
             {
+                Author = author,
                 Id = MuseMessageId.GetNextInternalId(m_ActiveConversation.Id),
                 IsComplete = true,
                 Content = text,
@@ -168,16 +172,24 @@ namespace Unity.Muse.Chat
 
         public void ViewInitialized()
         {
+            _ = ViewInitializedAsync();
+        }
+
+        public async Task ViewInitializedAsync(CancellationToken ct = default)
+        {
             string lastConvId = UserSessionState.instance.LastActiveConversationId;
             if (!string.IsNullOrEmpty(lastConvId))
             {
-                m_Backend.ConversationLoad(new MuseConversationId(lastConvId), PushConversation);
+                var conversation =
+                    await m_Backend.ConversationLoad(new MuseConversationId(lastConvId), ct);
+                PushConversation(conversation);
             }
 
-            RefreshConversations();
-            RefreshInspirations();
+            await RefreshConversationsAsync(ct);
+            await RefreshInspirations(ct);
 
-            m_Backend.CheckEntitlement(OnEntitlementCheckComplete);
+            var @checked = await m_Backend.CheckEntitlement(ct);
+            OnEntitlementCheckComplete(@checked);
         }
 
         public void SendFeedback(MessageFeedback feedback)

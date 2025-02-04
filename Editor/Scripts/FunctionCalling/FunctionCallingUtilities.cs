@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Unity.Muse.Chat.BackendApi;
+using Unity.Muse.Chat.Commands;
 using Unity.Muse.Chat.BackendApi.Model;
 using UnityEngine;
 using Unity.Muse.Common.Editor.Integration;
@@ -145,6 +145,20 @@ namespace Unity.Muse.Chat.FunctionCalling
                     return k_PluginTag;
                 case ContextProviderAttribute:
                     return k_SmartContextTag;
+            }
+
+            return string.Empty;
+        }
+
+        internal static string GetTagForCommandAttribute(Attribute attribute, ChatCommandHandler handler)
+        {
+            if (handler == null)
+                return string.Empty;
+
+            switch (attribute)
+            {
+                case ContextProviderAttribute:
+                    return $"command_{handler.Command}";
             }
 
             return string.Empty;

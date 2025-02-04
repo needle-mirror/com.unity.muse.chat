@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Unity.Muse.Chat.BackendApi.Model;
 
 namespace Unity.Muse.Chat
@@ -14,9 +16,10 @@ namespace Unity.Muse.Chat
 
         internal List<MuseChatInspiration> Inspirations => k_InspirationEntries;
 
-        public void RefreshInspirations()
+        public async Task RefreshInspirations(CancellationToken ct = default)
         {
-            m_Backend.InspirationRefresh(OnInspirationsReceived);
+            var inspirations = await m_Backend.InspirationRefresh(ct);
+            OnInspirationsReceived(inspirations);
         }
 
         public void InspirationUpdate(MuseChatInspiration inspiration)

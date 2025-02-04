@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Unity.Muse.Chat.Commands;
 using Unity.Muse.Chat.Context.SmartContext;
 using Unity.Muse.Common.Editor.Integration;
 using UnityEditor;
@@ -56,6 +57,18 @@ namespace Unity.Muse.Chat.FunctionCalling
                         {
                             var att = method.GetCustomAttribute<T>();
 
+                            // If the method is defined in a dynamic command handler, it gets a special tag instead
+                            if (ChatCommands.TryGetCommandHandler(method.DeclaringType, out var commandHandler))
+                            {
+                                return new CachedFunction
+                                {
+                                    Method = method,
+                                    FunctionDefinition = FunctionCallingUtilities.GetFunctionDefinition(
+                                    method,
+                                    descriptionExtractor(att),
+                                    FunctionCallingUtilities.GetTagForCommandAttribute(att, commandHandler))
+                                };
+                            }
                             return new CachedFunction
                             {
                                 Method = method,

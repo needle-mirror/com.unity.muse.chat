@@ -1,10 +1,13 @@
 using System;
+using Unity.Muse.Chat.Commands;
 
 namespace Unity.Muse.Chat
 {
     [Serializable]
     internal struct MuseMessage
     {
+        const string k_completionTag = "ai assistant ";
+
         public MuseMessageId Id;
         public string Author;
         public string Role;
@@ -17,19 +20,38 @@ namespace Unity.Muse.Chat
         public long Timestamp;
         public int MessageIndex;
 
-        public readonly ChatCommandType ChatCommand(ChatCommandType defaultCommand)
+        public readonly string GetChatCommand()
         {
-            if (string.IsNullOrEmpty(Author))
-                return defaultCommand;
+            if (Author == null)
+                return "";
 
-#if ENABLE_ASSISTANT_BETA_FEATURES
-            if (Author.ToLower().Contains("agent"))
-                return ChatCommandType.Run;
+            var author = Author.ToLower();
+            if (author.Contains("agent"))
+                return RunCommand.k_CommandName;
 
-            if (Author.ToLower().Contains("codegen"))
-                return ChatCommandType.Code;
-#endif
-            return ChatCommandType.Ask;
+            if (author.Contains("codegen"))
+                return CodeCommand.k_CommandName;
+
+            if (author.StartsWith(k_completionTag))
+            {
+                var versionTagLocation = author.IndexOf("(v");
+                if (versionTagLocation != -1)
+                {
+                    author = author.Substring(k_completionTag.Length, versionTagLocation - k_completionTag.Length).Trim();
+                    return author;
+                }
+            }
+
+            return author;
+        }
+
+        public readonly ChatCommandHandler GetChatCommandHandler()
+        {
+            if (!ChatCommands.TryGetCommandHandler(GetChatCommand(), out var handler))
+            {
+                ChatCommands.TryGetCommandHandler(AskCommand.k_CommandName, out handler);
+            }
+            return handler;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using Unity.Muse.Chat.BackendApi.Model;
+using Unity.Muse.Chat.Commands;
 
 namespace Unity.Muse.Chat
 {
@@ -14,34 +15,14 @@ namespace Unity.Muse.Chat
                 Value = apiData.Value
             };
 
-            switch (apiData.Mode)
+            var commandString = apiData.Mode.ToString().ToLower();
+            if (ChatCommands.TryGetCommandHandler(commandString, out _))
             {
-                case Inspiration.ModeEnum.Ask:
-                {
-                    result.Mode = ChatCommandType.Ask;
-                    break;
-                }
-
-                case Inspiration.ModeEnum.Run:
-                {
-#if ENABLE_ASSISTANT_BETA_FEATURES
-                    result.Mode = ChatCommandType.Run;
-#endif
-                    break;
-                }
-
-                case Inspiration.ModeEnum.Code:
-                {
-#if ENABLE_ASSISTANT_BETA_FEATURES
-                    result.Mode = ChatCommandType.Code;
-#endif
-                    break;
-                }
-
-                default:
-                {
-                    throw new InvalidOperationException();
-                }
+                result.Command = commandString;
+            }
+            else
+            {
+                throw new InvalidOperationException();
             }
 
             return result;
@@ -54,29 +35,10 @@ namespace Unity.Muse.Chat
                 Id = data.Id.IsValid ? data.Id.Value : default,
                 Description = data.Description
             };
-
-            switch (data.Mode)
+            if (Enum.TryParse<Inspiration.ModeEnum>(data.Command, true, out var result))
             {
-                case ChatCommandType.Ask:
-                {
-                    apiData.Mode = Inspiration.ModeEnum.Ask;
-                    break;
-                }
-#if ENABLE_ASSISTANT_BETA_FEATURES
-                case ChatCommandType.Run:
-                {
-                    apiData.Mode = Inspiration.ModeEnum.Run;
-                    break;
-                }
-
-                case ChatCommandType.Code:
-                {
-                    apiData.Mode = Inspiration.ModeEnum.Code;
-                    break;
-                }
-#endif
+                apiData.Mode = result;
             }
-
             return apiData;
         }
     }

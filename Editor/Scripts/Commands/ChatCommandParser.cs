@@ -1,7 +1,6 @@
-using System;
 using System.Text.RegularExpressions;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.Commands
 {
     internal static class ChatCommandParser
     {
@@ -12,23 +11,24 @@ namespace Unity.Muse.Chat
             return text.StartsWith('/');
         }
 
-        public static (ChatCommandType command, string arguments) Parse(string input)
+        public static (string command, string arguments) Parse(string input)
         {
             var match = s_CommandPattern.Match(input);
 
             if (match.Success)
             {
-                var cmdText = match.Groups[1].Value;
+                var cmdText = match.Groups[1].Value.ToLower();
                 var argumentText = match.Groups[2].Value;
 
-                if (Enum.TryParse<ChatCommandType>(cmdText, true, out var cmdType))
-                    return (cmdType, argumentText);
+
+                if (ChatCommands.TryGetCommandHandler(cmdText, out var handler))
+                    return (cmdText, argumentText);
 
                 // If command is unknown default, to Ask
-                return (ChatCommandType.Ask, argumentText);
+                return (AskCommand.k_CommandName, argumentText);
             }
 
-            return (ChatCommandType.Ask, input);
+            return (AskCommand.k_CommandName, input);
         }
     }
 }

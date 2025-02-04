@@ -1,46 +1,43 @@
-using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.BackendApi.Model;
 
 namespace Unity.Muse.Chat
 {
-    internal interface IAssistantBackend
+    interface IAssistantBackend
     {
         bool SessionStatusTrackingEnabled { get; }
+        Task<IEnumerable<MuseConversationInfo>> ConversationRefresh(CancellationToken ct = default);
+        Task<MuseConversation> ConversationLoad(MuseConversationId conversationId, CancellationToken ct = default);
+        Task ConversationFavoriteToggle(MuseConversationId conversationId, bool isFavorite, CancellationToken ct = default);
+        Task<MuseConversationId> ConversationCreate(CancellationToken ct = default);
+        Task ConversationRename(MuseConversationId conversationId, string newName, CancellationToken ct = default);
+        Task ConversationSetAutoTitle(MuseConversationId id, CancellationToken ct = default);
+        Task ConversationDelete(MuseConversationInfo conversation, CancellationToken ct = default);
+        Task ConversationDeleteFragment(MuseConversationId conversationId, string fragment, CancellationToken ct = default);
 
-        bool RequestInProgress { get; }
+        Task<IEnumerable<MuseChatInspiration>> InspirationRefresh(CancellationToken ct = default);
+        Task InspirationUpdate(MuseChatInspiration inspiration, CancellationToken ct = default);
+        Task InspirationDelete(MuseChatInspiration inspiration, CancellationToken ct = default);
 
-        void Cancel();
+        Task SendFeedback(MuseConversationId conversationId, MessageFeedback feedback, CancellationToken ct = default);
 
-        void ConversationRefresh(Action<IEnumerable<MuseConversationInfo>> callback);
-        void ConversationLoad(MuseConversationId conversationId, Action<MuseConversation> callback);
-        void ConversationFavoriteToggle(MuseConversationId conversationId, bool isFavorite);
-        Task<MuseConversationId> ConversationCreate();
-        void ConversationRename(MuseConversationId conversationId, string newName, Action onComplete);
-        void ConversationSetAutoTitle(MuseConversationId id, Action onComplete);
-        void ConversationDelete(MuseConversationInfo conversation, Action onComplete);
-        Task ConversationDeleteFragment(MuseConversationId conversationId, string fragment);
+        Task<bool> CheckEntitlement(CancellationToken ct = default);
 
-        void InspirationRefresh(Action<IEnumerable<MuseChatInspiration>> callback);
-        void InspirationUpdate(MuseChatInspiration inspiration);
-        void InspirationDelete(MuseChatInspiration inspiration);
+        Task<SmartContextResponse> SendSmartContext(MuseConversationId conversationId, string prompt, EditorContextReport context, CancellationToken ct = default);
 
-        void SendFeedback(MuseConversationId conversationId, MessageFeedback feedback);
+        Task<MuseChatStreamHandler> SendPrompt(MuseConversationId conversationId, string prompt, EditorContextReport context, string command, List<MuseChatContextEntry> selectionContext, CancellationToken ct = default);
 
-        void CheckEntitlement(Action<bool> callback);
-
-        Task<SmartContextResponse> SendSmartContext(MuseConversationId conversationId, string prompt, EditorContextReport context);
-
-        Task<MuseChatStreamHandler> SendPrompt(MuseConversationId conversationId, string prompt, EditorContextReport context, ChatCommandType commandType, List<MuseChatContextEntry> selectionContext);
-
-        Task<object> RepairCode(MuseConversationId conversationId, int messageIndex, string errorToRepair, string scriptToRepair, ScriptType scriptType);
+        Task<object> RepairCode(MuseConversationId conversationId, int messageIndex, string errorToRepair, string scriptToRepair, ScriptType scriptType, CancellationToken ct = default);
 
         /// <summary>
         /// Returns version support info that can used to check if the version of the server the client wants to
         /// communicate with is supported. Returns null if the version support info could not be retrieved.
         /// </summary>
         /// <param name="version">Server version the client wants to hit expressed as the url name. Example: v1</param>
-        Task<List<VersionSupportInfo>> GetVersionSupportInfo(string version);
+        Task<List<VersionSupportInfo>> GetVersionSupportInfo(string version, CancellationToken ct = default);
+
+        Task<object> RepairCompletion(MuseConversationId conversationId, int messageIndex, string errorToRepair, string itemToRepair, ProductEnum product, CancellationToken ct = default);
     }
 }

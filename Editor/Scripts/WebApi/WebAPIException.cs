@@ -1,14 +1,11 @@
 using System;
 
-namespace Unity.Muse.Chat
+namespace Unity.Muse.Chat.WebApi
 {
-    class WebAPIException : Exception
+    class WebApiException : Exception
     {
-        public object APIData { get; set; }
+        public object ApiData { get; }
 
-        public WebAPIException(string message, object data) : base(message)
-        {
-            APIData = data;
-        }
+        public WebApiException(string message, object data) : base(message) => ApiData = data;
     }
 }

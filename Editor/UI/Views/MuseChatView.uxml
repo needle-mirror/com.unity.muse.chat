@@ -37,10 +37,6 @@
             <ui:VisualElement name="footerRoot" class="mui-footer -muse-chat-panel">
 
                 <ui:VisualElement name="addContextRoot" class="mui-chat-selected-context-root">
-                    <ui:Button name="addContextButton" size="s" class="mui-chat-selected-context-button mui-selected-context-button-default-behavior" tooltip="Attach items from your project">
-                        <ui:Image class="mui-action-button-image mui-icon-pick"/>
-                        <ui:Label class="mui-chat-label mui-chat-selected-context-button-label" text="Attach items"/>
-                    </ui:Button>
                     <ui:VisualElement class="mui-chat-context-spacer"/>
                     <ui:Button name="clearContextButton" size="s" class="mui-chat-clear-context-button" text="Clear all"/>
                 </ui:VisualElement>

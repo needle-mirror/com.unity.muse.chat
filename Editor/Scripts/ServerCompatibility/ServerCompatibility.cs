@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Unity.Muse.Chat.BackendApi.Model;
 using Unity.Muse.Common.Account;
 using UnityEditor;
+using UnityEngine;
 
 namespace Unity.Muse.Chat
 {
@@ -13,21 +14,17 @@ namespace Unity.Muse.Chat
         const string k_Version = "v1";
 
         // Assume the server is compatible to being with
-        public static CompatibilityStatus Status { get; private set; } = CompatibilityStatus.Supported;
+        public static CompatibilityStatus Status => UserSessionState.instance.CompatibilityStatus;
 
         public static Action<CompatibilityStatus> OnCompatibilityChanged;
         static IAssistantBackend s_AssistantBackend;
 
-        const double k_RefreshRateSeconds = 60 * 2; // Check every 2 minutes for compatibility changes
-        static double s_TimeSinceLastRefresh;
+        static Task m_RefreshTask;
 
         static ServerCompatibility()
         {
             SessionStatus.OnChanges -= Refresh;
             SessionStatus.OnChanges += Refresh;
-
-            EditorApplication.update -= TimedRefresh;
-            EditorApplication.update += TimedRefresh;
         }
 
         public static void SetBackend(IAssistantBackend backend)
@@ -53,7 +50,8 @@ namespace Unity.Muse.Chat
         /// </summary>
         public static void Refresh()
         {
-            _ = UpdateCompatibility();
+            if(m_RefreshTask == null)
+                m_RefreshTask = UpdateCompatibility();
         }
 
         static async Task UpdateCompatibility()
@@ -63,6 +61,11 @@ namespace Unity.Muse.Chat
                 if(s_AssistantBackend == null)
                     return;
 
+                // Try to see if there is some cached info about this.
+                if (UserSessionState.instance.CompatibilityStatus != CompatibilityStatus.Undetermined)
+                    return;
+
+                // At this point, a cache was not used. A webrequest needs to be made and the resulting status cached
                 var versionInfo = await s_AssistantBackend.GetVersionSupportInfo(k_Version);
 
                 if (versionInfo != null)
@@ -71,27 +74,25 @@ namespace Unity.Muse.Chat
                         .FirstOrDefault(v => v.RoutePrefix == k_Version);
 
                     if(relevantVersion == default)
-                        Status = CompatibilityStatus.Unsupported;
+                        UserSessionState.instance.CompatibilityStatus = CompatibilityStatus.Unsupported;
                     else
-                        Status = GetCompatibilityStatus(relevantVersion.SupportStatus);
+                        UserSessionState.instance.CompatibilityStatus = GetCompatibilityStatus(relevantVersion.SupportStatus);
 
                     OnCompatibilityChanged?.Invoke(Status);
                 }
                 else
                 {
-                    Status = CompatibilityStatus.Unknown;
+                    UserSessionState.instance.CompatibilityStatus = CompatibilityStatus.Unknown;
                     OnCompatibilityChanged?.Invoke(Status);
                 }
             }
-#pragma warning disable CS0168 // Variable is declared but never used
-            catch (Exception _)
-#pragma warning restore CS0168 // Variable is declared but never used
+            catch (Exception)
             {
-                Status = CompatibilityStatus.Unknown;
+                UserSessionState.instance.CompatibilityStatus = CompatibilityStatus.Unknown;
                 OnCompatibilityChanged?.Invoke(Status);
             }
 
-            s_TimeSinceLastRefresh = EditorApplication.timeSinceStartup;
+            m_RefreshTask = null;
         }
 
         static CompatibilityStatus GetCompatibilityStatus(VersionSupportInfo.SupportStatusEnum status)
@@ -105,20 +106,13 @@ namespace Unity.Muse.Chat
             };
         }
 
-        static void TimedRefresh()
-        {
-            if (EditorApplication.timeSinceStartup - s_TimeSinceLastRefresh > k_RefreshRateSeconds)
-                Refresh();
-        }
-
         public enum CompatibilityStatus
         {
             /// <summary>
-            /// Compatibility status is unknown when the server is not reachable, therefore the server cannot report
-            /// its status. This should not be used to block the user and other mechanisms should be used to handle
-            /// detecting network issues.
+            /// The compatibility status has not yet been determined. A web request needs to be sent to the server to
+            /// determine the status.
             /// </summary>
-            Unknown,
+            Undetermined,
 
             /// <summary>
             /// The server has reported that this client is supported.
@@ -133,7 +127,14 @@ namespace Unity.Muse.Chat
             /// <summary>
             /// The server has reported that this client is unsupported.
             /// </summary>
-            Unsupported
+            Unsupported,
+
+            /// <summary>
+            /// Compatibility status is unknown when the server is not reachable, therefore the server cannot report
+            /// its status. This should not be used to block the user and other mechanisms should be used to handle
+            /// detecting network issues.
+            /// </summary>
+            Unknown
         }
     }
 }

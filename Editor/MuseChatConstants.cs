@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Unity.Muse.Chat.UI.Utils;
 using UnityEditor;
 
 namespace Unity.Muse.Chat
@@ -12,6 +14,8 @@ namespace Unity.Muse.Chat
         internal const int CompactWindowThreshold = 700;
         internal const string CompactStyle = "mui-compact";
         internal const string IconStylePrefix = "mui-icon-";
+
+        internal const int RoutesPopupOffset = 13;
 
         internal const string TextCutoffSuffix = "...";
 

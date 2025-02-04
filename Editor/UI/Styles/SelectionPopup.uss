@@ -1,6 +1,6 @@
 .selectionpopup__element {
     position: absolute;
-    bottom: 90px;
+    bottom: -30px;
     left: 16px;
     right: 16px;
     min-width: 380px;

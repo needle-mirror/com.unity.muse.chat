@@ -5,6 +5,8 @@ using Markdig.Syntax;
 using UnityEditor;
 using UnityEngine;
 using Unity.Muse.Chat;
+using Unity.Muse.Chat.Commands;
+using Unity.Muse.Chat.WebApi;
 using Unity.Muse.Editor.Markup.Renderers;
 using UnityEngine.UIElements;
 
@@ -28,7 +30,7 @@ namespace Unity.Muse.Editor.Markup
         internal readonly IList<VisualElement> m_OutputTextElements;
         internal VisitingState m_VisitingState;
         private StringBuilder m_Builder = new();
-        private IList<WebAPI.SourceBlock> m_SourceBlocks;
+        private IList<SourceBlock> m_SourceBlocks;
         internal ListBlock m_CurrentListBlock;
 
         internal readonly string m_CodeColor;
@@ -69,14 +71,14 @@ namespace Unity.Muse.Editor.Markup
 
         internal void AddSource(string source)
         {
-            var sourceBlock = JsonUtility.FromJson<WebAPI.SourceBlock>(source);
+            var sourceBlock = JsonUtility.FromJson<SourceBlock>(source);
             m_SourceBlocks.Add(sourceBlock);
 
             //TODO-boris.bauer: add a count
             //AppendText($" <sprite=\"{MuseEditorUI.k_ReferenceSprite}\" index={m_SourceBlocks.Count}>");
         }
 
-        public ChatMarkdownRenderer(IList<WebAPI.SourceBlock> sourceBlocks, IList<VisualElement> outTextElements, VisualElement previousLastElement)
+        public ChatMarkdownRenderer(IList<SourceBlock> sourceBlocks, IList<VisualElement> outTextElements, VisualElement previousLastElement, ChatCommandHandler commandHandler = null)
         {
             m_SourceBlocks = sourceBlocks;
             m_OutputTextElements = outTextElements;
@@ -104,7 +106,7 @@ namespace Unity.Muse.Editor.Markup
             ObjectRenderers.Add(new PluginsContainerRenderer());
 
             // Required to output block of code within "```csharp ... ```" for example
-            ObjectRenderers.Add(new FencedCodeBlockRenderer());
+            ObjectRenderers.Add(new FencedCodeBlockRenderer { CustomFenceHandler = commandHandler });
 
             ObjectRenderers.Add(new CodeInlineBlockRenderer());
 

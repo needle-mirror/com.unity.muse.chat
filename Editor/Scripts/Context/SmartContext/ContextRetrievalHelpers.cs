@@ -153,7 +153,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
             return finalResult;
         }
 
-        internal static IEnumerable<ObjectAndScore> FuzzyObjectSearchWithScore(string pattern, IEnumerable<Object> objectsToSearch)
+        internal static IEnumerable<ObjectAndScore> FuzzyObjectSearchWithScore(string pattern,
+            IEnumerable<Object> objectsToSearch, Func<Object, string> customNameFunction = null)
         {
             pattern ??= string.Empty;
 
@@ -169,7 +170,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                     .Select(obj =>
                     {
                         long outScore = 0;
-                        var isMatch = FuzzySearch.FuzzyMatch(pattern, obj.name, ref outScore);
+                        var isMatch = FuzzySearch.FuzzyMatch(pattern, GetName(obj), ref outScore);
 
                         // If the object name does not match, try searching by path:
                         if (includePathSearch && !isMatch)
@@ -196,7 +197,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                             .Select(obj =>
                             {
                                 long outScore = 0;
-                                var isMatch = FuzzySearch.FuzzyMatch(splitSearchPattern, obj.name, ref outScore);
+                                var isMatch = FuzzySearch.FuzzyMatch(splitSearchPattern, GetName(obj), ref outScore);
                                 return new { obj, outScore, isMatch };
                             })
                             .Where(x => x.isMatch));
@@ -220,8 +221,15 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             var finalResult = results
                 .OrderByDescending(x => x.outScore)
+                .ThenBy(x => x.obj.name.Length)
                 .ThenBy(x => x.obj.name.ToLowerInvariant() != pattern) // Prefer objects that have an exact name match
                 .Select(x => new ObjectAndScore { Object = x.obj, Score = x.outScore });
+
+            string GetName(Object obj)
+            {
+                var name = customNameFunction != null ? customNameFunction(obj) : obj.name;
+                return name;
+            }
 
             return finalResult;
         }
@@ -292,8 +300,10 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 }
             }
 
+
             var finalResult = results
                 .OrderByDescending(x => x.outScore)
+                .ThenBy(x => x.objPath.Length)
                 .ThenBy(x => x.objPath.ToLowerInvariant() != pattern) // Prefer objects that have an exact name match
                 .Select(x => new PathAndScore { Path = x.objPath, Score = x.outScore });
 

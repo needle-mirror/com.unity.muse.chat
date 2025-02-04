@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.Muse.Chat.BackendApi.Model;
 
@@ -22,10 +23,6 @@ namespace Unity.Muse.Chat
         public bool ValidRepairTarget(MuseMessageId messageId)
         {
             // Messages can be repaired if they are the last message in the conversation
-            // And there is a token cancellation source from the particular conversation
-            if (!m_Backend.RequestInProgress)
-                return false;
-
             return (m_ActiveConversation.Messages.FindIndex(match => match.Id == messageId) == (m_ActiveConversation.Messages.Count - 1));
         }
 
@@ -55,6 +52,34 @@ namespace Unity.Muse.Chat
 
             k_MessagesUnderRepair.Remove(messageId);
             return repairedMessage as string;
+        }
+
+        /// <summary>
+        /// Repair the completion results with the given errors
+        /// </summary>
+        internal async Task<string> RepairCompletion(MuseMessageId messageId, int messageIndex, string errorToRepair, string itemToRepair, ProductEnum product)
+        {
+            // Add the message to the list of scripts under repair so it doesn't get repaired twice
+            k_MessagesUnderRepair.Add(messageId);
+
+            // Call the repair route and invoke OnCodeRepairComplete event when the repair is done
+            CurrentPromptState = PromptState.RepairCode;
+
+            OnDataChanged?.Invoke(new MuseChatUpdateData
+            {
+                IsMusing = true,
+                Type = MuseChatUpdateType.CodeRepair
+            });
+
+            var repairedMessage = await m_Backend.RepairCompletion(messageId.ConversationId, messageIndex, errorToRepair,  itemToRepair, product);
+            OnDataChanged?.Invoke(new MuseChatUpdateData
+            {
+                IsMusing = false,
+                Type = MuseChatUpdateType.CodeRepair
+            });
+
+            k_MessagesUnderRepair.Remove(messageId);
+            return ExtractContent(repairedMessage);
         }
     }
 }

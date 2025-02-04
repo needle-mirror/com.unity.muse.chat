@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using Unity.Muse.Chat.BackendApi.Client;
 using Unity.Muse.Chat.BackendApi.Model;
+using Unity.Muse.Chat.Commands;
 using UnityEditor;
 using UnityEngine;
 
@@ -36,7 +38,7 @@ namespace Unity.Muse.Chat
 
         internal PromptState CurrentPromptState { get; private set; }
 
-        public async void ProcessEditPrompt(string editedPrompt, MuseMessageId messageId)
+        public async void ProcessEditPrompt(string editedPrompt, MuseMessageId messageId, CancellationToken ct = default)
         {
             if (string.IsNullOrEmpty(editedPrompt))
             {
@@ -85,12 +87,12 @@ namespace Unity.Muse.Chat
                     // cancelled before the server receive it.
                     if (messageIdToDelete.Type == MuseMessageIdType.External)
                     {
-                        await m_Backend.ConversationDeleteFragment(messageIdToDelete.ConversationId, messageIdToDelete.FragmentId);
+                        await m_Backend.ConversationDeleteFragment(messageIdToDelete.ConversationId, messageIdToDelete.FragmentId, ct);
                     }
                 }
 
                 // Now post the given prompt as a new chat:
-                ProcessPrompt(editedPrompt);
+                await ProcessPrompt(editedPrompt, ct);
             }
             catch (Exception ex)
             {
@@ -106,7 +108,6 @@ namespace Unity.Muse.Chat
             }
 
             m_ContextCancelToken?.Cancel();
-            m_Backend.Cancel();
 
             // Cancel any active operation to ensure no additional messages arrive while or after we're deleting:
             MuseChatStreamHandler stream = GetStreamForConversation(m_ActiveConversation.Id);
@@ -115,7 +116,7 @@ namespace Unity.Muse.Chat
                 stream.CancellationTokenSource.Cancel();
         }
 
-        private async Task CreateNewConversationFromPrompt(PromptProcessState state)
+        private async Task CreateNewConversationFromPrompt(PromptProcessState state, CancellationToken ct = default)
         {
             // If there is no active conversation, create a new one:
             state.NeedsConversationTitle = true;
@@ -149,7 +150,7 @@ namespace Unity.Muse.Chat
 
             try
             {
-                m_ActiveConversation.Id = await m_Backend.ConversationCreate();
+                m_ActiveConversation.Id = await m_Backend.ConversationCreate(ct);
             }
             catch (Exception e)
             {
@@ -290,15 +291,23 @@ namespace Unity.Muse.Chat
                 state.Conversation.Messages[assistantMessageIndex] = currentAssistantMessage;
             }
 
-            RefreshConversations();
+            _ = RefreshConversationsAsync();
         }
 
-        public async void ProcessPrompt(string prompt)
+        public async Task ProcessPrompt(string prompt, CancellationToken ct = default)
         {
+            // Check if the prompt contains a command
+            var command = UserSessionState.instance.SelectedCommandMode;
+            if (ChatCommandParser.IsCommand(prompt))
+                (command, prompt) = ChatCommandParser.Parse(prompt);
+
             CurrentPromptState = PromptState.GatheringContext;
 
             // processing a prompt either acts on the current active conversation or requires a new one to be created.
             PromptProcessState promptState = new PromptProcessState(prompt, m_ActiveConversation);
+
+            // TODO: Refactor so this is not necessary for Orchestration to work
+            await OrchestrationPrepareProcessPrompt(promptState, ct);
 
             // Create a thread if needed
             // PATCH NOTES: After a domain reload, if the m_ActiveConversation is null FOR SOME REASON it is no longer
@@ -307,7 +316,7 @@ namespace Unity.Muse.Chat
             // find the root cause of the issue. This check at least catches the problem
             if (promptState.Conversation == null || promptState.Conversation.Messages.Count == 0)
             {
-                await CreateNewConversationFromPrompt(promptState);
+                await CreateNewConversationFromPrompt(promptState, ct);
             }
             else
             {
@@ -316,11 +325,6 @@ namespace Unity.Muse.Chat
                 promptState.PlaceholderUserMessage = AddInternalMessage(prompt, role: k_UserRole, sendUpdate: true);
                 AddIncompleteMessage(string.Empty, k_AssistantRole, sendUpdate: false);
             }
-
-            // Check if the prompt contains a command
-            var command = UserSessionState.instance.SelectedCommandMode;
-            if (ChatCommandParser.IsCommand(prompt))
-                (command, prompt) = ChatCommandParser.Parse(prompt);
 
             try
             {
@@ -350,7 +354,7 @@ namespace Unity.Muse.Chat
                 CurrentPromptState = PromptState.Musing;
 
                 var selectionContext = BuildPromptSelectionContext(k_ObjectAttachments, k_ConsoleAttachments);
-                var stream = await m_Backend.SendPrompt(promptState.Conversation.Id, prompt, context, command, selectionContext);
+                var stream = await m_Backend.SendPrompt(promptState.Conversation.Id, prompt, context, command, selectionContext, ct);
 
                 // To avoid having to re-fetch we copy the context back into the placeholder internal message
                 promptState.PlaceholderUserMessage.Context = selectionContext.ToArray();
@@ -380,7 +384,9 @@ namespace Unity.Muse.Chat
                     // Otherwise we ignore response content. We still need to populate the IsComplete and Timestamp
                     // fields and enqueue the message for update even when an error occurs.
                     if (!TryHandleApiResponseAsError(response, ref message))
-                        message.Content = response.Content as string;
+                    {
+                        message.Content = ExtractContent(response.Content);
+                    }
 
                     message.IsComplete = true;
                     message.Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -397,7 +403,8 @@ namespace Unity.Muse.Chat
 
                 if (promptState.NeedsConversationTitle)
                 {
-                    m_Backend.ConversationSetAutoTitle(promptState.Conversation.Id, RefreshConversations);
+                    await m_Backend.ConversationSetAutoTitle(promptState.Conversation.Id, ct);
+                    await RefreshConversationsAsync(ct);
                 }
             }
             catch (ConnectionException ce)
@@ -457,6 +464,31 @@ namespace Unity.Muse.Chat
             }
 
             return result;
+        }
+
+        string ExtractContent(object response)
+        {
+            var content = response as string;
+
+            if (content == null)
+            {
+                var asJson = response as JContainer;
+                while (asJson != null)
+                {
+                    var childResponse = asJson.SelectToken("response");
+                    if (childResponse == null)
+                        return "";
+
+                    if (childResponse.Type == JTokenType.String)
+                    {
+                        content = childResponse.ToString();
+                        break;
+                    }
+                    else
+                        return "";
+                }
+            }
+            return content;
         }
     }
 }

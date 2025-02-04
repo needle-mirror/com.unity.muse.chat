@@ -4,6 +4,16 @@ All notable changes to this package will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.1-pre.4] - 2025-02-04
+
+### Changed
+- Major update to chat bar UX
+- Updated WebAPI calls to be fully async
+- Disabled rich text in SelectionElements
+- Reduced calling of the `/versions` endpoint
+- Improvements to the ObjectDataExtractor
+- Optimized conversation retrieval
+
 ## [1.1.1-pre.3] - 2024-12-20
 
 ### Changed

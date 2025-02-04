@@ -27,6 +27,7 @@
     --muse-chat-color-crimson-dark: #881f49;
     --muse-chat-light-mode-icon-tint: var(--muse-chat-primary-200);
     --muse-chat-user-message-bg: #bbbbbb;
+    --muse-chat-hover: #585858;
     --muse-chat-panel-bg: #b1b1b1;
     --muse-chat-header-text-color: var(--muse-chat-primary-300);
     --muse-chat-header-text-strong: var(--muse-chat-text-primary);
@@ -40,6 +41,12 @@
     --muse-chat-add-context-button-open: #96C3FB;
     --muse-chat-action-button-default: var(--muse-chat-primary-300);
     --muse-chat-prefab-color: #2a5a96;
+    --muse-chat-text-focus: #4F657F;
+    --muse-chat-text-action-button-default: #676767;
+    --muse-chat-color-gray: rgba(88, 88, 88, 1);
+    --muse-chat-color-focus-blue: rgba(58, 121, 187, 1);
+    --muse-chat-experimental-bg: var(--muse-chat-primary-200);
+    --muse-chat-experimental-border: #ffce59;
 
     --muse-agent-action-border: #BDBDBD;
     --muse-agent-selection-empty: #808080;
@@ -184,6 +191,16 @@
 
 .mui-icon-pick {
     --unity-image: resource('pick.png');
+}
+
+.mui-icon-shortcut {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/Shortcut.png');
+    --unity-image-tint-color: var(--muse-chat-light-mode-icon-tint);
+}
+
+.mui-icon-arrow-up {
+    --unity-image: url('project://database/Packages/com.unity.muse.chat/Editor/UI/Assets/icons/ArrowUp.png');
+    --unity-image-tint-color: var(--muse-chat-light-mode-icon-tint);
 }
 
 .mui-icon-prefab {

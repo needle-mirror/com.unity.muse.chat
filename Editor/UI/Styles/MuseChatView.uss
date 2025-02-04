@@ -58,10 +58,6 @@
     flex-direction: column;
 }
 
-.mui-musing-active {
-    --unity-image-tint-color: white;
-}
-
 #chatContentRoot {
     background-color: var(--muse-chat-panel-bg);
     flex-grow: 1;

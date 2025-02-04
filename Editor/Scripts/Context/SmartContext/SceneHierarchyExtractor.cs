@@ -17,6 +17,12 @@ namespace Unity.Muse.Chat.Context.SmartContext
             T Parent { get; }
         }
 
+        internal struct ComponentTypeScores
+        {
+            public Type Type;
+            public long Score;
+        }
+
         /// <summary>
         /// Stores object hierarchy in a tree structure.
         /// </summary>
@@ -33,6 +39,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             protected readonly T k_ObjectRef;
             public readonly List<HierarchyMapEntry<T>> Children = new();
+
+            public bool Truncated { get; protected set; }
 
             public abstract string ObjectName { get; }
 
@@ -192,6 +200,8 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             private void Prune(ref bool prunedChildren, int depth, int pruneDepth)
             {
+                Truncated = true;
+
                 // Find first child node at pruneDepth that has no children and remove it:
                 for (var i = 0; i < Children.Count; i++)
                 {
@@ -233,13 +243,17 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             public readonly string Name;
 
-            internal GameObjectInfo(GameObject obj, Scene scene = default)
+            internal GameObjectInfo(GameObject obj, Scene scene = default, string nameSuffix = null)
             {
                 Object = obj;
 
                 if (obj != null)
                 {
                     Name = obj.name;
+                    if (!string.IsNullOrEmpty(nameSuffix))
+                    {
+                        Name += nameSuffix;
+                    }
                 }
                 else if (scene.IsValid())
                 {
@@ -321,6 +335,7 @@ namespace Unity.Muse.Chat.Context.SmartContext
                     if (truncatedChildren > 0)
                     {
                         result += " - There are truncated children";
+                        Truncated = true;
                     }
 
                     return result;
@@ -448,7 +463,9 @@ namespace Unity.Muse.Chat.Context.SmartContext
             "If no name filter is provided, all gameObjects in the scene are returned.")]
         internal static SmartContextToolbox.ExtractedContext SceneHierarchyExtractor(
             [Parameter(
-                "Filters to specify which gameObjects' hierarchies to return. Use an empty list if the full scene hierarchy is needed.")]
+                "Filters to specify which gameObjects' hierarchies to return. Use an empty list if the full scene hierarchy is needed. " +
+                "Optional: Add one component type per gameObject only where we want the component to exist or be absent, by adding a suffix in the name starting with '|type:' followed by the component type name. " +
+                "To search for a component on any gameObject a '*' wildcard instead of an object name works, e.g. the parameter '*|type:Light' searches all Light components without checking object names.")]
             params string[] gameObjectNameFilters)
         {
             GameObjectHierarchyMapEntry.SmartContextLimit = SmartContextToolbox.SmartContextLimit;
@@ -466,29 +483,203 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
             GameObjectHierarchyMapEntry.Reset();
 
+            var finalGameObjectFilters = new List<string>();
+            var finalComponentFilters = new List<string>();
+
+            // For each filtered name create a matching assetTypeFilters entry, an empty string or a given type
+            string[] componentFilters = null;
+            if (gameObjectNameFilters is { Length: > 0 })
+            {
+                for (int i = 0; i < gameObjectNameFilters.Length; i++)
+                {
+                    var filter = gameObjectNameFilters[i];
+
+#if MUSE_INTERNAL
+                    Debug.Log($"SceneHierarchyExtractor - Checking '{gameObjectNameFilters[i]}' for any type filters...");
+#endif
+
+                    // See if "|type:" or "|~type:" is in the string, and extract the two strings before and after that
+                    var split = Regex.Split(filter, @"\|type:|\|~type:");
+                    if (split.Length == 2)
+                    {
+                        var name = split[0];
+
+                        // Note: Smart Context thinks '!' is a valid negation operator
+                        if (name is "*" or "!" or "!*")
+                        {
+                            name = "";
+                        }
+
+                        // Has another type at the start
+                        if (name.StartsWith("type:"))
+                        {
+                            var firstType = name.Substring("type:".Length);
+
+                            name = "";
+
+                            if (!NameAndTypeExist(finalGameObjectFilters, finalComponentFilters, name, firstType))
+                            {
+                                finalGameObjectFilters.Add(name);
+                                finalComponentFilters.Add(firstType);
+
+#if MUSE_INTERNAL
+                                Debug.Log(
+                                    $"Found 1st additional object name '{name}' with component filter: '{firstType}'");
+#endif
+                            }
+                        }
+
+                        if (!NameAndTypeExist(finalGameObjectFilters, finalComponentFilters, name, split[1]))
+                        {
+                            finalGameObjectFilters.Add(name);
+                            finalComponentFilters.Add(split[1]);
+
+#if MUSE_INTERNAL
+                            Debug.Log($"Found object name '{name}' with component filter: '{split[1]}'");
+#endif
+                        }
+                    }
+                    else
+                    {
+                        if (!NameAndTypeExist(finalGameObjectFilters, finalComponentFilters, gameObjectNameFilters[i], string.Empty))
+                        {
+                            finalGameObjectFilters.Add(gameObjectNameFilters[i]);
+                            finalComponentFilters.Add(string.Empty);
+                        }
+                    }
+                }
+            }
+
+            gameObjectNameFilters = finalGameObjectFilters.ToArray();
+            componentFilters = finalComponentFilters.ToArray();
+
+            Dictionary<GameObject, List<ContextRetrievalHelpers.ObjectAndScore>> componentScores = new();
+            Dictionary<Type, long> componentTypeScores = new();
+
             if (gameObjectNameFilters == null || gameObjectNameFilters.Length == 0 || gameObjectNameFilters[0] == "*")
             {
-                objectsToSearch = allObjects;
+                if (componentFilters is { Length: > 0 })
+                {
+                    // No object names provided, just filter all objects by types
+                    objectsToSearch = new HashSet<GameObject>();
+
+                    foreach (var obj in allObjects)
+                    {
+                        var scores = GetComponentTypeScores(obj, componentFilters,
+                            o => o is Component c ? c.GetType().Name : o.name);
+
+                        if (scores?.Count > 0)
+                        {
+                            objectsToSearch.Add(obj);
+
+                            foreach (var score in scores)
+                            {
+                                if (!componentTypeScores.ContainsKey(score.Type))
+                                {
+                                    componentTypeScores[score.Type] = score.Score;
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    objectsToSearch = allObjects;
+                }
             }
             else
             {
                 objectsToSearch = new HashSet<GameObject>();
-                foreach (var filter in gameObjectNameFilters)
+                for (int i = 0; i < gameObjectNameFilters.Length; ++i)
                 {
+                    var filter = gameObjectNameFilters[i];
+                    var componentType = componentFilters?.Length > i ? componentFilters[i] : null;
+
                     foreach (var obj in ContextRetrievalHelpers.FuzzyObjectSearch(filter, allObjects))
                     {
-                        objectsToSearch.Add(obj);
+                        if (!string.IsNullOrEmpty(componentType))
+                        {
+                            var scores = GetComponentTypeScores(obj, componentFilters,
+                                o => o is Component c ? c.GetType().Name : o.name);
+
+                            if (scores?.Count > 0)
+                            {
+                                objectsToSearch.Add(obj);
+
+                                foreach (var score in scores)
+                                {
+                                    if (!componentTypeScores.ContainsKey(score.Type))
+                                    {
+                                        componentTypeScores[score.Type] = score.Score;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            objectsToSearch.Add(obj);
+                        }
                     }
                 }
             }
+
+#if MUSE_INTERNAL
+            if (componentTypeScores.Count > 0)
+            {
+                var deb = "Scores for found component types:\n";
+                componentTypeScores.ToList().OrderByDescending(e => e.Value)
+                    .ToList().ForEach(e => deb += $"- Type '{e.Key.Name}': Score {e.Value}\n");
+                Debug.Log(deb);
+            }
+#endif
 
             // Make sort faster by caching depth instead of recalculating every time:
             Dictionary<GameObject, int> depthCache = new();
             objectsToSearch = new List<GameObject>(objectsToSearch.OrderBy(GetDepth));
 
+            // Build the final list of types we found
+            if (componentTypeScores.Count > 0)
+            {
+                var finalComponentTypes = new List<string>();
+
+                foreach (var e in componentTypeScores)
+                {
+                    finalComponentTypes.Add(e.Key.Name);
+                }
+
+                componentFilters = finalComponentTypes.ToArray();
+            }
+
+            var sortedComponents = componentFilters.OrderBy(s => s).ToArray();
+
+            HashSet<int> foundSortedComponents = new();
+
             foreach (var obj in objectsToSearch)
             {
-                hierarchyMap.Insert(new GameObjectInfo(obj));
+                string suffix = "";
+                var matchingComponents = TryFindComponentTypes(obj, sortedComponents);
+                if (matchingComponents?.Count > 0)
+                {
+                    for (int i = 0; i < sortedComponents.Length; i++)
+                    {
+                        if (suffix.Length == 0)
+                            suffix = " : ";
+
+                        var name = sortedComponents[i];
+
+                        if (matchingComponents.Contains(i))
+                        {
+                            foundSortedComponents.Add(i);
+                            suffix += "Has " + name + ". ";
+                        }
+                        else
+                        {
+                            suffix += "Has NO " + name + ". ";
+                        }
+                    }
+                }
+
+                hierarchyMap.Insert(new GameObjectInfo(obj, default, suffix));
 
                 if (GameObjectHierarchyMapEntry.EstimatedSerializedLength >
                     GameObjectHierarchyMapEntry.SmartContextLimit)
@@ -502,10 +693,29 @@ namespace Unity.Muse.Chat.Context.SmartContext
                 return null;
             }
 
+            string componentDescription = "";
+            if (foundSortedComponents.Count > 0)
+            {
+                componentDescription +=
+                    "We searched in the scene hierarchy for all objects with any of those components the user wanted to filter:\n";
+
+                foreach (var componentIdx in foundSortedComponents)
+                {
+                    componentDescription += $"- {sortedComponents[componentIdx]}\n";
+                }
+
+                componentDescription +=
+                    "\nWe only list scene objects with components we searched for, others are not shown in the hierarchy below because the user implicitly ignored them in their prompt." +
+                    $"\nIf any of the following object names in the hierarchy is followed by a note like \"Has {componentFilters[0]}.\", this means this component was found on the object, otherwise is was missing and has a note like \"Has NO {componentFilters[0]}.\".";
+
+                componentDescription += "\n\n";
+            }
+
             return new SmartContextToolbox.ExtractedContext
             {
-                Payload = hierarchyMap.Serialized(),
-                ContextType = "scene hierarchy"
+                Payload = componentDescription + hierarchyMap.Serialized(),
+                ContextType = "scene hierarchy",
+                Truncated = hierarchyMap.Truncated
             };
 
             // Sort objects by their depth in the hierarchy:
@@ -524,6 +734,93 @@ namespace Unity.Muse.Chat.Context.SmartContext
 
                 return depth;
             }
+
+            bool NameAndTypeExist(List<string> finalGameObjectFilters, List<string> finalComponentFilters, string name, string component)
+            {
+                for (int i = 0; i < finalGameObjectFilters.Count; i++)
+                {
+                    if (finalGameObjectFilters[i] == name && finalComponentFilters[i] == component)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        private static List<ComponentTypeScores> GetComponentTypeScores(GameObject gameObject, string[] componentFilters,
+            Func<Object, string> customNameFunc = null)
+        {
+            // fuzzy match componentFilters strings to any components on the gameObject
+            List<ComponentTypeScores> componentMatches = new();
+
+            var objectMatches = GetComponentMatches(gameObject, componentFilters, customNameFunc);
+
+            foreach (var objectMatch in objectMatches)
+            {
+                var t = objectMatch.Object.GetType();
+                if (componentMatches.All(e => e.Type != t))
+                {
+                    componentMatches.Add(new ComponentTypeScores { Type = t, Score = objectMatch.Score });
+                }
+            }
+
+            return componentMatches;
+        }
+
+        private static List<ContextRetrievalHelpers.ObjectAndScore> GetComponentMatches(GameObject gameObject,
+            string[] componentFilters, Func<Object, string> customNameFunc = null)
+        {
+            // fuzzy match componentFilters strings to any components on the gameObject
+            List<ContextRetrievalHelpers.ObjectAndScore> componentMatches = new();
+
+            var objectsToSearch = gameObject.GetComponents<Component>();
+
+            foreach (var componentName in componentFilters)
+            {
+                if (string.IsNullOrEmpty(componentName))
+                    continue;
+
+                var matches = ContextRetrievalHelpers.FuzzyObjectSearchWithScore(componentName, objectsToSearch, customNameFunc);
+                if (matches.Count() > 0)
+                {
+                    componentMatches.AddRange(matches);
+                }
+            }
+
+            return componentMatches;
+        }
+
+
+        private static List<int> TryFindComponentTypes(GameObject obj, string[] componentTypes)
+        {
+            if (obj == null || componentTypes == null || componentTypes.Length == 0)
+                return null;
+
+            List<int> foundTypes = new();
+
+            for (int i = 0; i < componentTypes.Length; ++i)
+            {
+                var componentType = componentTypes[i];
+
+                if (obj.GetComponent(componentType))
+                {
+                    foundTypes.Add(i);
+                }
+                // TODO: Maybe better to not use/allow "UnityEngine." prefix in the first place
+                else if (componentType.Contains("UnityEngine.", StringComparison.OrdinalIgnoreCase))
+                {
+                    var shortType = componentType.Substring("UnityEngine.".Length);
+
+                    if (obj.GetComponent(shortType))
+                    {
+                        foundTypes.Add(i);
+                    }
+                }
+            }
+
+            return foundTypes;
         }
     }
 }

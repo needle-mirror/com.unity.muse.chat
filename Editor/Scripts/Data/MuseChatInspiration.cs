@@ -6,7 +6,7 @@ namespace Unity.Muse.Chat
     internal struct MuseChatInspiration
     {
         public MuseInspirationId Id;
-        public ChatCommandType Mode;
+        public string Command;
         public string Description;
         public string Value;
     }

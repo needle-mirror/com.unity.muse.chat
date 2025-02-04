@@ -16,22 +16,5 @@ namespace Unity.Muse.Chat
 
             return codeAssembly != null;
         }
-
-        internal async Task<string> Repair(MuseMessageId messageId, int messageIndex, string errorToRepair, string scriptToRepair)
-        {
-            var repairedMessage = await Assistant.instance.RepairScript(messageId, messageIndex, errorToRepair, scriptToRepair, ScriptType.CodeGen);
-
-            if (string.IsNullOrEmpty(repairedMessage))
-                return null;
-
-            var match = Regex.Match(repairedMessage, @"```csharp(.*?)```", RegexOptions.Singleline);
-            if (match.Success)
-            {
-                var code = match.Groups[1].Value;
-                return code;
-            }
-
-            return null;
-        }
     }
 }

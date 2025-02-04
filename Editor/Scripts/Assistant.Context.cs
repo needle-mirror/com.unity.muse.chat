@@ -125,7 +125,11 @@ namespace Unity.Muse.Chat
 
                     var smartContextMaxLength = maxLength;
 
-                    foreach (FunctionCall call in FunctionCall.Deduplicate(smartContextResponse.FunctionCalls))
+                    var deduplicatedCalls = FunctionCall.Deduplicate(smartContextResponse.FunctionCalls).ToList();
+
+                    ContextUtils.MergeSceneHierarchyExtractorCalls(deduplicatedCalls);
+
+                    foreach (FunctionCall call in deduplicatedCalls)
                     {
 #if MUSE_INTERNAL
                         InternalLog.Log(

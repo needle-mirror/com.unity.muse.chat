@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using Unity.Muse.Chat.WebApi;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -72,7 +73,7 @@ namespace Unity.Muse.Chat
             return chunk;
         }
 
-        public static void ProcessText(MuseMessage message, ref IList<WebAPI.SourceBlock> sourceBlocks,
+        public static void ProcessText(MuseMessage message, ref IList<SourceBlock> sourceBlocks,
             out string messageContent, FootnoteFormat mode = FootnoteFormat.SpritesForText)
         {
             List<SourceOrFootnote> sourceOrFootnotes = new();
@@ -166,7 +167,7 @@ namespace Unity.Muse.Chat
                     {
                         try
                         {
-                            WebAPI.SourceBlock sourceBlock = JsonUtility.FromJson<WebAPI.SourceBlock>(chunks[i]);
+                            SourceBlock sourceBlock = JsonUtility.FromJson<SourceBlock>(chunks[i]);
 
                             var sourceEntryIndex = sourceOrFootnotes.FindIndex(e => e.IsSource && e.SourceIndex == i/2);
                             if (sourceEntryIndex != -1)
@@ -189,7 +190,7 @@ namespace Unity.Muse.Chat
                 {
                     if (sourceBlocks == null)
                     {
-                        sourceBlocks = new List<WebAPI.SourceBlock>();
+                        sourceBlocks = new List<SourceBlock>();
                     }
 
                     messageContent = s_StringBuilder.ToString();
@@ -226,7 +227,7 @@ namespace Unity.Muse.Chat
                             }
                             else
                             {
-                                sourceBlocks.Add(new WebAPI.SourceBlock()
+                                sourceBlocks.Add(new SourceBlock()
                                 {
                                     reason = footnoteInfo.Title,
                                     source = footnoteInfo.URL
@@ -322,7 +323,7 @@ namespace Unity.Muse.Chat
             }
         }
 
-        public static void AppendSourceBlocks(IList<WebAPI.SourceBlock> sourceBlocks, ref string messageContent)
+        public static void AppendSourceBlocks(IList<SourceBlock> sourceBlocks, ref string messageContent)
         {
             if (sourceBlocks == null || sourceBlocks.Count == 0)
             {

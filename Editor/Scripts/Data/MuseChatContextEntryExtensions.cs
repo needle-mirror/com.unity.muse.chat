@@ -169,7 +169,14 @@ namespace Unity.Muse.Chat
                         return null;
                     }
 
-                    return AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+                    var type = typeof(Object);
+
+                    if (AssetDatabase.GetImporterType(assetPath) == typeof(ModelImporter))
+                    {
+                        type = typeof(Mesh);
+                    }
+
+                    return AssetDatabase.LoadAssetAtPath(assetPath, type);
                 }
 
                 default:

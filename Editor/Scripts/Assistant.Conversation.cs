@@ -1,5 +1,6 @@
 using System;
-using Unity.Muse.Chat.BackendApi.Model;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Unity.Muse.Chat
 {
@@ -37,17 +38,22 @@ namespace Unity.Muse.Chat
 
         public void RefreshConversations()
         {
-            if (m_ConversationRefreshSuspended)
-            {
-                return;
-            }
-
-            m_Backend.ConversationRefresh(OnConversationHistoryReceived);
+            _ = RefreshConversationsAsync();
         }
 
-        public void ConversationLoad(MuseConversationId conversationId)
+        public async Task RefreshConversationsAsync(CancellationToken ct = default)
         {
-            m_Backend.ConversationLoad(conversationId, PushConversation);
+            if (m_ConversationRefreshSuspended)
+                return;
+
+            var conversations = await m_Backend.ConversationRefresh(ct);
+            OnConversationHistoryReceived(conversations);
+        }
+
+        public async Task ConversationLoad(MuseConversationId conversationId, CancellationToken ct = default)
+        {
+            var conversation = await m_Backend.ConversationLoad(conversationId, ct);
+            PushConversation(conversation);
         }
 
         public void ConversationReload()
@@ -57,7 +63,7 @@ namespace Unity.Muse.Chat
                 return;
             }
 
-            ConversationLoad(m_ActiveConversation.Id);
+            _ = ConversationLoad(m_ActiveConversation.Id);
         }
 
         public void ConversationFavoriteToggle(MuseConversationId conversationId, bool isFavorite)
@@ -65,24 +71,31 @@ namespace Unity.Muse.Chat
             m_Backend.ConversationFavoriteToggle(conversationId, isFavorite);
         }
 
-        public void ConversationRename(MuseConversationId conversationId, string newName)
+        public async Task ConversationRename(MuseConversationId conversationId, string newName, CancellationToken ct = default)
         {
             if (!conversationId.IsValid)
             {
                 return;
             }
 
-            if (m_ActiveConversation != null && m_ActiveConversation.Id == conversationId && m_ActiveConversation.Title != newName)
+            if (m_ActiveConversation != null && m_ActiveConversation.Id == conversationId
+                && m_ActiveConversation.Title != newName)
             {
                 m_ActiveConversation.Title = newName;
 
                 OnConversationTitleChanged?.Invoke(newName);
             }
 
-            m_Backend.ConversationRename(conversationId, newName, RefreshConversations);
+            await m_Backend.ConversationRename(conversationId, newName, ct);
+            await RefreshConversationsAsync(ct);
         }
 
         public void ConversationDelete(MuseConversationInfo conversation)
+        {
+            _ = ConversationDeleteAsync(conversation);
+        }
+
+        public async Task ConversationDeleteAsync(MuseConversationInfo conversation, CancellationToken ct = default)
         {
             if (!conversation.Id.IsValid || !k_History.Contains(conversation))
             {
@@ -92,7 +105,8 @@ namespace Unity.Muse.Chat
             k_History.Remove(conversation);
             OnConversationHistoryChanged?.Invoke();
 
-            m_Backend.ConversationDelete(conversation, RefreshConversations);
+            await m_Backend.ConversationDelete(conversation, ct);
+            await RefreshConversationsAsync(ct);
 
             // If this is the active conversation, reset active:
             if (conversation.Id == m_ActiveConversation?.Id)

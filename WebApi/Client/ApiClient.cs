@@ -417,7 +417,7 @@ namespace Unity.Muse.Chat.BackendApi.Client
                     // See: https://docs.unity3d.com/ScriptReference/Networking.CertificateHandler.html
                     throw new InvalidOperationException("Configuration `ClientCertificates` not supported by UnityWebRequest on all platforms");
                 }
-                
+
                 IUnityWebRequest wrappedRequest = new UnityWebRequestWrapper(request);
                 callbacks?.OnAfterRequestSend?.Invoke(wrappedRequest);
 

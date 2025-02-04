@@ -6263,7 +6263,11 @@ namespace Unity.Muse.Chat.BackendApi.Utilities
 
         public string error => _request.error;
         public bool isDone => _request.isDone;
+
+        [Obsolete("UnityWebRequest.isNetworkError is deprecated. Use (UnityWebRequest.result == UnityWebRequest.Result.ConnectionError) instead.")]
         public bool isNetworkError => _request.isNetworkError;
+
+        [Obsolete("UnityWebRequest.isHttpError is deprecated. Use (UnityWebRequest.result == UnityWebRequest.Result.ProtocolError) instead.")]
         public bool isHttpError => _request.isHttpError;
         public long responseCode => (long)_request.responseCode;
 

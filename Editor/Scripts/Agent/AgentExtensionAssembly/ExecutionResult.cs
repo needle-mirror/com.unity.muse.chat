@@ -36,16 +36,16 @@ namespace Unity.Muse.Agent.Dynamic
         int UndoGroup;
 
         public readonly int Id;
-        public readonly string ActionName;
+        public readonly string CommandName;
 
         internal List<ExecutionLog> Logs => m_Logs;
         public string ConsoleLogs => m_ConsoleLogs;
         public bool SuccessfullyStarted { get; private set; }
 
-        public ExecutionResult(string actionName)
+        public ExecutionResult(string commandName)
         {
             Id = k_NextExecutionId++;
-            ActionName = actionName;
+            CommandName = commandName;
         }
 
         public void RegisterObjectCreation(Object objectCreated)
@@ -81,7 +81,7 @@ namespace Unity.Muse.Agent.Dynamic
             SuccessfullyStarted = true;
 
             Undo.IncrementCurrentGroup();
-            Undo.SetCurrentGroupName(ActionName ?? "Muse chat agent action");
+            Undo.SetCurrentGroupName(CommandName ?? "Run command execution");
             UndoGroup = Undo.GetCurrentGroup();
 
             Application.logMessageReceived += HandleConsoleLog;

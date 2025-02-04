@@ -4,82 +4,76 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Muse.Chat.WebApi;
 using Unity.Muse.Chat.BackendApi.Model;
 using UnityEngine;
 
 namespace Unity.Muse.Chat
 {
-    internal class AssistantWebBackend : IAssistantBackend
+    class AssistantWebBackend : IAssistantBackend
     {
         static readonly TimeSpan k_CancellationTimeout = TimeSpan.FromSeconds(30);
 
-        CancellationTokenSource m_CancellationToken;
-
+        static CancellationToken GetTimeoutToken(CancellationToken token) =>
+            CancellationTokenSource.CreateLinkedTokenSource(
+                    token, new CancellationTokenSource(k_CancellationTimeout).Token)
+                .Token;
         /// <summary>
         /// The WebAPI implementation used to communicate with the Muse Backend.
         /// </summary>
-        readonly WebAPI k_WebAPI = new();
+        readonly WebAPI k_WebApi = new();
 
         public bool SessionStatusTrackingEnabled => true;
 
-        public bool RequestInProgress => m_CancellationToken != null;
 
-        public void Cancel()
-        {
-            m_CancellationToken?.Cancel();
-        }
 
         /// <summary>
         /// Starts a request to refresh the list of conversations available. This is non-blocking.
         /// </summary>
-        public void ConversationRefresh(Action<IEnumerable<MuseConversationInfo>> callback)
+        public async Task<IEnumerable<MuseConversationInfo>> ConversationRefresh(
+            CancellationToken ct = default)
         {
-            k_WebAPI.GetConversations(
-                EditorLoopUtilities.EditorLoopRegistration,
-                x =>
+            ct.ThrowIfCancellationRequested();
+
+            var timeout = GetTimeoutToken(ct);
+
+            var infos = await k_WebApi.GetConversations(timeout);
+            ct.ThrowIfCancellationRequested();
+
+            var projectTag = UnityDataUtils.GetProjectId();
+
+            return infos.Select(
+                info => new MuseConversationInfo
                 {
-                    var result = new List<MuseConversationInfo>();
-                    foreach (var remoteInfo in x)
-                    {
-                        var localInfo = new MuseConversationInfo
-                        {
-                            Id = new MuseConversationId(remoteInfo.ConversationId),
-                            Title = remoteInfo.Title,
-                            LastMessageTimestamp = remoteInfo.LastMessageTimestamp,
-                            IsContextual = remoteInfo.IsContextual,
-                            IsFavorite = remoteInfo.IsFavorite != null && remoteInfo.IsFavorite.Value
-                        };
+                    Id = new(info.ConversationId),
+                    Title = info.Title,
+                    LastMessageTimestamp = info.LastMessageTimestamp,
+                    IsContextual = IsContextual(info),
+                    IsFavorite = info.IsFavorite != null && info.IsFavorite.Value
+                });
 
-                        result.Add(localInfo);
-                    }
-
-                    callback.Invoke(result);
-                },
-                Debug.LogException
-            );
+            bool IsContextual(ConversationInfo c)
+            {
+                var projectId = c.Tags.FirstOrDefault(
+                    tag => tag.StartsWith(MuseChatConstants.ProjectIdTagPrefix));
+                return projectId is null || projectId == projectTag;
+            }
         }
 
         /// <summary>
         /// Starts a webrequest that attempts to load the conversation with <see cref="conversationId"/>.
         /// </summary>
         /// <param name="conversationId">If not null or empty function acts as noop.</param>
-        /// <param name="callback"></param>
-        public void ConversationLoad(MuseConversationId conversationId, Action<MuseConversation> callback)
+        public async Task<MuseConversation> ConversationLoad(
+            MuseConversationId conversationId,
+            CancellationToken ct = default)
         {
             if (!conversationId.IsValid)
-            {
-                return;
-            }
+                throw new("Invalid conversation ID");
 
-            k_WebAPI.GetConversation(
-                conversationId.Value,
-                EditorLoopUtilities.EditorLoopRegistration,
-                x =>
-                {
-                    callback.Invoke(ConvertConversation(x));
-                },
-                Debug.LogException
-            );
+            var conversations = await k_WebApi.GetConversation(conversationId.Value, ct);
+
+            return ConvertConversation(conversations);
         }
 
         /// <summary>
@@ -87,24 +81,22 @@ namespace Unity.Muse.Chat
         /// </summary>
         /// <param name="conversationId">If not null or empty function acts as noop.</param>
         /// <param name="isFavorite">New favorite state of the conversation</param>
-        public void ConversationFavoriteToggle(MuseConversationId conversationId, bool isFavorite)
+        public async Task ConversationFavoriteToggle(
+            MuseConversationId conversationId,
+            bool isFavorite,
+            CancellationToken ct = default)
         {
             if (!conversationId.IsValid)
-            {
-                return;
-            }
+                throw new("Invalid conversation ID");
 
-            k_WebAPI.SetConversationFavoriteState(conversationId.Value,
-                isFavorite,
-                EditorLoopUtilities.EditorLoopRegistration,
-                null,
-                Debug.LogException);
+            await k_WebApi.SetConversationFavoriteState(conversationId.Value, isFavorite, ct);
         }
 
-        public async Task<MuseConversationId> ConversationCreate()
+        public async Task<MuseConversationId> ConversationCreate(CancellationToken ct = default)
         {
-            var conversation = await k_WebAPI.PostConversation(MuseChatState.FunctionCache.AllFunctionDefinitions);
-            return new MuseConversationId(conversation.Id);
+            var conversation = await k_WebApi.PostConversation(
+                MuseChatState.FunctionCache.AllFunctionDefinitions, ct);
+            return new(conversation.Id);
         }
 
         /// <summary>
@@ -112,101 +104,88 @@ namespace Unity.Muse.Chat
         /// </summary>
         /// <param name="conversationId">If not null or empty function acts as noop.</param>
         /// <param name="newName">New name of the conversation</param>
-        /// <param name="onComplete">Callback when the rename operation is complete</param>
-        public void ConversationRename(MuseConversationId conversationId, string newName, Action onComplete)
+        public async Task ConversationRename(
+            MuseConversationId conversationId,
+            string newName,
+            CancellationToken ct = default)
         {
             if (!conversationId.IsValid)
-            {
-                return;
-            }
+                throw new("Invalid conversation ID");
 
-            k_WebAPI.RenameConversation(conversationId.Value,
-                newName,
-                EditorLoopUtilities.EditorLoopRegistration,
-                onComplete,
-                Debug.LogException);
+            await k_WebApi.RenameConversation(conversationId.Value, newName, ct);
         }
 
-        public void ConversationSetAutoTitle(MuseConversationId id, Action onComplete)
+        public async Task ConversationSetAutoTitle(
+            MuseConversationId id,
+            CancellationToken ct = default)
         {
-            k_WebAPI.GetConversationTitle(id.Value,
-                EditorLoopUtilities.EditorLoopRegistration,
-                suggestedTitle =>
-                {
-                    if (!string.IsNullOrEmpty(suggestedTitle))
-                    {
-                        ConversationRename(id, suggestedTitle.Trim('"'), onComplete);
-                    }
-                }, Debug.LogException);
+            if (!id.IsValid)
+                throw new("Invalid conversation ID");
+
+            var suggestedTitle = await k_WebApi.GetConversationTitle(id.Value, ct);
+            if (!string.IsNullOrEmpty(suggestedTitle))
+            {
+                await ConversationRename(id, suggestedTitle.Trim('"'), ct);
+            }
         }
 
         /// <summary>
         /// Starts a webrequest that attempts to delete a conversation with <see cref="conversation"/>.
         /// </summary>
         /// <param name="conversation">If not null or empty function acts as noop.</param>
-        /// <param name="onComplete"></param>
-        public void ConversationDelete(MuseConversationInfo conversation, Action onComplete)
+        /// <param name="ct">A cancellation token that can be used to cancel the asynchronous operation.</param>
+        public async Task ConversationDelete(
+            MuseConversationInfo conversation,
+            CancellationToken ct = default)
         {
             if (!conversation.Id.IsValid)
-            {
-                return;
-            }
+                throw new("Invalid conversation ID");
 
-            k_WebAPI.DeleteConversation(
-                conversation.Id.Value,
-                EditorLoopUtilities.EditorLoopRegistration,
-                onComplete,
-                Debug.LogException
-            );
+            await k_WebApi.DeleteConversation(conversation.Id.Value, ct);
         }
 
-        public async Task ConversationDeleteFragment(MuseConversationId conversationId, string fragment)
+        public async Task ConversationDeleteFragment(
+            MuseConversationId conversationId,
+            string fragment,
+            CancellationToken ct = default)
         {
-            await k_WebAPI.DeleteConversationFragment(conversationId, fragment);
+            if (!conversationId.IsValid)
+                throw new("Invalid conversation ID");
+
+            await k_WebApi.DeleteConversationFragment(conversationId.Value, fragment, ct);
         }
 
         /// <summary>
         /// Starts a request to refresh the list of conversations available. This is non-blocking.
         /// </summary>
-        public void InspirationRefresh(Action<IEnumerable<MuseChatInspiration>> callback)
+        public async Task<IEnumerable<MuseChatInspiration>> InspirationRefresh(CancellationToken ct = default)
         {
-            k_WebAPI.GetInspirations(
-                EditorLoopUtilities.EditorLoopRegistration,
-                x =>
-                {
-                    var result = new List<MuseChatInspiration>();
-                    foreach (var entry in x)
-                    {
-                        result.Add(entry.ToInternal());
-                    }
+            ct.ThrowIfCancellationRequested();
 
-                    callback.Invoke(result);
-                },
-                Debug.LogException
-            );
+            var result = await k_WebApi.GetInspirations(ct);
+
+            ct.ThrowIfCancellationRequested();
+
+            return result.Select(inspiration => inspiration.ToInternal());
         }
 
         /// <summary>
         /// Starts a webrequest that attempts to add or update a inspiration.
         /// </summary>
         /// <param name="inspiration">the inspiration data to update.</param>
-        public void InspirationUpdate(MuseChatInspiration inspiration)
+        public async Task InspirationUpdate(MuseChatInspiration inspiration, CancellationToken ct = default)
         {
+            ct.ThrowIfCancellationRequested();
+
             var externalData = inspiration.ToExternal();
             if (!inspiration.Id.IsValid)
             {
                 externalData.Id = null;
-                k_WebAPI.AddInspiration(externalData,
-                    EditorLoopUtilities.EditorLoopRegistration,
-                    null,
-                    Debug.LogException);
+                _ = await k_WebApi.AddInspiration(externalData, ct);
             }
             else
             {
-                k_WebAPI.UpdateInspiration(externalData,
-                    EditorLoopUtilities.EditorLoopRegistration,
-                    null,
-                    Debug.LogException);
+                _ = await k_WebApi.UpdateInspiration(externalData, ct);
             }
         }
 
@@ -214,71 +193,85 @@ namespace Unity.Muse.Chat
         /// Starts a webrequest that attempts to delete an inspiration.
         /// </summary>
         /// <param name="inspiration">the inspiration data to delete.</param>
-        public void InspirationDelete(MuseChatInspiration inspiration)
+        public async Task InspirationDelete(
+            MuseChatInspiration inspiration,
+            CancellationToken ct = default)
         {
+            var tsc = new TaskCompletionSource<bool>();
+
             var externalData = inspiration.ToExternal();
             if (!inspiration.Id.IsValid)
-            {
-                throw new InvalidOperationException("Tried to delete non-existing Inspiration entry!");
-            }
+                throw new InvalidOperationException(
+                    "Tried to delete non-existing Inspiration entry!");
 
-            k_WebAPI.DeleteInspiration(externalData,
-                EditorLoopUtilities.EditorLoopRegistration,
-                null,
-                Debug.LogException);
+            await k_WebApi.DeleteInspiration(externalData, ct);
         }
 
-        public void SendFeedback(MuseConversationId conversationId, MessageFeedback feedback)
-        {
-            k_WebAPI.SendFeedback(feedback.Message, conversationId.Value, feedback.MessageId.FragmentId, feedback.Sentiment, feedback.Type);
-        }
+        public Task SendFeedback(
+            MuseConversationId conversationId,
+            MessageFeedback feedback,
+            CancellationToken ct = default) =>
+            k_WebApi.SendFeedback(
+                feedback.Message, conversationId.Value, feedback.MessageId.FragmentId,
+                feedback.Sentiment, feedback.Type, ct);
 
-        public void CheckEntitlement(Action<bool> callback)
-        {
-            k_WebAPI.CheckBetaEntitlement(
-                EditorLoopUtilities.EditorLoopRegistration,
-                callback
-            );
-        }
+        public Task<bool> CheckEntitlement(CancellationToken ct = default) =>
+            k_WebApi.CheckBetaEntitlement(ct);
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<MuseChatStreamHandler> SendPrompt(MuseConversationId conversationId, string prompt, EditorContextReport context, ChatCommandType commandType, List<MuseChatContextEntry> selectionContext)
+public Task<MuseChatStreamHandler> SendPrompt(MuseConversationId conversationId, string prompt, EditorContextReport context, string command, List<MuseChatContextEntry> selectionContext, CancellationToken ct = default)
+
         {
-            return k_WebAPI.BuildChatStream(
+            var stream = k_WebApi.BuildChatStream(
                 prompt,
                 conversationId.Value,
                 context,
-                commandType,
+                command,
                 selectionContext: ToExternalContext(selectionContext)
             );
+
+            return Task.FromResult(stream);
         }
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
-        public async Task<SmartContextResponse> SendSmartContext(MuseConversationId conversationId, string prompt, EditorContextReport context)
+        public async Task<SmartContextResponse> SendSmartContext(MuseConversationId conversationId, string prompt, EditorContextReport context, CancellationToken ct = default)
         {
-            m_CancellationToken = new CancellationTokenSource(k_CancellationTimeout);
+            var timeout = new CancellationTokenSource(k_CancellationTimeout);
+            var merged = CancellationTokenSource.CreateLinkedTokenSource(ct, timeout.Token);
 
-            return await k_WebAPI.PostSmartContextAsync(prompt, context,
+            return await k_WebApi.PostSmartContextAsync(prompt, context,
                 MuseChatState.SmartContextToolbox.Tools.Select(c => c.FunctionDefinition).ToList(),
                 conversationId.Value,
-                m_CancellationToken.Token);
+                merged.Token);
         }
 
-        public async Task<object> RepairCode(MuseConversationId conversationId, int messageIndex, string errorToRepair, string scriptToRepair, ScriptType scriptType)
+        public async Task<object> RepairCode(MuseConversationId conversationId, int messageIndex, string errorToRepair, string scriptToRepair, ScriptType scriptType, CancellationToken ct = default)
         {
-            m_CancellationToken = new CancellationTokenSource(k_CancellationTimeout);
+            var timeout = new CancellationTokenSource(k_CancellationTimeout);
+            var merged = CancellationTokenSource.CreateLinkedTokenSource(ct, timeout.Token);
 
-            return await k_WebAPI.CodeRepair(conversationID: conversationId.Value,
+            return await k_WebApi.CodeRepair(conversationID: conversationId.Value,
                 messageIndex: messageIndex,
                 errorToRepair: errorToRepair,
                 scriptToRepair: scriptToRepair,
-                cancellationToken: m_CancellationToken.Token,
+                ct: merged.Token,
                 scriptType: scriptType);
         }
 
-        public async Task<List<VersionSupportInfo>> GetVersionSupportInfo(string version)
+        public async Task<object> RepairCompletion(MuseConversationId conversationId, int messageIndex, string errorToRepair, string itemToRepair, ProductEnum product, CancellationToken ct = default)
         {
-            var response = await k_WebAPI.GetServerCompatibility(version);
+            var timeout = new CancellationTokenSource(k_CancellationTimeout);
+            var merged = CancellationTokenSource.CreateLinkedTokenSource(ct, timeout.Token);
+
+            return await k_WebApi.CompletionRepair(conversationID: conversationId.Value,
+                messageIndex: messageIndex,
+                errorToRepair: errorToRepair,
+                itemToRepair: itemToRepair,
+                ct: merged.Token,
+                product: product);
+        }
+
+        public async Task<List<VersionSupportInfo>> GetVersionSupportInfo(string version, CancellationToken ct = default)
+        {
+            var response = await k_WebApi.GetServerCompatibility(version);
 
             if (response.StatusCode == HttpStatusCode.OK)
                 return response.Data;
@@ -300,7 +293,7 @@ namespace Unity.Muse.Chat
                 var fragment = remoteConversation.History[i];
                 var message = new MuseMessage
                 {
-                    Id = new MuseMessageId(conversationId, fragment.Id, MuseMessageIdType.External),
+                    Id = new(conversationId, fragment.Id, MuseMessageIdType.External),
                     IsComplete = true,
                     Role = fragment.Role,
                     Author = fragment.Author,
@@ -351,7 +344,7 @@ namespace Unity.Muse.Chat
 
                     default:
                     {
-                        result[i] = new MuseChatContextEntry
+                        result[i] = new()
                         {
                             Value = entry.Value,
                             DisplayValue = entry.DisplayValue,
