@@ -195,7 +195,7 @@ namespace Unity.Muse.Chat.UI.Components
             m_SubmitButton.RegisterCallback<PointerUpEvent>(_ =>
             {
                 OnSubmit?.Invoke(m_ChatInput.value);
-                ResetRoute();
+                //ResetRoute();
             });
 
             m_InputScrollView = view.Q<ScrollView>("inputScrollView");
@@ -713,7 +713,7 @@ namespace Unity.Muse.Chat.UI.Components
             {
                 OnSubmit?.Invoke(m_ChatInput.value);
                 m_AddRouteButton.SetEnabled(true);
-                ResetRoute();
+                //ResetRoute();
             }
         }
     }

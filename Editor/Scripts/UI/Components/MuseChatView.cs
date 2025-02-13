@@ -132,8 +132,12 @@ namespace Unity.Muse.Chat.UI.Components
             this.style.flexGrow = 1;
             view.style.flexGrow = 1;
 
+            ExperimentalProgram.RegisterProgram<ExperimentalAgentProgram>();
+            ExperimentalProgram.EnableForMode(AgentModel.CurrentMode, true);
+            SessionStatus.RegisterModeWithoutEntitlements(AgentModel.CurrentMode);
+
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
-            m_HeaderRoot.AddSessionAndCompatibilityStatusManipulators();
+            m_HeaderRoot.AddSessionAndCompatibilityStatusManipulators(AgentModel);
 
             m_RootMain = view.Q<VisualElement>("root-main");
             m_RootMain.RegisterCallback<MouseEnterEvent>(UpdateSelectedContextWarning);
@@ -142,12 +146,11 @@ namespace Unity.Muse.Chat.UI.Components
             m_RootPanel = view.Q<VisualElement>("root-panel");
 
             m_NewChatButton = view.SetupButton("newChatButton", OnNewChatClicked);
-            m_NewChatButton.AddSessionAndCompatibilityStatusManipulators();
+            m_NewChatButton.AddSessionAndCompatibilityStatusManipulators(AgentModel);
             m_HistoryButton = view.SetupButton("historyButton", OnHistoryClicked);
-            m_HistoryButton.AddSessionAndCompatibilityStatusManipulators();
+            m_HistoryButton.AddSessionAndCompatibilityStatusManipulators(AgentModel);
 
             m_OpenTutorialButton = view.SetupButton("tutorialButton", OnOpenTutorialClicked);
-            m_OpenTutorialButton.SetSessionTracked(AgentModel);
 
             m_ConversationName = view.Q<Label>("conversationNameLabel");
             m_ConversationName.enableRichText = false;
@@ -170,7 +173,7 @@ namespace Unity.Muse.Chat.UI.Components
             m_MusingElementRoot.Add(m_MusingElement);
 
             var contentRoot = view.Q<VisualElement>("chatContentRoot");
-            contentRoot.AddSessionAndCompatibilityStatusManipulators();
+            contentRoot.AddSessionAndCompatibilityStatusManipulators(AgentModel);
 
             m_InspirationRoot = view.Q<VisualElement>("inspirationPanelRoot");
             m_InspirationPanel = new MuseChatInspirationPanel();
@@ -180,7 +183,7 @@ namespace Unity.Muse.Chat.UI.Components
 
             m_HeaderRoot = view.Q<VisualElement>("headerRoot");
             m_FooterRoot = view.Q<VisualElement>("footerRoot");
-            m_FooterRoot.AddSessionAndCompatibilityStatusManipulators();
+            m_FooterRoot.AddSessionAndCompatibilityStatusManipulators(AgentModel);
 
             m_SelectedContextScrollView = view.Q<ScrollView>("userSelectedContextListView");
 
@@ -211,15 +214,16 @@ namespace Unity.Muse.Chat.UI.Components
             m_ClearContextButton = view.Q<Button>("clearContextButton");
             m_ClearContextButton.clicked += ClearContext;
 
-            var sessionNotifications = new SessionStatusNotifications { pickingMode = PickingMode.Ignore };
+            //var sessionNotifications = new SessionStatusNotifications { pickingMode = PickingMode.Ignore };
             var serverCompatibilityNotifications = new ServerCompatibilityNotifications { pickingMode = PickingMode.Ignore };
             m_ExperimentalSignUp = new ExperimentalProgramSignUpNotificationView(true);
             m_ExperimentalSignUp.AddToClassList("notifications-area");
 
+
+
             var notificationBanner = view.Q<VisualElement>("account-notifications");
             notificationBanner.Add(m_ExperimentalSignUp);
             notificationBanner.Add(serverCompatibilityNotifications);
-            notificationBanner.Add(sessionNotifications);
 
             m_BannerRoot = view.Q<VisualElement>("notificationBannerRoot");
             m_Banner = new MuseChatNotificationBanner();

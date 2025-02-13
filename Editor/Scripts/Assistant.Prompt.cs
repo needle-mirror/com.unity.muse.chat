@@ -290,18 +290,15 @@ namespace Unity.Muse.Chat
                 state.Conversation.Messages[assistantMessageIndex] = currentAssistantMessage;
             }
 
-            if (!string.IsNullOrEmpty(state.Conversation.Messages[^1].Id.ConversationId.ToString()))
+            if (!state.Conversation.Messages[^1].Id.ConversationId.IsValid)
             {
-                int assistantMessageIndex = state.Conversation.Messages.Count - 1;
-
-                if (assistantMessageIndex < 0)
-                    return;
-
-                // Change the conversation id to the assistant:
-                var currentAssistantMessage = state.Conversation.Messages[assistantMessageIndex];
-
-                currentAssistantMessage.Author = ids.ConversationId;
-                state.Conversation.Messages[assistantMessageIndex] = currentAssistantMessage;
+                // Change ID of all messages in the current conversation
+                for (var i = 0; i < state.Conversation.Messages.Count; i++)
+                {
+                    var message = state.Conversation.Messages[i];
+                    message.Id = new MuseMessageId(state.Conversation.Id, message.Id.FragmentId, message.Id.Type);
+                    state.Conversation.Messages[i] = message;
+                }
             }
 
             _ = RefreshConversationsAsync();

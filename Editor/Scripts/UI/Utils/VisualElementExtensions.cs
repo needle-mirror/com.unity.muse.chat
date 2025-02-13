@@ -99,14 +99,14 @@ namespace Unity.Muse.Chat.UI.Utils
         /// Helper method to register an element as session tracked, which means it's disable state is based on the muse session status
         /// </summary>
         /// <param name="element">The element to track</param>
-        public static void AddSessionAndCompatibilityStatusManipulators(this VisualElement element)
+        /// <param name="agentModel"></param>
+        public static void AddSessionAndCompatibilityStatusManipulators(this VisualElement element, Model model)
         {
             if (!Assistant.instance.SessionStatusTrackingEnabled)
             {
                 return;
             }
-
-            element.AddManipulator(new SessionStatusTracker());
+            element.AddManipulator(new SessionStatusTracker(model));
             element.AddManipulator(new ServerCompatibilityTracker());
         }
 
@@ -120,15 +120,6 @@ namespace Unity.Muse.Chat.UI.Utils
             }
 
             return result;
-        }
-
-        /// <summary>
-        /// Helper method to register an element as session tracked, which means it's disable state is based on the muse session status
-        /// </summary>
-        /// <param name="element">The element to track</param>
-        public static void SetSessionTracked(this VisualElement element, Model model)
-        {
-            element.AddManipulator(new SessionStatusTracker(model));
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Unity.Muse.Chat.UI.Components.ChatElements
 
             var foldoutHeader = m_CodePreviewFoldout.Q<VisualElement>(className: "unity-foldout__input");
             foldoutHeader.Q<Label>().style.flexGrow = 1;
-            var editButton = new Button { text = "Open" };
+            var editButton = new Button { text = "Edit" };
             editButton.clicked += OpenTemporaryScript;
             editButton.AddToClassList("mui-agent-edit-code-button");
 
@@ -197,6 +197,7 @@ namespace Unity.Muse.Chat.UI.Components.ChatElements
 
             // Update Code preview text with latest code
             m_CodePreviewFoldout.SetDisplay(true);
+            m_CodePreviewFoldout.value = false;
             m_CodePreview.text = FormatDisplayScript();
 
             if (!m_Action.PreviewIsDone)
